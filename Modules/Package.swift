@@ -13,7 +13,10 @@ let package = Package(
             targets: ["AppFeature"]),
         .library(
             name: "FHAuth",
-            targets: ["FHAuth"])
+            targets: ["FHAuth"]),
+        .library(
+            name: "FHCommon",
+            targets: ["FHCommon"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.9.2"),
@@ -26,13 +29,15 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                .tca, .firebaseAuth
+                .tca, .firebaseAuth, "FHCommon"
             ]),
         .target(
             name: "FHAuth",
             dependencies: [
                 .tca, .firebaseAuth
             ]),
+        .target(
+            name: "FHCommon")
     ]
 )
 
