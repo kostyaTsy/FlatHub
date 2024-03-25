@@ -48,6 +48,7 @@ public struct AppFeature: Sendable {
             case .loggedOut:
                 state.isLoggedIn = false
                 state.destination = .loggedOut(LoginFeature.State())
+                return .none
             case .destination:
                 return .none
             }
