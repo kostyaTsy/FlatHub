@@ -24,12 +24,13 @@ struct FlatHubApp: App {
     
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .onAppear {
-                    let service = AuthService()
-                    let value = service.isUserLoggedIn
-                    print(value)
-                }
+            AppView(
+                store: .init(
+                    initialState: .init(), reducer: {
+                        AppFeature()
+                    }
+                )
+            )
         }
     }
 }
