@@ -76,6 +76,8 @@ public struct LoginView: View {
     }
 }
 
+// MARK: - Constants
+
 extension LoginView {
     private enum Constants {
         static let topContentPadding: CGFloat = 100
