@@ -11,13 +11,19 @@ public struct FHLineTextField: View {
     public struct Configuration {
         let eyeIconColor: Color
         let topTextColor: Color
+        let autocorrectionEnabled: Bool
+        let textAutocapitalization: TextInputAutocapitalization
 
         public init(
             eyeIconColor: Color = .gray,
-            topTextColor: Color = .primary
+            topTextColor: Color = .primary,
+            autocorrectionEnabled: Bool = true,
+            textAutocapitalization: TextInputAutocapitalization = .never
         ) {
             self.eyeIconColor = eyeIconColor
             self.topTextColor = topTextColor
+            self.autocorrectionEnabled = autocorrectionEnabled
+            self.textAutocapitalization = textAutocapitalization
         }
     }
 
@@ -66,9 +72,13 @@ public struct FHLineTextField: View {
                 if _isSecured {
                     SecureField(placeholder, text: $value)
                         .textFieldStyle(.plain)
+                        .autocorrectionDisabled(configuration.autocorrectionEnabled)
+                        .textInputAutocapitalization(configuration.textAutocapitalization)
                 } else {
                     TextField(placeholder, text: $value)
                         .textFieldStyle(.plain)
+                        .autocorrectionDisabled(configuration.autocorrectionEnabled)
+                        .textInputAutocapitalization(configuration.textAutocapitalization)
                 }
                 Divider()
             }
