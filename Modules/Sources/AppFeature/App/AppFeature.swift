@@ -12,6 +12,12 @@ import AuthFeature
 
 @Reducer
 public struct AppFeature: Sendable {
+    @Reducer
+    public enum Destination {
+        case loggedIn(AppContentFeature)
+        case loggedOut(LoginFeature)
+    }
+    
     @ObservableState
     public struct State {
         @Presents var destination: Destination.State?
@@ -56,15 +62,5 @@ public struct AppFeature: Sendable {
             }
         }
         .ifLet(\.$destination, action: \.destination)
-    }
-}
-
-// MARK: - Destination
-
-extension AppFeature {
-    @Reducer
-    public enum Destination {
-        case loggedIn(AppContentFeature)
-        case loggedOut(LoginFeature)
     }
 }

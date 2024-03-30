@@ -10,6 +10,10 @@ import ComposableArchitecture
 
 @Reducer
 public struct LoginFeature {
+    @Reducer
+    public enum Destination {
+        case signUp(RegisterFeature)
+    }
 
     @ObservableState
     public struct State {
@@ -82,19 +86,6 @@ public struct LoginFeature {
                 return .none
             }
         }
-        .ifLet(\.$destination, action: \.destination) 
-
-//        Scope(state: \.signUp, action: \.signUp) {
-//            RegisterFeature()
-//        }
-    }
-}
-
-// MARK: - Destination
-
-extension LoginFeature {
-    @Reducer
-    public enum Destination {
-        case signUp(RegisterFeature)
+        .ifLet(\.$destination, action: \.destination)
     }
 }
