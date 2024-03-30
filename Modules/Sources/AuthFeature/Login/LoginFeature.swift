@@ -18,7 +18,7 @@ public struct LoginFeature {
     @ObservableState
     public struct State {
         @Presents var destination: Destination.State?
-        var isLoginButtonDisabled: Bool = true
+        var isLoginButtonEnabled: Bool = false
         var isLoginProcessing: Bool = false
         var emailString: String = ""
         var passwordString: String = ""
@@ -77,15 +77,26 @@ public struct LoginFeature {
                 state.passwordString = password
                 return .send(.validateAuthData)
             case .validateAuthData:
-                state.isLoginButtonDisabled = state.emailString.isEmpty || state.passwordString.isEmpty
+                state.isLoginButtonEnabled = validateUserInput(for: state)
                 return .none
             case .signUpButtonTapped:
                 state.destination = .signUp(RegisterFeature.State())
                 return .none
+            case .destination(.presented(.signUp(.registerSuccess))):
+                state.destination = nil
+                return .run { send in
+                    await send(.loginSuccess)
+                }
             case .destination:
                 return .none
             }
         }
         .ifLet(\.$destination, action: \.destination)
+    }
+}
+
+private extension LoginFeature {
+    func validateUserInput(for state: State) -> Bool {
+        !state.emailString.isEmpty && !state.passwordString.isEmpty
     }
 }

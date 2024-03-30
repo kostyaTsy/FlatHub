@@ -8,5 +8,6 @@
 import SwiftUI
 
 public enum Colors {
-    static let secondary = Color.secondary
+    public static let secondary = Color.secondary
+    public static let system = Color(uiColor: UIColor.systemBackground)
 }

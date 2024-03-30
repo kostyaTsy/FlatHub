@@ -19,6 +19,10 @@ public struct LoginView: View {
     public var body: some View {
         WithPerceptionTracking {
             contentView()
+                .background(Colors.system)
+                .onTapGesture {
+                    hideKeyboard()
+                }
         }
     }
 
@@ -46,7 +50,7 @@ public struct LoginView: View {
 
             FHOvalButton(
                 title: Strings.loginTitle,
-                disabled: store.isLoginButtonDisabled || store.isLoginProcessing,
+                disabled: !store.isLoginButtonEnabled || store.isLoginProcessing,
                 configuration: Constants.buttonConfiguration
             ) {
                 store.send(.performLogin)

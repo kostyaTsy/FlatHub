@@ -10,13 +10,23 @@ import FHCommon
 import ComposableArchitecture
 
 public struct RegisterView: View {
-    private let store: StoreOf<RegisterFeature>
+    @Perception.Bindable private var store: StoreOf<RegisterFeature>
 
     public init(store: StoreOf<RegisterFeature>) {
         self.store = store
     }
 
     public var body: some View {
+        WithPerceptionTracking {
+            contentView()
+                .background(Colors.system)
+                .onTapGesture {
+                    hideKeyboard()
+                }
+        }
+    }
+
+    @ViewBuilder private func contentView() -> some View {
         VStack {
             Text(Strings.signUpTitle)
                 .font(.system(size: Constants.titleFontSize))
@@ -30,11 +40,20 @@ public struct RegisterView: View {
             HStack {}
                 .frame(height: Constants.loginFormSpacing)
 
+            if let errorText = store.errorText {
+                FHErrorText(text: errorText)
+            }
+
+            if store.isRegisterProcessing {
+                ProgressView()
+            }
+
             FHOvalButton(
                 title: Strings.signUpTitle,
+                disabled: !store.isRegisterButtonEnabled || store.isRegisterProcessing,
                 configuration: Constants.buttonConfiguration
             ) {
-
+                store.send(.performRegister)
             }
 
             Spacer()
@@ -46,18 +65,39 @@ public struct RegisterView: View {
 
     @ViewBuilder private func signUpFormView() -> some View {
         VStack {
+            // Username text field
             FHLineTextField(
-                value: .constant(""),
+                value: $store.username.sending(\.usernameChanged),
+                topText: Strings.signUpUsernameFieldText,
+                placeholder: Strings.signUpUsernamePlaceholder,
+                configuration: Constants.textFieldConfiguration
+            )
+            .padding(.bottom, Layout.Spacing.medium)
+
+            // Email text field
+            FHLineTextField(
+                value: $store.emailString.sending(\.emailChanged),
                 topText: Strings.authEmailFieldText,
                 placeholder: Strings.authEmailPlaceholder,
                 configuration: Constants.textFieldConfiguration
             )
             .padding(.bottom, Layout.Spacing.medium)
 
+            // Password text field
             FHLineTextField(
-                value: .constant("123"),
+                value: $store.passwordString.sending(\.passwordChanged),
                 isSecured: true,
                 topText: Strings.authPasswordFieldText,
+                placeholder: Strings.authPasswordPlaceholder,
+                configuration: Constants.textFieldConfiguration
+            )
+            .padding(.bottom, Layout.Spacing.medium)
+
+            // Confirm password text field
+            FHLineTextField(
+                value: $store.confirmedPasswordString.sending(\.confirmedPasswordChanged),
+                isSecured: true,
+                topText: Strings.authConfirmPasswordFieldText,
                 placeholder: Strings.authPasswordPlaceholder,
                 configuration: Constants.textFieldConfiguration
             )
@@ -69,7 +109,7 @@ public struct RegisterView: View {
 
 extension RegisterView {
     private enum Constants {
-        static let topContentPadding: CGFloat = 100
+        static let topContentPadding: CGFloat = 50
         static let bottomContentPadding: CGFloat = 30
         static let titleFontSize: CGFloat = 30
         static let titleSpacing: CGFloat = 70
