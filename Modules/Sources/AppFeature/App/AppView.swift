@@ -19,15 +19,6 @@ public struct AppView: View {
     public var body: some View {
         WithPerceptionTracking {
             NavigationStack {
-//                if store.isLoggedIn {
-//                    AppContentView(store: .init(initialState: .init(), reducer: {
-//                        AppContentFeature()
-//                    }))
-//                } else {
-//                    LoginView(store: .init(initialState: .init(), reducer: {
-//                        LoginFeature()
-//                    }))
-//                }
                 if store.isLoggedIn, let newStore = $store.scope(
                     state: \.destination?.loggedIn,
                     action: \.destination.loggedIn
@@ -46,21 +37,3 @@ public struct AppView: View {
         }
     }
 }
-
-//    public var body: some View {
-//        NavigationStack(path: $store.scope(state: \.path, action: \.path)) {
-//            Text("Root")
-//        } destination: { store in
-//            switch store.state {
-//            case .loggedIn:
-//                if let store = store.scope(state: \.loggedIn, action: \.loggedIn) {
-//                    AppContentView(store: store)
-//                }
-//            case .loggedOut:
-//                if let store = store.scope(state: \.loggedOut, action: \.loggedOut) {
-//                    LoginView(store: store)
-//                }
-//            }
-//        }
-//
-//    }

@@ -28,18 +28,18 @@ public struct FHOvalButton: View {
     }
 
     private let title: String
-    @Binding private var disabled: Bool
+    private let disabled: Bool
     private let configuration: Configuration
     private let action: () -> Void
 
     public init(
         title: String,
-        disabled: Binding<Bool> = .constant(false),
+        disabled: Bool = false,
         configuration: Configuration = Configuration(),
         action: @escaping () -> Void
     ) {
         self.title = title
-        self._disabled = disabled
+        self.disabled = disabled
         self.configuration = configuration
         self.action = action
     }

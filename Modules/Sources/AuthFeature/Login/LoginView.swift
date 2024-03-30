@@ -10,13 +10,19 @@ import FHCommon
 import ComposableArchitecture
 
 public struct LoginView: View {
-    private let store: StoreOf<LoginFeature>
+    @Perception.Bindable private var store: StoreOf<LoginFeature>
 
     public init(store: StoreOf<LoginFeature>) {
         self.store = store
     }
 
     public var body: some View {
+        WithPerceptionTracking {
+            contentView()
+        }
+    }
+
+    @ViewBuilder private func contentView() -> some View {
         VStack {
             Text(Strings.loginTitle)
                 .font(.system(size: Constants.titleFontSize))
@@ -30,11 +36,20 @@ public struct LoginView: View {
             HStack {}
                 .frame(height: Constants.loginFormSpacing)
 
+            if let errorText = store.errorText {
+                FHErrorText(text: errorText)
+            }
+
+            if store.isLoginProcessing {
+                ProgressView()
+            }
+
             FHOvalButton(
                 title: Strings.loginTitle,
+                disabled: store.isLoginButtonDisabled || store.isLoginProcessing,
                 configuration: Constants.buttonConfiguration
             ) {
-
+                store.send(.performLogin)
             }
 
             Spacer()
@@ -45,7 +60,7 @@ public struct LoginView: View {
                 .padding(.bottom, Layout.Spacing.xSmall)
 
             Button(Strings.signUpButton) {
-
+                store.send(.signUpButtonTapped)
             }
             .foregroundStyle(.primary)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -53,20 +68,30 @@ public struct LoginView: View {
         .padding(.horizontal, Layout.Spacing.big)
         .padding(.top, Constants.topContentPadding)
         .padding(.bottom, Constants.bottomContentPadding)
+        .navigationDestination(
+            store: store.scope(
+                state: \.$destination.signUp,
+                action: \.destination.signUp
+            )
+        ) { store in
+            RegisterView(store: store)
+        }
     }
 
     @ViewBuilder private func loginFormView() -> some View {
         VStack {
+            // Email text field
             FHLineTextField(
-                value: .constant(""),
+                value: $store.emailString.sending(\.emailChanged),
                 topText: Strings.authEmailFieldText,
                 placeholder: Strings.authEmailPlaceholder,
                 configuration: Constants.textFieldConfiguration
             )
             .padding(.bottom, Layout.Spacing.medium)
 
+            // Password text field
             FHLineTextField(
-                value: .constant("123"),
+                value: $store.passwordString.sending(\.passwordChanged),
                 isSecured: true,
                 topText: Strings.authPasswordFieldText,
                 placeholder: Strings.authPasswordPlaceholder,
@@ -90,12 +115,14 @@ extension LoginView {
     }
 }
 
-#Preview {
-    LoginView(
-        store: .init(
-            initialState: .init(), reducer: {
-                LoginFeature()
-            }
+#if DEBUG
+    #Preview {
+        LoginView(
+            store: .init(
+                initialState: .init(), reducer: {
+                    LoginFeature()
+                }
+            )
         )
-    )
-}
+    }
+#endif
