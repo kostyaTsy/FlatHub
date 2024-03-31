@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import FHAuth
 
 @Reducer
 public struct ProfileFeature {
@@ -14,13 +15,28 @@ public struct ProfileFeature {
         public init() {}
     }
 
-    public struct Action {
-
+    public enum Action {
+        case logOut
+        case logOutSuccess
     }
+
+    @Dependency(\.authService) var authService
+
+    public init() {}
 
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
-            return .none
+            switch action {
+            case .logOut:
+                do {
+                    try authService.signOut()
+                    return .send(.logOutSuccess)
+                } catch {
+                    return .none
+                }
+            case .logOutSuccess:
+                return .none
+            }
         }
     }
 }

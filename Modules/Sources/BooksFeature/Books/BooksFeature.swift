@@ -14,10 +14,12 @@ public struct BooksFeature {
         public init() {}
     }
 
-    public struct Action {
+    public enum Action {
 
     }
 
+    public init() {}
+    
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             return .none

@@ -22,27 +22,38 @@ struct AppTabBarView: View {
 
     var body: some View {
         WithPerceptionTracking {
-            TabView(selection: $store.selection.sending(\.selectionChanged)) {
-                ExploreFeatureTab(
-                    store: store.scope(state: \.explore, action: \.explore)
-                )
-                .tag(AppTabBarFeature.Selection.explore)
+            if store.isLoading {
+                ProgressView(Strings.loadingText)
+            } else {
+                tabViewContent()
+            } 
+        }
+        .onAppear {
+            store.send(.onAppear)
+        }
+    }
 
-                FavouritesFeatureTab(
-                    store: store.scope(state: \.favourites, action: \.favourites)
-                )
-                .tag(AppTabBarFeature.Selection.favourites)
+    @ViewBuilder private func tabViewContent() -> some View {
+        TabView(selection: $store.selection.sending(\.selectionChanged)) {
+            ExploreFeatureTab(
+                store: store.scope(state: \.explore, action: \.explore)
+            )
+            .tag(AppTabBarFeature.Selection.explore)
 
-                BooksFeatureTab(
-                    store: store.scope(state: \.books, action: \.books)
-                )
-                .tag(AppTabBarFeature.Selection.books)
+            FavouritesFeatureTab(
+                store: store.scope(state: \.favourites, action: \.favourites)
+            )
+            .tag(AppTabBarFeature.Selection.favourites)
 
-                ProfileFeatureTab(
-                    store: store.scope(state: \.profile, action: \.profile)
-                )
-                .tag(AppTabBarFeature.Selection.profile)
-            }
+            BooksFeatureTab(
+                store: store.scope(state: \.books, action: \.books)
+            )
+            .tag(AppTabBarFeature.Selection.books)
+
+            ProfileFeatureTab(
+                store: store.scope(state: \.profile, action: \.profile)
+            )
+            .tag(AppTabBarFeature.Selection.profile)
         }
     }
 }

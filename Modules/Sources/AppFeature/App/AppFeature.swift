@@ -22,6 +22,7 @@ public struct AppFeature: Sendable {
     public struct State {
         @Presents var destination: Destination.State?
         var isLoggedIn: Bool = false
+        var shouldUpdateUser: Bool = true
 
         public init() {}
     }
@@ -49,14 +50,19 @@ public struct AppFeature: Sendable {
                 }
             case .loggedIn:
                 state.isLoggedIn = true
-                state.destination = .loggedIn(AppTabBarFeature.State())
+                let appTabBarState = AppTabBarFeature.State(shouldUpdateUser: state.shouldUpdateUser)
+                state.destination = .loggedIn(appTabBarState)
                 return .none
             case .loggedOut:
                 state.isLoggedIn = false
                 state.destination = .loggedOut(LoginFeature.State())
                 return .none
             case .destination(.presented(.loggedOut(.loginSuccess))):
+                state.shouldUpdateUser = false
                 return .send(.loggedIn)
+            case .destination(.presented(.loggedIn(.userLoggedOut))):
+                print(">>> Logged out")
+                return .send(.loggedOut)
             case .destination:
                 return .none
             }

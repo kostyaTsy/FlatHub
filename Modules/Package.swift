@@ -86,7 +86,7 @@ let package = Package(
         .target(
             name: "ProfileFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "FHAuth", "FHCommon", "FHRepository"
             ]),
     ]
 )

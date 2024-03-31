@@ -8,6 +8,9 @@
 import Foundation
 
 public enum Strings {
+    // MARK: - General
+    public static let loadingText = "Loading..."
+
     // MARK: - Auth
     public static let loginTitle = "Login"
     public static let signUpTitle = "Register"
@@ -27,4 +30,7 @@ public enum Strings {
     public static let favouritesTabTitle = "Favourites"
     public static let booksTabTitle = "Books"
     public static let profileTabTitle = "Profile"
+
+    // MARK: - Profile
+    public static let logOutButton = "Log out"
 }
