@@ -8,8 +8,6 @@
 import Dependencies
 
 public struct AuthServiceDependency: Sendable {
-    public var isUserLoggedIn: @Sendable () -> Bool
-
     public var signIn: @Sendable (_ email: String, _ password: String) async throws -> Void
     public var signUp: @Sendable (_ email: String, _ password: String) async throws -> Void
     public var signOut: @Sendable () throws -> Void
@@ -20,9 +18,6 @@ public struct AuthServiceDependency: Sendable {
 extension AuthServiceDependency {
     static func live(authService: AuthServiceProtocol = AuthService()) -> AuthServiceDependency {
         let dependencyService = AuthServiceDependency(
-            isUserLoggedIn: {
-                authService.isUserLoggedIn
-            },
             signIn: { email, password in
                 try await authService.signIn(email: email, password: password)
             },

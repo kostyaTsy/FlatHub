@@ -9,6 +9,7 @@ import Foundation
 import FHAuth
 import ComposableArchitecture
 import AuthFeature
+import FHRepository
 
 @Reducer
 public struct AppFeature: Sendable {
@@ -34,6 +35,7 @@ public struct AppFeature: Sendable {
     }
 
     @Dependency(\.authService) var authService
+    @Dependency(\.accountRepository) var accountRepository
 
     public init() {}
 
@@ -41,7 +43,7 @@ public struct AppFeature: Sendable {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                let isLoggedIn = authService.isUserLoggedIn()
+                let isLoggedIn = accountRepository.isUserLoggedIn()
                 if isLoggedIn {
                     return .send(.loggedIn)
                 } else {

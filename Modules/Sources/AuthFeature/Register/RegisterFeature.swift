@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import FHRepository
 
 @Reducer
 public struct RegisterFeature {
@@ -37,6 +38,7 @@ public struct RegisterFeature {
     public init() {}
 
     @Dependency(\.authService) var authService
+    @Dependency(\.accountRepository) var accountRepository
     @Dependency(\.dismiss) var dismiss
 
     public var body: some Reducer<State, Action> {
@@ -45,11 +47,12 @@ public struct RegisterFeature {
             case .performRegister:
                 let email = state.emailString
                 let password = state.passwordString
+                let userDTO = UserDTO(userName: state.username, email: email)
                 return .run { send in
                     do {
                         await send(.registerStarted)
                         try await authService.signUp(email, password)
-                        // TODO: add saving user name to firebase
+                        try await accountRepository.save(userDTO)
                         await send(.registerSuccess)
                     } catch {
                         await send(.registerFailure(error))
@@ -88,10 +91,9 @@ public struct RegisterFeature {
 
 private extension RegisterFeature {
     func validateUserInput(for state: State) -> Bool {
-//        !state.username.isEmpty &&
-//        !state.emailString.isEmpty &&
-//        !state.passwordString.isEmpty &&
-//        state.passwordString == state.confirmedPasswordString
-        true
+        !state.username.isEmpty &&
+        !state.emailString.isEmpty &&
+        !state.passwordString.isEmpty &&
+        state.passwordString == state.confirmedPasswordString
     }
 }
