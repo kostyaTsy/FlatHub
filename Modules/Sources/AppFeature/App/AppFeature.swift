@@ -14,7 +14,7 @@ import FHRepository
 public struct AppFeature: Sendable {
     @Reducer
     public enum Destination {
-        case loggedIn(AppContentFeature)
+        case loggedIn(AppTabBarFeature)
         case loggedOut(LoginFeature)
     }
     
@@ -49,7 +49,7 @@ public struct AppFeature: Sendable {
                 }
             case .loggedIn:
                 state.isLoggedIn = true
-                state.destination = .loggedIn(AppContentFeature.State())
+                state.destination = .loggedIn(AppTabBarFeature.State())
                 return .none
             case .loggedOut:
                 state.isLoggedIn = false
