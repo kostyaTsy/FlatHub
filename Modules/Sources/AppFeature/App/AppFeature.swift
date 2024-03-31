@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import FHAuth
 import ComposableArchitecture
 import AuthFeature
 import FHRepository
@@ -34,7 +33,6 @@ public struct AppFeature: Sendable {
         case destination(PresentationAction<Destination.Action>)
     }
 
-    @Dependency(\.authService) var authService
     @Dependency(\.accountRepository) var accountRepository
 
     public init() {}
