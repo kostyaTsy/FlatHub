@@ -6,7 +6,6 @@
 //
 
 import Foundation
-import FHAuth
 import ComposableArchitecture
 import AuthFeature
 import FHRepository
@@ -15,7 +14,7 @@ import FHRepository
 public struct AppFeature: Sendable {
     @Reducer
     public enum Destination {
-        case loggedIn(AppContentFeature)
+        case loggedIn(AppTabBarFeature)
         case loggedOut(LoginFeature)
     }
     
@@ -23,6 +22,7 @@ public struct AppFeature: Sendable {
     public struct State {
         @Presents var destination: Destination.State?
         var isLoggedIn: Bool = false
+        var shouldUpdateUser: Bool = true
 
         public init() {}
     }
@@ -34,7 +34,6 @@ public struct AppFeature: Sendable {
         case destination(PresentationAction<Destination.Action>)
     }
 
-    @Dependency(\.authService) var authService
     @Dependency(\.accountRepository) var accountRepository
 
     public init() {}
@@ -51,14 +50,19 @@ public struct AppFeature: Sendable {
                 }
             case .loggedIn:
                 state.isLoggedIn = true
-                state.destination = .loggedIn(AppContentFeature.State())
+                let appTabBarState = AppTabBarFeature.State(shouldUpdateUser: state.shouldUpdateUser)
+                state.destination = .loggedIn(appTabBarState)
                 return .none
             case .loggedOut:
                 state.isLoggedIn = false
                 state.destination = .loggedOut(LoginFeature.State())
                 return .none
             case .destination(.presented(.loggedOut(.loginSuccess))):
+                state.shouldUpdateUser = false
                 return .send(.loggedIn)
+            case .destination(.presented(.loggedIn(.userLoggedOut))):
+                print(">>> Logged out")
+                return .send(.loggedOut)
             case .destination:
                 return .none
             }

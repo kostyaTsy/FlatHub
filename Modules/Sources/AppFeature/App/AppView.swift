@@ -23,7 +23,7 @@ public struct AppView: View {
                     state: \.destination?.loggedIn,
                     action: \.destination.loggedIn
                 ).wrappedValue {
-                    AppContentView(store: newStore)
+                    AppTabBarView(store: newStore)
                 } else if !store.isLoggedIn, let newStore = $store.scope(
                     state: \.destination?.loggedOut,
                     action: \.destination.loggedOut
