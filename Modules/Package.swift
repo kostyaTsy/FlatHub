@@ -15,6 +15,15 @@ let package = Package(
             name: "AuthFeature",
             targets: ["AuthFeature"]),
         .library(
+            name: "BooksFeature",
+            targets: ["BooksFeature"]),
+        .library(
+            name: "ExploreFeature",
+            targets: ["ExploreFeature"]),
+        .library(
+            name: "FavouritesFeature",
+            targets: ["FavouritesFeature"]),
+        .library(
             name: "FHAuth",
             targets: ["FHAuth"]),
         .library(
@@ -22,7 +31,10 @@ let package = Package(
             targets: ["FHCommon"]),
         .library(
             name: "FHRepository",
-            targets: ["FHRepository"])
+            targets: ["FHRepository"]),
+        .library(
+            name: "ProfileFeature",
+            targets: ["ProfileFeature"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.9.2"),
@@ -36,12 +48,28 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                .tca, "AuthFeature", "FHCommon", "FHRepository"
+                .tca, "AuthFeature", "BooksFeature", "ExploreFeature",
+                "FavouritesFeature", "ProfileFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "AuthFeature",
             dependencies: [
                 .tca, "FHAuth", "FHCommon", "FHRepository"
+            ]),
+        .target(
+            name: "BooksFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
+            ]),
+        .target(
+            name: "ExploreFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
+            ]),
+        .target(
+            name: "FavouritesFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
             ]),
         .target(
             name: "FHAuth",
@@ -54,7 +82,12 @@ let package = Package(
             name: "FHRepository",
             dependencies: [
                 .dependencies, .firebaseFireStore, .firebaseStorage, "FHAuth", "FHCommon"
-            ])
+            ]),
+        .target(
+            name: "ProfileFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
+            ]),
     ]
 )
 

@@ -8,6 +8,11 @@
 import SwiftUI
 
 public enum Icons {
-    static let eyeSlashIcon = Image(systemName: "eye.slash")
-    static let eyeIcon = Image(systemName: "eye")
+    public static let eyeSlashIcon = Image(systemName: "eye.slash")
+    public static let eyeIcon = Image(systemName: "eye")
+
+    public static let searchIcon = Image(systemName: "magnifyingglass")
+    public static let favouriteIcon = Image(systemName: "heart")
+    public static let suiteCaseIcon = Image(systemName: "suitcase")
+    public static let profileIcon = Image(systemName: "person.crop.circle")
 }

@@ -21,4 +21,10 @@ public enum Strings {
     public static let signUpUsernamePlaceholder = "Your user name"
     public static let authEmailPlaceholder = "example@mail.com"
     public static let authPasswordPlaceholder = "Your password"
+
+    // MARK: - Tabs
+    public static let exploreTabTitle = "Explore"
+    public static let favouritesTabTitle = "Favourites"
+    public static let booksTabTitle = "Books"
+    public static let profileTabTitle = "Profile"
 }
