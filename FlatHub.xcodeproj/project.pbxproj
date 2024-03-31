@@ -11,7 +11,6 @@
 		7C3757242BAF1DF700E7FAA4 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7C3757232BAF1DF700E7FAA4 /* ContentView.swift */; };
 		7C3757262BAF1DF900E7FAA4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C3757252BAF1DF900E7FAA4 /* Assets.xcassets */; };
 		7C3757292BAF1DF900E7FAA4 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7C3757282BAF1DF900E7FAA4 /* Preview Assets.xcassets */; };
-		7CF985D32BB02BC600AA9293 /* FHAuth in Frameworks */ = {isa = PBXBuildFile; productRef = 7CF985D22BB02BC600AA9293 /* FHAuth */; };
 		7CF985D72BB02E9800AA9293 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CF985D62BB02E9800AA9293 /* GoogleService-Info.plist */; };
 		7CF985D92BB0383300AA9293 /* AppFeature in Frameworks */ = {isa = PBXBuildFile; productRef = 7CF985D82BB0383300AA9293 /* AppFeature */; };
 /* End PBXBuildFile section */
@@ -31,7 +30,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7CF985D32BB02BC600AA9293 /* FHAuth in Frameworks */,
 				7CF985D92BB0383300AA9293 /* AppFeature in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -117,7 +115,6 @@
 			);
 			name = FlatHub;
 			packageProductDependencies = (
-				7CF985D22BB02BC600AA9293 /* FHAuth */,
 				7CF985D82BB0383300AA9293 /* AppFeature */,
 			);
 			productName = FlatHub;
@@ -390,10 +387,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		7CF985D22BB02BC600AA9293 /* FHAuth */ = {
-			isa = XCSwiftPackageProductDependency;
-			productName = FHAuth;
-		};
 		7CF985D82BB0383300AA9293 /* AppFeature */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = AppFeature;

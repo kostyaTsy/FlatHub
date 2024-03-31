@@ -5,6 +5,9 @@
 //  Created by Kostya Tsyvilko on 24.03.24.
 //
 
-import Foundation
+import SwiftUI
 
-public enum Colors {}
+public enum Colors {
+    public static let secondary = Color.secondary
+    public static let system = Color(uiColor: UIColor.systemBackground)
+}

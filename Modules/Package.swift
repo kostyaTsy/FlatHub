@@ -12,14 +12,21 @@ let package = Package(
             name: "AppFeature",
             targets: ["AppFeature"]),
         .library(
+            name: "AuthFeature",
+            targets: ["AuthFeature"]),
+        .library(
             name: "FHAuth",
             targets: ["FHAuth"]),
         .library(
             name: "FHCommon",
-            targets: ["FHCommon"])
+            targets: ["FHCommon"]),
+        .library(
+            name: "FHRepository",
+            targets: ["FHRepository"])
     ],
     dependencies: [
         .package(url: "https://github.com/pointfreeco/swift-composable-architecture.git", from: "1.9.2"),
+        .package(url: "https://github.com/pointfreeco/swift-dependencies.git", from: "1.0.0"),
         .package(url: "https://github.com/onevcat/Kingfisher.git", from: "7.9.0"),
         .package(url: "https://github.com/firebase/firebase-ios-sdk.git", from: "10.23.0")
     ],
@@ -29,20 +36,33 @@ let package = Package(
         .target(
             name: "AppFeature",
             dependencies: [
-                .tca, .firebaseAuth, "FHCommon"
+                .tca, "AuthFeature", "FHCommon", "FHRepository"
+            ]),
+        .target(
+            name: "AuthFeature",
+            dependencies: [
+                .tca, "FHAuth", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "FHAuth",
             dependencies: [
-                .tca, .firebaseAuth
+                .dependencies, .firebaseAuth
             ]),
         .target(
-            name: "FHCommon")
+            name: "FHCommon"),
+        .target(
+            name: "FHRepository",
+            dependencies: [
+                .dependencies, .firebaseFireStore, .firebaseStorage, "FHAuth", "FHCommon"
+            ])
     ]
 )
 
 private extension Target.Dependency {
     static let tca: Self = .product(name: "ComposableArchitecture", package: "swift-composable-architecture")
+    static let dependencies: Self = .product(name: "Dependencies", package: "swift-dependencies")
     static let kingfisher: Self = .product(name: "Kingfisher", package: "Kingfisher")
     static let firebaseAuth: Self = .product(name: "FirebaseAuth", package: "firebase-ios-sdk")
+    static let firebaseFireStore: Self = .product(name: "FirebaseFirestoreSwift", package: "firebase-ios-sdk")
+    static let firebaseStorage: Self = .product(name: "FirebaseStorage", package: "firebase-ios-sdk")
 }
