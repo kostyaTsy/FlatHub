@@ -8,12 +8,12 @@
 import Foundation
 
 public struct User: Codable {
-    let id: String
-    let userName: String
-    let email: String
-    let isHost: Bool
-    let registrationDate: Date
-    let profilePictureURL: URL?
+    public let id: String
+    public let userName: String
+    public let email: String
+    public let isHost: Bool
+    public let registrationDate: Date
+    public let profilePictureURL: URL?
 
     public init(
         id: String,

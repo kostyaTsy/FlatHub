@@ -13,6 +13,10 @@ public enum Icons {
 
     public static let searchIcon = Image(systemName: "magnifyingglass")
     public static let favouriteIcon = Image(systemName: "heart")
+    public static let favouriteIconName = "heart"
+    public static let favouriteFillIcon = Image(systemName: "heart.fill")
+    public static let favouriteFillIconName = "heart.fill"
     public static let suiteCaseIcon = Image(systemName: "suitcase")
     public static let profileIcon = Image(systemName: "person.crop.circle")
+    public static let starFillIcon = Image(systemName: "star.fill")
 }
