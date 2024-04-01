@@ -18,12 +18,44 @@ public struct ProfileView: View {
 
     public var body: some View {
         WithPerceptionTracking {
-            Button(Strings.logOutButton) {
-                store.send(.logOut)
+            VStack {
+                contentView()
+
+                logOutButton()
             }
-            .foregroundStyle(.primary)
-            .frame(maxWidth: .infinity, alignment: .leading)
         }
+        .navigationDestination(for: ProfileNavigationDestination.self) { destination in
+            switch destination {
+            case .personalInformation:
+                Text("Personal Info")
+            default:
+                Text("Hosting")
+            }
+        }
+        .onAppear {
+            store.send(.onAppear)
+        }
+    }
+
+    @ViewBuilder private func contentView() -> some View {
+        List {
+            ForEach(store.sections) { section in
+                ProfileSectionView(section: section)
+            }
+        }
+    }
+
+    @ViewBuilder private func logOutButton() -> some View {
+        Button {
+            store.send(.logOut)
+        } label: {
+            Text(Strings.logOutButton)
+                .underline()
+        }
+        .underline()
+        .foregroundStyle(.primary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding([.horizontal, .bottom])
     }
 }
 

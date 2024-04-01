@@ -19,4 +19,7 @@ public enum Icons {
     public static let suiteCaseIcon = Image(systemName: "suitcase")
     public static let profileIcon = Image(systemName: "person.crop.circle")
     public static let starFillIcon = Image(systemName: "star.fill")
+    public static let switchIcon = Image(systemName: "arrow.triangle.swap")
+    public static let homeIcon = Image(systemName: "house")
+    public static let chevronRight = Image(systemName: "chevron.right")
 }

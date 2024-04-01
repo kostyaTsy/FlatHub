@@ -37,5 +37,10 @@ public enum Strings {
     public static let nightText = "night"
 
     // MARK: - Profile
+    public static let settingsSectionText = "Settings"
+    public static let personalInfoText = "Personal information"
+    public static let hostingSectionText = "Hosting"
+    public static let switchToHostingText = "Switch to hosting"
+    public static let yourSpaceText = "Your space"
     public static let logOutButton = "Log out"
 }

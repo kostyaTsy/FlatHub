@@ -12,10 +12,12 @@ import FHAuth
 public struct ProfileFeature {
     @ObservableState
     public struct State {
+        var sections: [ProfileSection] = []
         public init() {}
     }
 
     public enum Action {
+        case onAppear
         case logOut
         case logOutSuccess
     }
@@ -27,6 +29,9 @@ public struct ProfileFeature {
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                state.sections = ProfileModelBuilder.build()
+                return .none
             case .logOut:
                 do {
                     try authService.signOut()
