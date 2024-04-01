@@ -22,12 +22,20 @@ public struct AppartementListFeature {
                 isDataLoaded = true
             }
         }
+
+        mutating public func updateAppartements(with appartements: [Appartement]) {
+            self.appartements = appartements
+            self.isDataLoaded = true
+        }
     }
 
     public enum Action {
         case onFavouriteButtonTapped(Appartement)
         case onAppartementTapped(Appartement)
+        case appartementsChanged([Appartement])
     }
+
+    public init() {}
 
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
@@ -39,6 +47,12 @@ public struct AppartementListFeature {
                 }
                 return .none
             case .onAppartementTapped(let appartement):
+                print(">>> \(appartement)")
+                // TODO: navigate to details screen
+                return .none
+            case .appartementsChanged(let appartements):
+                state.appartements = appartements
+                state.isDataLoaded = true
                 return .none
             }
         }

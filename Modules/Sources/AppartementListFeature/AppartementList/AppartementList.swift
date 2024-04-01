@@ -18,25 +18,28 @@ public struct AppartementList: View {
     }
 
     public var body: some View {
-        VStack {
-            if !store.isDataLoaded {
-                ProgressView(Strings.loadingText)
-            } else if store.isDataLoaded && store.appartements.isEmpty {
-                Text(Strings.noDataText)
-            } else {
-                appartementListContent()
+        WithPerceptionTracking {
+            VStack {
+                if !store.isDataLoaded {
+                    ProgressView(Strings.loadingText)
+                } else if store.isDataLoaded && store.appartements.isEmpty {
+                    Text(Strings.noDataText)
+                } else {
+                    appartementListContent()
+                }
             }
+            .padding(.horizontal, Layout.Spacing.medium)
         }
-        .padding(.horizontal, Layout.Spacing.medium)
     }
 
     @ViewBuilder private func appartementListContent() -> some View {
         ScrollView() {
-            LazyVStack(spacing: Layout.Spacing.big50) {
+            LazyVStack {
                 ForEach(store.appartements, id: \.id) { item in
                     AppartementCell(appartement: item) {
                         store.send(.onFavouriteButtonTapped(item))
                     }
+                    .padding(.bottom, Layout.Spacing.big50)
                     .onTapGesture {
                         store.send(.onAppartementTapped(item))
                     }

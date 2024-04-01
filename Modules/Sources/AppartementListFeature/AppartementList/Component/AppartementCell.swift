@@ -31,6 +31,7 @@ struct AppartementCell: View {
                 .frame(maxWidth: .infinity, alignment: .leading)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Colors.system)
     }
 
     @ViewBuilder private func favouriteIcon() -> some View {
