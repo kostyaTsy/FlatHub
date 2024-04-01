@@ -10,6 +10,7 @@ import Foundation
 public enum Strings {
     // MARK: - General
     public static let loadingText = "Loading..."
+    public static let noDataText = "There is no data"
 
     // MARK: - Auth
     public static let loginTitle = "Login"
@@ -30,6 +31,10 @@ public enum Strings {
     public static let favouritesTabTitle = "Favourites"
     public static let booksTabTitle = "Books"
     public static let profileTabTitle = "Profile"
+
+    // MARK: - AppartementList
+    public static let currencySign = "$"
+    public static let nightText = "night"
 
     // MARK: - Profile
     public static let logOutButton = "Log out"

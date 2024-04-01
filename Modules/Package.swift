@@ -9,6 +9,9 @@ let package = Package(
     products: [
         // Products define the executables and libraries a package produces, making them visible to other packages.
         .library(
+            name: "AppartementListFeature",
+            targets: ["AppartementListFeature"]),
+        .library(
             name: "AppFeature",
             targets: ["AppFeature"]),
         .library(
@@ -46,6 +49,11 @@ let package = Package(
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
+            name: "AppartementListFeature",
+            dependencies: [
+                .tca, .kingfisher, "FHCommon", "FHRepository"
+            ]),
+        .target(
             name: "AppFeature",
             dependencies: [
                 .tca, "AuthFeature", "BooksFeature", "ExploreFeature",
@@ -59,17 +67,17 @@ let package = Package(
         .target(
             name: "BooksFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "ExploreFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "FavouritesFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "FHAuth",

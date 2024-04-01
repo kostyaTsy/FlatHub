@@ -61,7 +61,6 @@ public struct AppFeature: Sendable {
                 state.shouldUpdateUser = false
                 return .send(.loggedIn)
             case .destination(.presented(.loggedIn(.userLoggedOut))):
-                print(">>> Logged out")
                 return .send(.loggedOut)
             case .destination:
                 return .none
