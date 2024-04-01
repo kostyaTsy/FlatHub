@@ -67,7 +67,7 @@ let package = Package(
         .target(
             name: "BooksFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "ExploreFeature",
@@ -77,7 +77,7 @@ let package = Package(
         .target(
             name: "FavouritesFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "FHAuth",

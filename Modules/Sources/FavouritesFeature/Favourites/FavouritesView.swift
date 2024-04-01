@@ -7,6 +7,7 @@
 
 import SwiftUI
 import ComposableArchitecture
+import AppartementListFeature
 
 public struct FavouritesView: View {
 
@@ -17,7 +18,23 @@ public struct FavouritesView: View {
     }
 
     public var body: some View {
-        Text("Favourites")
+        WithPerceptionTracking {
+            contentView()
+        }
+        .task {
+            store.send(.task)
+        }
+    }
+
+    @ViewBuilder private func contentView() -> some View {
+        VStack {
+            AppartementList(
+                store: store.scope(
+                    state: \.appartementList,
+                    action: \.appartementList
+                )
+            )
+        }
     }
 }
 

@@ -31,7 +31,6 @@ public struct ExploreFeature {
             case .task:
                 return .run { send in
                     try? await Task.sleep(for: .seconds(2))
-                    let mockApp = Appartement(id: "123", hostUserId: "", title: "Test", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
                     let mockApps = Array(0...10).map { id in
                         Appartement(id: "\(id)", hostUserId: "", title: "Test", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
                     }
