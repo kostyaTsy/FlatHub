@@ -14,8 +14,9 @@ import FHRepository
 public struct AppFeature: Sendable {
     @Reducer
     public enum Destination {
-        case loggedIn(AppTabBarFeature)
-        case loggedOut(LoginFeature)
+        case authorizedUser(UserAppTabBarFeature)
+        case authorizedHost(HostAppTabBarFeature)
+        case unauthorized(LoginFeature)
     }
     
     @ObservableState
@@ -29,8 +30,10 @@ public struct AppFeature: Sendable {
 
     public enum Action {
         case onAppear
-        case loggedIn
-        case loggedOut
+        case authorized
+        case authorizedUser
+        case authorizedHost
+        case unauthorized
         case destination(PresentationAction<Destination.Action>)
     }
 
@@ -44,24 +47,47 @@ public struct AppFeature: Sendable {
             case .onAppear:
                 let isLoggedIn = accountRepository.isUserLoggedIn()
                 if isLoggedIn {
-                    return .send(.loggedIn)
+                    return .send(.authorized)
                 } else {
-                    return .send(.loggedOut)
+                    return .send(.unauthorized)
                 }
-            case .loggedIn:
+            case .authorized:
+                let user = accountRepository.user()
+                switch user.role {
+                case .traveller:
+                    return .send(.authorizedUser)
+                case .host:
+                    return .send(.authorizedHost)
+                }
+            case .authorizedUser:
                 state.isLoggedIn = true
-                let appTabBarState = AppTabBarFeature.State(shouldUpdateUser: state.shouldUpdateUser)
-                state.destination = .loggedIn(appTabBarState)
-                return .none
-            case .loggedOut:
-                state.isLoggedIn = false
-                state.destination = .loggedOut(LoginFeature.State())
-                return .none
-            case .destination(.presented(.loggedOut(.loginSuccess))):
+                let userAppTabBarState = UserAppTabBarFeature.State(shouldUpdateUser: state.shouldUpdateUser)
                 state.shouldUpdateUser = false
-                return .send(.loggedIn)
-            case .destination(.presented(.loggedIn(.userLoggedOut))):
-                return .send(.loggedOut)
+                state.destination = .authorizedUser(userAppTabBarState)
+                return .none
+            case .authorizedHost:
+                state.isLoggedIn = true
+                let hostAppTabBarState = HostAppTabBarFeature.State()
+                state.shouldUpdateUser = false
+                state.destination = .authorizedHost(hostAppTabBarState)
+                return .none
+            case .unauthorized:
+                state.isLoggedIn = false
+                state.destination = .unauthorized(LoginFeature.State())
+                return .none
+            case .destination(.presented(.unauthorized(.loginSuccess))):
+                return .send(.authorizedUser)
+            case .destination(.presented(.unauthorized(.registerSuccess))):
+                state.shouldUpdateUser = false
+                return .send(.authorizedUser)
+            case .destination(.presented(.authorizedUser(.userLoggedOut))):
+                return .send(.unauthorized)
+            case .destination(.presented(.authorizedHost(.userLoggedOut))):
+                return .send(.unauthorized)
+            case .destination(.presented(.authorizedUser(.userSwitchedToHost))):
+                return .send(.authorizedHost)
+            case .destination(.presented(.authorizedHost(.userSwitchedToTravel))):
+                return .send(.authorizedUser)
             case .destination:
                 return .none
             }

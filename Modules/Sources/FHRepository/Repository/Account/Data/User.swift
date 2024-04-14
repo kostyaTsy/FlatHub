@@ -2,16 +2,17 @@
 //  User.swift
 //
 //
-//  Created by Kostya Tsyvilko on 31.03.24.
+//  Created by Kostya Tsyvilko on 14.04.24.
 //
 
 import Foundation
 
-public struct User: Codable {
+public class User: Codable {
     public let id: String
     public let userName: String
     public let email: String
-    public let isHost: Bool
+    public var isHost: Bool
+    public var role: UserRole
     public let registrationDate: Date
     public let profilePictureURL: URL?
 
@@ -20,6 +21,7 @@ public struct User: Codable {
         userName: String,
         email: String,
         isHost: Bool = false,
+        role: UserRole = .traveller,
         registrationDate: Date = Date.now,
         profilePictureURL: URL? = nil
     ) {
@@ -27,6 +29,7 @@ public struct User: Codable {
         self.userName = userName
         self.email = email
         self.isHost = isHost
+        self.role = role
         self.registrationDate = registrationDate
         self.profilePictureURL = profilePictureURL
     }

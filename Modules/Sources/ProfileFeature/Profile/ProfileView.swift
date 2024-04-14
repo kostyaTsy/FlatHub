@@ -18,23 +18,93 @@ public struct ProfileView: View {
 
     public var body: some View {
         WithPerceptionTracking {
-            Button(Strings.logOutButton) {
-                store.send(.logOut)
+            VStack {
+                headerView()
+                
+                contentView()
+
+                logOutButton()
             }
-            .foregroundStyle(.primary)
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .navigationDestination(for: ProfileNavigationDestination.self) { destination in
+                switch destination {
+                case .personalInformation:
+                    // TODO: add views
+                    Text("Personal Info")
+                case .yourSpace:
+                    Text("YourSpace")
+                default:
+                    EmptyView()
+                }
+            }
+            .alert(
+                $store.scope(state: \.switchToHostAlert, action: \.switchToHostAlert)
+            )
+            .onAppear {
+                store.send(.onAppear)
+            }
         }
+    }
+
+    @ViewBuilder private func headerView() -> some View {
+        VStack(alignment: .leading) {
+            Text(Strings.profileTabTitle)
+                .font(.title)
+                .bold()
+
+            if let user = store.user {
+                NavigationLink(value: ProfileNavigationDestination.personalInformation) {
+                    HStack {
+                        ProfileUserView(
+                            configuration: .init(user: user)
+                        )
+                        Spacer()
+                        Icons.chevronRight
+                            .fontWeight(.medium)
+                    }
+                }
+                .foregroundStyle(.black)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
+    }
+
+    @ViewBuilder private func contentView() -> some View {
+        List(store.sections) { section in
+            ProfileSectionView(section: section) {
+                store.send(.requestSwitchToNewRole)
+            }
+        }
+    }
+
+    @ViewBuilder private func logOutButton() -> some View {
+        Button {
+            store.send(.logOut)
+        } label: {
+            Text(Strings.logOutButton)
+                .underline()
+        }
+        .underline()
+        .foregroundStyle(.primary)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding([.horizontal, .bottom])
     }
 }
 
 #if DEBUG
+import FHRepository
+
     #Preview {
-        ProfileView(
-            store: .init(
-                initialState: .init(), reducer: {
-                    ProfileFeature()
-                }
+        NavigationStack {
+            ProfileView(
+                store: .init(
+                    initialState: .init(), reducer: {
+                        ProfileFeature()
+                    }, withDependencies: {
+                        $0.accountRepository = .previewValue
+                    }
+                )
             )
-        )
+        }
     }
 #endif

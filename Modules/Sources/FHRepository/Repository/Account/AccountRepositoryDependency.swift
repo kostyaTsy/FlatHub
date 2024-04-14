@@ -12,7 +12,10 @@ public struct AccountRepositoryDependency: Sendable {
     public var user: @Sendable () -> User
 
     public var loadAndUpdate: @Sendable () async throws -> User
-    public var save: @Sendable (_ user: UserDTO) async throws -> Void
+    public var save: @Sendable (_ userDTO: UserDTO) async throws -> Void
+    public var becomeHost: @Sendable (_ user: User) async throws -> Void
+
+    public var updateUserRole: @Sendable (_ userMode: UserRole) -> Void
 }
 
 // MARK: - Live
@@ -29,12 +32,48 @@ extension AccountRepositoryDependency {
             loadAndUpdate: {
                 try await accountRepository.loadAndUpdate()
             },
-            save: { user in
-                try await accountRepository.save(user: user)
+            save: { userDTO in
+                try await accountRepository.save(userDTO: userDTO)
+            },
+            becomeHost: { user in
+                try await accountRepository.becomeHost(for: user)
+            },
+            updateUserRole: { mode in
+                accountRepository.updateUserRole(with: mode)
             }
         )
 
         return dependencyRepository
+    }
+}
+
+// MARK: - mock
+
+extension AccountRepositoryDependency {
+    static func mock() -> AccountRepositoryDependency {
+        let mockUser = User(id: "test", userName: "Test", email: "test@example.com", role: .host)
+        let mockDependencyRepository = AccountRepositoryDependency(
+            isUserLoggedIn: {
+                true
+            },
+            user: {
+                mockUser
+            },
+            loadAndUpdate: {
+                mockUser
+            },
+            save: { user in
+                ()
+            },
+            becomeHost: { user in
+                ()
+            },
+            updateUserRole: { mode in
+                ()
+            }
+        )
+
+        return mockDependencyRepository
     }
 }
 
@@ -43,6 +82,14 @@ extension AccountRepositoryDependency {
 extension AccountRepositoryDependency: DependencyKey {
     public static var liveValue: AccountRepositoryDependency {
         AccountRepositoryDependency.live()
+    }
+
+    public static var previewValue: AccountRepositoryDependency {
+        AccountRepositoryDependency.mock()
+    }
+
+    public static var testValue: AccountRepositoryDependency {
+        AccountRepositoryDependency.mock()
     }
 }
 

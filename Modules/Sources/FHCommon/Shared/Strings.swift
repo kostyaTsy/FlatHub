@@ -11,6 +11,10 @@ public enum Strings {
     // MARK: - General
     public static let loadingText = "Loading..."
     public static let noDataText = "There is no data"
+    public static let alertCancelButtonText = "Cancel"
+    public static let alertYesButtonText = "Yes"
+    public static let alertNoButtonText = "No"
+    public static let empty = ""
 
     // MARK: - Auth
     public static let loginTitle = "Login"
@@ -37,5 +41,12 @@ public enum Strings {
     public static let nightText = "night"
 
     // MARK: - Profile
+    public static let settingsSectionText = "Settings"
+    public static let personalInfoText = "Personal information"
+    public static let hostingSectionText = "Hosting"
+    public static let switchToHostingText = "Switch to hosting"
+    public static let switchToTravellingText = "Switch to travelling"
+    public static let switchToHostingAlertQuestion = "Are you certain you want to become a host?"
+    public static let yourSpaceText = "Your space"
     public static let logOutButton = "Log out"
 }
