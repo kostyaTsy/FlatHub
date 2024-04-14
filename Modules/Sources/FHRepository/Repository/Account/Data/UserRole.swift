@@ -9,7 +9,6 @@ import Foundation
 
 /// Specify current user role in app
 public enum UserRole: Int, Codable {
-    /// Is general user
-    case `default`
+    case traveller
     case host
 }

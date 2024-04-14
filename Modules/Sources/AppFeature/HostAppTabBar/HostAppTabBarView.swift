@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import ProfileFeature
 import SwiftUI
 
 struct HostAppTabBarView: View {
@@ -16,7 +17,18 @@ struct HostAppTabBarView: View {
     }
 
     var body: some View {
-        Text("HostAppTabBarView")
+        WithPerceptionTracking {
+            tabViewContent()
+        }
+        .onAppear {
+            store.send(.onAppear)
+        }
+    }
+
+    @ViewBuilder private func tabViewContent() -> some View {
+        ProfileView(
+            store: store.scope(state: \.profile, action: \.profile)
+        )
     }
 }
 

@@ -66,7 +66,7 @@ public struct UserAppTabBarFeature {
                 return .none
             case .profile(.logOutSuccess):
                 return .send(.userLoggedOut)
-            case .profile(.switchToHost):
+            case .profile(.switchToNewRole):
                 return .send(.userSwitchedToHost)
             case .explore, .favourites, .books, .profile:
                 return .none

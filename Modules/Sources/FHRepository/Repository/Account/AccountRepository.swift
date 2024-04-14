@@ -62,7 +62,7 @@ final public class AccountRepository: AccountRepositoryProtocol {
 
         let userModel = try await userRepository.load(userId: authCurrentUser.uid)
         let localUser = loadLocalUser()
-        let user = UserMapper.fromUserModel(userModel, with: localUser?.role ?? .default)
+        let user = UserMapper.fromUserModel(userModel, with: localUser?.role ?? .traveller)
         try saveLocalUser(user)
         return user
     }
@@ -75,7 +75,7 @@ final public class AccountRepository: AccountRepositoryProtocol {
         let userModel = UserMapper.toUserModel(with: currentUser.uid, userDTO: userDTO)
         try await userRepository.save(user: userModel)
         let localUser = loadLocalUser()
-        let user = UserMapper.fromUserModel(userModel, with: localUser?.role ?? .default)
+        let user = UserMapper.fromUserModel(userModel, with: localUser?.role ?? .traveller)
         try saveLocalUser(user)
     }
 

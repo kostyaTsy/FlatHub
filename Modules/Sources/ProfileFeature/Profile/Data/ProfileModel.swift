@@ -10,6 +10,7 @@ import SwiftUI
 enum ProfileNavigationDestination {
     case personalInformation
     case switchToHosting
+    case switchToTravel
     case yourSpace
 }
 

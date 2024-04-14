@@ -10,14 +10,14 @@ import FHCommon
 
 struct ProfileSectionView: View {
     private let section: ProfileSection
-    private let onSwitchToHostingTapped: (() -> Void)?
+    private let onSwitchToTapped: (() -> Void)?
 
     init(
         section: ProfileSection,
         onSwitchToHostingTapped: (() -> Void)? = nil
     ) {
         self.section = section
-        self.onSwitchToHostingTapped = onSwitchToHostingTapped
+        self.onSwitchToTapped = onSwitchToHostingTapped
     }
 
     var body: some View {
@@ -34,10 +34,12 @@ struct ProfileSectionView: View {
     }
 
     @ViewBuilder private func profileSectionRow(item: ProfileItem) -> some View {
-        if item.destination == .switchToHosting {
+        if item.destination == .switchToHosting || item.destination == .switchToTravel {
             profileSectionRowContent(item: item)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(Colors.system)
                 .onTapGesture {
-                    onSwitchToHostingTapped?()
+                    onSwitchToTapped?()
                 }
         } else {
             NavigationLink(value: item.destination) {
@@ -65,7 +67,8 @@ private extension ProfileSectionView {
 #if DEBUG
     #Preview {
         List {
-            ProfileSectionView(section: .init(name: "Test", items: []))
+            let profileItem = ProfileItem(title: "Test", icon: Icons.switchIcon, destination: .switchToHosting)
+            ProfileSectionView(section: .init(name: "Test", items: [profileItem]))
         }
     }
 #endif

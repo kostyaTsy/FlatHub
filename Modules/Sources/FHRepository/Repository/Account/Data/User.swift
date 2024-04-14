@@ -21,7 +21,7 @@ public class User: Codable {
         userName: String,
         email: String,
         isHost: Bool = false,
-        role: UserRole = .default,
+        role: UserRole = .traveller,
         registrationDate: Date = Date.now,
         profilePictureURL: URL? = nil
     ) {

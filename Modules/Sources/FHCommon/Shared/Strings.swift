@@ -45,6 +45,7 @@ public enum Strings {
     public static let personalInfoText = "Personal information"
     public static let hostingSectionText = "Hosting"
     public static let switchToHostingText = "Switch to hosting"
+    public static let switchToTravellingText = "Switch to travelling"
     public static let switchToHostingAlertQuestion = "Are you certain you want to become a host?"
     public static let yourSpaceText = "Your space"
     public static let logOutButton = "Log out"

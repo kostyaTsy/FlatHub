@@ -51,7 +51,7 @@ extension AccountRepositoryDependency {
 
 extension AccountRepositoryDependency {
     static func mock() -> AccountRepositoryDependency {
-        let mockUser = User(id: "test", userName: "Test", email: "test@example.com")
+        let mockUser = User(id: "test", userName: "Test", email: "test@example.com", role: .host)
         let mockDependencyRepository = AccountRepositoryDependency(
             isUserLoggedIn: {
                 true

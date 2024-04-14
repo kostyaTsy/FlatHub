@@ -49,6 +49,7 @@ public struct ProfileView: View {
         VStack(alignment: .leading) {
             Text(Strings.profileTabTitle)
                 .font(.title)
+                .bold()
 
             if let user = store.user {
                 NavigationLink(value: ProfileNavigationDestination.personalInformation) {
@@ -71,7 +72,7 @@ public struct ProfileView: View {
     @ViewBuilder private func contentView() -> some View {
         List(store.sections) { section in
             ProfileSectionView(section: section) {
-                store.send(.requestSwitchToHost)
+                store.send(.requestSwitchToNewRole)
             }
         }
     }

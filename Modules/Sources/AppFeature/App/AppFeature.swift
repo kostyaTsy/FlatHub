@@ -54,7 +54,7 @@ public struct AppFeature: Sendable {
             case .authorized:
                 let user = accountRepository.user()
                 switch user.role {
-                case .default:
+                case .traveller:
                     return .send(.authorizedUser)
                 case .host:
                     return .send(.authorizedHost)
@@ -62,11 +62,13 @@ public struct AppFeature: Sendable {
             case .authorizedUser:
                 state.isLoggedIn = true
                 let userAppTabBarState = UserAppTabBarFeature.State(shouldUpdateUser: state.shouldUpdateUser)
+                state.shouldUpdateUser = false
                 state.destination = .authorizedUser(userAppTabBarState)
                 return .none
             case .authorizedHost:
                 state.isLoggedIn = true
                 let hostAppTabBarState = HostAppTabBarFeature.State()
+                state.shouldUpdateUser = false
                 state.destination = .authorizedHost(hostAppTabBarState)
                 return .none
             case .unauthorized:
@@ -80,8 +82,12 @@ public struct AppFeature: Sendable {
                 return .send(.authorizedUser)
             case .destination(.presented(.authorizedUser(.userLoggedOut))):
                 return .send(.unauthorized)
+            case .destination(.presented(.authorizedHost(.userLoggedOut))):
+                return .send(.unauthorized)
             case .destination(.presented(.authorizedUser(.userSwitchedToHost))):
                 return .send(.authorizedHost)
+            case .destination(.presented(.authorizedHost(.userSwitchedToTravel))):
+                return .send(.authorizedUser)
             case .destination:
                 return .none
             }

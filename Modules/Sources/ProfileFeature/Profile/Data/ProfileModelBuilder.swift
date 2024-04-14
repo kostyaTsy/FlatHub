@@ -32,12 +32,24 @@ enum ProfileModelBuilder {
         // MARK: - Hosting
         var hostingItems = [ProfileItem]()
 
-        let switchToHosting = ProfileItem(
-            title: Strings.switchToHostingText,
-            icon: Icons.switchIcon,
-            destination: .switchToHosting
-        )
-        hostingItems.append(switchToHosting)
+        switch user.role {
+        case .traveller:
+            let switchToHosting = ProfileItem(
+                title: Strings.switchToHostingText,
+                icon: Icons.switchIcon,
+                destination: .switchToHosting
+            )
+            hostingItems.append(switchToHosting)
+        case .host:
+            let switchToTravelling = ProfileItem(
+                title: Strings.switchToTravellingText,
+                icon: Icons.switchIcon,
+                destination: .switchToTravel
+            )
+            hostingItems.append(switchToTravelling)
+        }
+
+
 
         if user.isHost {
             let yourSpace = ProfileItem(

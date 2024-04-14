@@ -24,10 +24,12 @@ public struct ProfileFeature {
 
     public enum Action {
         case onAppear
+        case requestSwitchToNewRole
         case requestSwitchToHost
+        case requestSwitchToTravel
         case switchToHostAlert(PresentationAction<SwitchToHostAlertAction>)
         case confirmedSwitchToHost
-        case switchToHost // All steps done and Host View can be shown
+        case switchToNewRole // All steps done and Host/User View can be shown
         case switchToHostError(Error)
         case logOut
         case logOutSuccess
@@ -50,13 +52,22 @@ public struct ProfileFeature {
                 state.user = user
                 state.sections = ProfileModelBuilder.build(for: user)
                 return .none
+            case .requestSwitchToNewRole:
+                switch state.user.role {
+                case .traveller:
+                    return .send(.requestSwitchToHost)
+                case .host:
+                    return .send(.requestSwitchToTravel)
+                }
             case .requestSwitchToHost:
                 if !state.user.isHost {
                     state.switchToHostAlert = getSwitchToHostAlert()
                     return .none
                 } else {
-                    return .send(.switchToHost)
+                    return .send(.switchToNewRole)
                 }
+            case .requestSwitchToTravel:
+                return .send(.switchToNewRole)
             case .switchToHostAlert(.presented(.confirmed)):
                 return .send(.confirmedSwitchToHost)
             case .switchToHostAlert:
@@ -67,13 +78,18 @@ public struct ProfileFeature {
                     guard let user else { return }
                     do {
                         try await accountRepository.becomeHost(user)
-                        await send(.switchToHost)
+                        await send(.switchToNewRole)
                     } catch {
                         await send(.switchToHostError(error))
                     }
                 }
-            case .switchToHost:
-                accountRepository.updateUserRole(.host)
+            case .switchToNewRole:
+                switch state.user.role {
+                case .traveller:
+                    accountRepository.updateUserRole(.host)
+                case .host:
+                    accountRepository.updateUserRole(.traveller)
+                }
                 return .none
             case .switchToHostError(_):
                 // TODO: handle error
