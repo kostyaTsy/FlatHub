@@ -19,6 +19,8 @@ public struct ProfileView: View {
     public var body: some View {
         WithPerceptionTracking {
             VStack {
+                headerView()
+                
                 contentView()
 
                 logOutButton()
@@ -28,19 +30,47 @@ public struct ProfileView: View {
             switch destination {
             case .personalInformation:
                 Text("Personal Info")
+            case .yourSpace:
+                Text("YourSpace")
             default:
-                Text("Hosting")
+                EmptyView()
             }
         }
+        .alert(
+            $store.scope(state: \.switchToHostAlert, action: \.switchToHostAlert)
+        )
         .onAppear {
             store.send(.onAppear)
         }
     }
 
+    @ViewBuilder private func headerView() -> some View {
+        VStack(alignment: .leading) {
+            Text(Strings.profileTabTitle)
+                .font(.title)
+
+            if let user = store.user {
+                NavigationLink(value: ProfileNavigationDestination.personalInformation) {
+                    HStack {
+                        ProfileUserView(
+                            configuration: .init(user: user)
+                        )
+                        Spacer()
+                        Icons.chevronRight
+                            .fontWeight(.medium)
+                    }
+                }
+                .foregroundStyle(.black)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .padding(.horizontal)
+    }
+
     @ViewBuilder private func contentView() -> some View {
-        List {
-            ForEach(store.sections) { section in
-                ProfileSectionView(section: section)
+        List(store.sections) { section in
+            ProfileSectionView(section: section) {
+                store.send(.requestSwitchToHost)
             }
         }
     }
@@ -60,13 +90,19 @@ public struct ProfileView: View {
 }
 
 #if DEBUG
+import FHRepository
+
     #Preview {
-        ProfileView(
-            store: .init(
-                initialState: .init(), reducer: {
-                    ProfileFeature()
-                }
+        NavigationStack {
+            ProfileView(
+                store: .init(
+                    initialState: .init(), reducer: {
+                        ProfileFeature()
+                    }, withDependencies: {
+                        $0.accountRepository = .previewValue
+                    }
+                )
             )
-        )
+        }
     }
 #endif

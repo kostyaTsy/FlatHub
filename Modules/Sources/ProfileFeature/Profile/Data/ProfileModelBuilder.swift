@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import FHRepository
 import FHCommon
 
 enum ProfileModelBuilder {
-    static func build() -> [ProfileSection] {
+    static func build(for user: User) -> [ProfileSection] {
         var sections = [ProfileSection]()
         // MARK: - Settings
         var settingsItems = [ProfileItem]()
@@ -38,12 +39,14 @@ enum ProfileModelBuilder {
         )
         hostingItems.append(switchToHosting)
 
-        let yourSpace = ProfileItem(
-            title: Strings.yourSpaceText,
-            icon: Icons.homeIcon,
-            destination: .yourSpace
-        )
-        hostingItems.append(yourSpace)
+        if user.isHost {
+            let yourSpace = ProfileItem(
+                title: Strings.yourSpaceText,
+                icon: Icons.homeIcon,
+                destination: .yourSpace
+            )
+            hostingItems.append(yourSpace)
+        }
 
         let hostingSection = ProfileSection(
             name: Strings.hostingSectionText,

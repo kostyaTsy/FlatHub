@@ -38,11 +38,43 @@ extension AccountRepositoryDependency {
     }
 }
 
+// MARK: - mock
+
+extension AccountRepositoryDependency {
+    static func mock() -> AccountRepositoryDependency {
+        let mockUser = User(id: "test", userName: "Test", email: "test@example.com")
+        let mockDependencyRepository = AccountRepositoryDependency(
+            isUserLoggedIn: {
+                true
+            },
+            user: {
+                mockUser
+            },
+            loadAndUpdate: {
+                mockUser
+            },
+            save: { user in
+                ()
+            }
+        )
+
+        return mockDependencyRepository
+    }
+}
+
 // MARK: - Dependency
 
 extension AccountRepositoryDependency: DependencyKey {
     public static var liveValue: AccountRepositoryDependency {
         AccountRepositoryDependency.live()
+    }
+
+    public static var previewValue: AccountRepositoryDependency {
+        AccountRepositoryDependency.mock()
+    }
+
+    public static var testValue: AccountRepositoryDependency {
+        AccountRepositoryDependency.mock()
     }
 }
 

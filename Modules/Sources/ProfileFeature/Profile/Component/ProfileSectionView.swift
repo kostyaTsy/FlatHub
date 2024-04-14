@@ -10,9 +10,14 @@ import FHCommon
 
 struct ProfileSectionView: View {
     private let section: ProfileSection
+    private let onSwitchToHostingTapped: (() -> Void)?
 
-    init(section: ProfileSection) {
+    init(
+        section: ProfileSection,
+        onSwitchToHostingTapped: (() -> Void)? = nil
+    ) {
         self.section = section
+        self.onSwitchToHostingTapped = onSwitchToHostingTapped
     }
 
     var body: some View {
@@ -29,13 +34,25 @@ struct ProfileSectionView: View {
     }
 
     @ViewBuilder private func profileSectionRow(item: ProfileItem) -> some View {
-        NavigationLink(value: item.destination) {
-            HStack {
-                item.icon
-                    .padding(.trailing, Layout.Spacing.small)
-                Text(item.title)
+        if item.destination == .switchToHosting {
+            profileSectionRowContent(item: item)
+                .onTapGesture {
+                    onSwitchToHostingTapped?()
+                }
+        } else {
+            NavigationLink(value: item.destination) {
+                profileSectionRowContent(item: item)
             }
         }
+    }
+
+    @ViewBuilder private func profileSectionRowContent(item: ProfileItem) -> some View {
+        HStack {
+            item.icon
+                .padding(.trailing, Layout.Spacing.small)
+            Text(item.title)
+        }
+        .tag(item.destination)
     }
 }
 
