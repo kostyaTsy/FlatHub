@@ -14,9 +14,9 @@ import ProfileFeature
 import FHCommon
 
 struct AppTabBarView: View {
-    @Perception.Bindable private var store: StoreOf<AppTabBarFeature>
+    @Perception.Bindable private var store: StoreOf<UserAppTabBarFeature>
 
-    init(store: StoreOf<AppTabBarFeature>) {
+    init(store: StoreOf<UserAppTabBarFeature>) {
         self.store = store
     }
 
@@ -38,22 +38,22 @@ struct AppTabBarView: View {
             ExploreFeatureTab(
                 store: store.scope(state: \.explore, action: \.explore)
             )
-            .tag(AppTabBarFeature.Selection.explore)
+            .tag(UserAppTabBarFeature.Selection.explore)
 
             FavouritesFeatureTab(
                 store: store.scope(state: \.favourites, action: \.favourites)
             )
-            .tag(AppTabBarFeature.Selection.favourites)
+            .tag(UserAppTabBarFeature.Selection.favourites)
 
             BooksFeatureTab(
                 store: store.scope(state: \.books, action: \.books)
             )
-            .tag(AppTabBarFeature.Selection.books)
+            .tag(UserAppTabBarFeature.Selection.books)
 
             ProfileFeatureTab(
                 store: store.scope(state: \.profile, action: \.profile)
             )
-            .tag(AppTabBarFeature.Selection.profile)
+            .tag(UserAppTabBarFeature.Selection.profile)
         }
     }
 }

@@ -7,11 +7,11 @@
 
 import Foundation
 
-public struct User: Codable {
+public class User: Codable {
     public let id: String
     public let userName: String
     public let email: String
-    public let isHost: Bool
+    public var isHost: Bool
     public let registrationDate: Date
     public let profilePictureURL: URL?
 

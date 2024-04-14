@@ -1,6 +1,6 @@
 //
-//  AppTabBarFeature.swift
-//  
+//  UserAppTabBarFeature.swift
+//
 //
 //  Created by Kostya Tsyvilko on 24.03.24.
 //
@@ -12,12 +12,12 @@ import BooksFeature
 import ProfileFeature
 
 @Reducer
-public struct AppTabBarFeature {
+public struct UserAppTabBarFeature {
     @ObservableState
     public struct State {
         var shouldUpdateUser: Bool = false
         var isLoading: Bool = false
-        var selection: AppTabBarFeature.Selection = .explore
+        var selection: UserAppTabBarFeature.Selection = .explore
 
         var explore = ExploreFeature.State()
         var favourites = FavouritesFeature.State()
@@ -34,7 +34,7 @@ public struct AppTabBarFeature {
         case onAppear
         case userUpdated
         case userLoggedOut
-        case selectionChanged(AppTabBarFeature.Selection)
+        case selectionChanged(UserAppTabBarFeature.Selection)
 
         case explore(ExploreFeature.Action)
         case favourites(FavouritesFeature.Action)
@@ -92,7 +92,7 @@ public struct AppTabBarFeature {
 
 // MARK: - Selection
 
-public extension AppTabBarFeature {
+public extension UserAppTabBarFeature {
     enum Selection: Hashable {
         case explore
         case favourites
