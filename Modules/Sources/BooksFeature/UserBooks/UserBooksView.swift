@@ -1,5 +1,5 @@
 //
-//  BooksView.swift
+//  UserBooksView.swift
 //
 //
 //  Created by Kostya Tsyvilko on 31.03.24.
@@ -9,10 +9,10 @@ import SwiftUI
 import ComposableArchitecture
 import AppartementListFeature
 
-public struct BooksView: View {
-    private let store: StoreOf<BooksFeature>
+public struct UserBooksView: View {
+    private let store: StoreOf<UserBooksFeature>
 
-    public init(store: StoreOf<BooksFeature>) {
+    public init(store: StoreOf<UserBooksFeature>) {
         self.store = store
     }
 
@@ -39,10 +39,10 @@ public struct BooksView: View {
 
 #if DEBUG
     #Preview {
-        BooksView(
+        UserBooksView(
             store: .init(
                 initialState: .init(), reducer: {
-                    BooksFeature()
+                    UserBooksFeature()
                 }
             )
         )

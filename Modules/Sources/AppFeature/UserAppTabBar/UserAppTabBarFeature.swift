@@ -21,7 +21,7 @@ public struct UserAppTabBarFeature {
 
         var explore = ExploreFeature.State()
         var favourites = FavouritesFeature.State()
-        var books = BooksFeature.State()
+        var books = UserBooksFeature.State()
         var profile = ProfileFeature.State()
 
         public init(shouldUpdateUser: Bool = false) {
@@ -39,7 +39,7 @@ public struct UserAppTabBarFeature {
 
         case explore(ExploreFeature.Action)
         case favourites(FavouritesFeature.Action)
-        case books(BooksFeature.Action)
+        case books(UserBooksFeature.Action)
         case profile(ProfileFeature.Action)
     }
 
@@ -84,7 +84,7 @@ public struct UserAppTabBarFeature {
         }
 
         Scope(state: \.books, action: \.books) {
-            BooksFeature()
+            UserBooksFeature()
         }
 
         Scope(state: \.profile, action: \.profile) {

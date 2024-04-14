@@ -36,6 +36,9 @@ public enum Strings {
     public static let booksTabTitle = "Books"
     public static let profileTabTitle = "Profile"
 
+    public static let listingsTabTitle = "Listings"
+    public static let earningsTabTitle = "Earnings"
+
     // MARK: - AppartementList
     public static let currencySign = "$"
     public static let nightText = "night"

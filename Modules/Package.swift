@@ -21,6 +21,9 @@ let package = Package(
             name: "BooksFeature",
             targets: ["BooksFeature"]),
         .library(
+            name: "EarningsFeature",
+            targets: ["EarningsFeature"]),
+        .library(
             name: "ExploreFeature",
             targets: ["ExploreFeature"]),
         .library(
@@ -35,6 +38,9 @@ let package = Package(
         .library(
             name: "FHRepository",
             targets: ["FHRepository"]),
+        .library(
+            name: "ListingsFeature",
+            targets: ["ListingsFeature"]),
         .library(
             name: "ProfileFeature",
             targets: ["ProfileFeature"])
@@ -57,7 +63,8 @@ let package = Package(
             name: "AppFeature",
             dependencies: [
                 .tca, "AuthFeature", "BooksFeature", "ExploreFeature",
-                "FavouritesFeature", "ProfileFeature", "FHCommon", "FHRepository"
+                "FavouritesFeature", "ProfileFeature", "ListingsFeature",
+                "EarningsFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "AuthFeature",
@@ -68,6 +75,11 @@ let package = Package(
             name: "BooksFeature",
             dependencies: [
                 .tca, "AppartementListFeature", "FHCommon", "FHRepository"
+            ]),
+        .target(
+            name: "EarningsFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
             ]),
         .target(
             name: "ExploreFeature",
@@ -90,6 +102,11 @@ let package = Package(
             name: "FHRepository",
             dependencies: [
                 .dependencies, .firebaseFireStore, .firebaseStorage, "FHAuth", "FHCommon"
+            ]),
+        .target(
+            name: "ListingsFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
             ]),
         .target(
             name: "ProfileFeature",
