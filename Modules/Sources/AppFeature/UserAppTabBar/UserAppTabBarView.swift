@@ -97,14 +97,14 @@ private struct FavouritesFeatureTab: View {
 }
 
 private struct BooksFeatureTab: View {
-    private let store: StoreOf<BooksFeature>
+    private let store: StoreOf<UserBooksFeature>
 
-    init(store: StoreOf<BooksFeature>) {
+    init(store: StoreOf<UserBooksFeature>) {
         self.store = store
     }
 
     var body: some View {
-        BooksView(store: store)
+        UserBooksView(store: store)
             .tabItem {
                 HStack {
                     Text(Strings.booksTabTitle)

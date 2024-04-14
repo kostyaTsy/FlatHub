@@ -67,7 +67,7 @@ public struct AppFeature: Sendable {
                 return .none
             case .authorizedHost:
                 state.isLoggedIn = true
-                let hostAppTabBarState = HostAppTabBarFeature.State()
+                let hostAppTabBarState = HostAppTabBarFeature.State(shouldUpdateUser: state.shouldUpdateUser)
                 state.shouldUpdateUser = false
                 state.destination = .authorizedHost(hostAppTabBarState)
                 return .none

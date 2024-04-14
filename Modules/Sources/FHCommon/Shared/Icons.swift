@@ -22,4 +22,6 @@ public enum Icons {
     public static let switchIcon = Image(systemName: "arrow.triangle.swap")
     public static let homeIcon = Image(systemName: "house")
     public static let chevronRight = Image(systemName: "chevron.right")
+    public static let listBulletIcon = Image(systemName: "list.bullet")
+    public static let dollarsignIcon = Image(systemName: "dollarsign.circle")
 }

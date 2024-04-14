@@ -1,5 +1,5 @@
 //
-//  BooksFeature.swift
+//  UserBooksFeature.swift
 //
 //
 //  Created by Kostya Tsyvilko on 31.03.24.
@@ -10,7 +10,7 @@ import AppartementListFeature
 import FHRepository
 
 @Reducer
-public struct BooksFeature {
+public struct UserBooksFeature {
     @ObservableState
     public struct State {
         var appartementList = AppartementListFeature.State(appartements: [])
