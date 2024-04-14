@@ -28,7 +28,6 @@ public enum AccountRepositoryError: Error {
 final public class AccountRepository: AccountRepositoryProtocol {
     private enum StoreKeys {
         static let userKey = "com.tsyvilko.flathub.user"
-        static let userModeKey = "com.tsyvilko.flathub.usermode"
     }
 
     private let userDefaults: UserDefaults
@@ -46,11 +45,11 @@ final public class AccountRepository: AccountRepositoryProtocol {
     }
 
     public var isUserLoggedIn: Bool {
-        authService.currentUser != nil
+        authService.currentUser != nil && loadLocalUser() != nil
     }
 
     public var user: User {
-        guard let user: User = try? userDefaults.object(for: StoreKeys.userKey) else {
+        guard let user: User = loadLocalUser() else {
             fatalError("No saved user")
         }
         return user

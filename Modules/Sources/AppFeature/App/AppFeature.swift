@@ -74,6 +74,8 @@ public struct AppFeature: Sendable {
                 state.destination = .unauthorized(LoginFeature.State())
                 return .none
             case .destination(.presented(.unauthorized(.loginSuccess))):
+                return .send(.authorizedUser)
+            case .destination(.presented(.unauthorized(.registerSuccess))):
                 state.shouldUpdateUser = false
                 return .send(.authorizedUser)
             case .destination(.presented(.authorizedUser(.userLoggedOut))):

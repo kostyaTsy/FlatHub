@@ -34,6 +34,7 @@ public struct LoginFeature {
         case loginStarted
         case loginFailure(Error)
         case loginSuccess
+        case registerSuccess
         case emailChanged(String)
         case passwordChanged(String)
         case validateAuthData
@@ -85,9 +86,9 @@ public struct LoginFeature {
             case .destination(.presented(.signUp(.registerSuccess))):
                 state.destination = nil
                 return .run { send in
-                    await send(.loginSuccess)
+                    await send(.registerSuccess)
                 }
-            case .destination:
+            case .destination, .registerSuccess:
                 return .none
             }
         }
