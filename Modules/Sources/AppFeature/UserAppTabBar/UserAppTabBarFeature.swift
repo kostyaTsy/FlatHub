@@ -34,6 +34,7 @@ public struct UserAppTabBarFeature {
         case onAppear
         case userUpdated
         case userLoggedOut
+        case userSwitchedToHost
         case selectionChanged(UserAppTabBarFeature.Selection)
 
         case explore(ExploreFeature.Action)
@@ -65,9 +66,11 @@ public struct UserAppTabBarFeature {
                 return .none
             case .profile(.logOutSuccess):
                 return .send(.userLoggedOut)
+            case .profile(.switchToHost):
+                return .send(.userSwitchedToHost)
             case .explore, .favourites, .books, .profile:
                 return .none
-            case .userLoggedOut:
+            case .userLoggedOut, .userSwitchedToHost:
                 return .none
             }
         }

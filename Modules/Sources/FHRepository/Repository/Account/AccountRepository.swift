@@ -15,7 +15,10 @@ public protocol AccountRepositoryProtocol {
     var user: User { get }
 
     func loadAndUpdate() async throws -> User
-    func save(user: UserDTO) async throws
+    func save(userDTO: UserDTO) async throws
+    func becomeHost(for user: User) async throws
+
+    func updateUserRole(with mode: UserRole)
 }
 
 public enum AccountRepositoryError: Error {
@@ -25,6 +28,7 @@ public enum AccountRepositoryError: Error {
 final public class AccountRepository: AccountRepositoryProtocol {
     private enum StoreKeys {
         static let userKey = "com.tsyvilko.flathub.user"
+        static let userModeKey = "com.tsyvilko.flathub.usermode"
     }
 
     private let userDefaults: UserDefaults
@@ -53,22 +57,53 @@ final public class AccountRepository: AccountRepositoryProtocol {
     }
 
     public func loadAndUpdate() async throws -> User {
-        guard let currentUser = authService.currentUser else {
+        guard let authCurrentUser = authService.currentUser else {
             throw AccountRepositoryError.noUser
         }
 
-        let user = try await userRepository.load(userId: currentUser.uid)
-        try userDefaults.set(user, for: StoreKeys.userKey)
+        let userModel = try await userRepository.load(userId: authCurrentUser.uid)
+        let localUser = loadLocalUser()
+        let user = UserMapper.fromUserModel(userModel, with: localUser?.role ?? .default)
+        try saveLocalUser(user)
         return user
     }
 
-    public func save(user: UserDTO) async throws {
+    public func save(userDTO: UserDTO) async throws {
         guard let currentUser = authService.currentUser else {
             throw AccountRepositoryError.noUser
         }
 
-        let user = UserMapper.mapUser(with: currentUser.uid, userDTO: user)
-        try await userRepository.save(user: user)
+        let userModel = UserMapper.toUserModel(with: currentUser.uid, userDTO: userDTO)
+        try await userRepository.save(user: userModel)
+        let localUser = loadLocalUser()
+        let user = UserMapper.fromUserModel(userModel, with: localUser?.role ?? .default)
+        try saveLocalUser(user)
+    }
+
+    public func becomeHost(for user: User) async throws {
+        if user.isHost {
+            return
+        }
+
+        let userModel = UserMapper.toUserModel(user)
+        try await userRepository.becomeHost(for: userModel)
+        user.isHost = true
+        try saveLocalUser(user)
+    }
+
+    public func updateUserRole(with mode: UserRole) {
+        guard let user = loadLocalUser() else { return }
+        user.role = mode
+        try? saveLocalUser(user)
+    }
+}
+
+private extension AccountRepository {
+    func loadLocalUser() -> User? {
+        try? userDefaults.object(for: StoreKeys.userKey)
+    }
+
+    func saveLocalUser(_ user: User) throws {
         try userDefaults.set(user, for: StoreKeys.userKey)
     }
 }

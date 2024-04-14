@@ -1,5 +1,5 @@
 //
-//  User.swift
+//  UserModel.swift
 //
 //
 //  Created by Kostya Tsyvilko on 31.03.24.
@@ -7,11 +7,11 @@
 
 import Foundation
 
-public class User: Codable {
+public struct UserModel: Codable {
     public let id: String
     public let userName: String
     public let email: String
-    public var isHost: Bool
+    public let isHost: Bool
     public let registrationDate: Date
     public let profilePictureURL: URL?
 

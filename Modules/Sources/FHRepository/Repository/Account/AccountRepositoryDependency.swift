@@ -12,7 +12,10 @@ public struct AccountRepositoryDependency: Sendable {
     public var user: @Sendable () -> User
 
     public var loadAndUpdate: @Sendable () async throws -> User
-    public var save: @Sendable (_ user: UserDTO) async throws -> Void
+    public var save: @Sendable (_ userDTO: UserDTO) async throws -> Void
+    public var becomeHost: @Sendable (_ user: User) async throws -> Void
+
+    public var updateUserRole: @Sendable (_ userMode: UserRole) -> Void
 }
 
 // MARK: - Live
@@ -29,8 +32,14 @@ extension AccountRepositoryDependency {
             loadAndUpdate: {
                 try await accountRepository.loadAndUpdate()
             },
-            save: { user in
-                try await accountRepository.save(user: user)
+            save: { userDTO in
+                try await accountRepository.save(userDTO: userDTO)
+            },
+            becomeHost: { user in
+                try await accountRepository.becomeHost(for: user)
+            },
+            updateUserRole: { mode in
+                accountRepository.updateUserRole(with: mode)
             }
         )
 
@@ -54,6 +63,12 @@ extension AccountRepositoryDependency {
                 mockUser
             },
             save: { user in
+                ()
+            },
+            becomeHost: { user in
+                ()
+            },
+            updateUserRole: { mode in
                 ()
             }
         )

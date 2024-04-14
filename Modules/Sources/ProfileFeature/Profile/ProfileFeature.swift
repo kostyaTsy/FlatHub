@@ -27,6 +27,8 @@ public struct ProfileFeature {
         case requestSwitchToHost
         case switchToHostAlert(PresentationAction<SwitchToHostAlertAction>)
         case confirmedSwitchToHost
+        case switchToHost // All steps done and Host View can be shown
+        case switchToHostError(Error)
         case logOut
         case logOutSuccess
     }
@@ -53,14 +55,28 @@ public struct ProfileFeature {
                     state.switchToHostAlert = getSwitchToHostAlert()
                     return .none
                 } else {
-                    return .send(.confirmedSwitchToHost)
+                    return .send(.switchToHost)
                 }
             case .switchToHostAlert(.presented(.confirmed)):
                 return .send(.confirmedSwitchToHost)
             case .switchToHostAlert:
                 return .none
             case .confirmedSwitchToHost:
-                print("Switch to host")
+                let user = state.user
+                return .run { send in
+                    guard let user else { return }
+                    do {
+                        try await accountRepository.becomeHost(user)
+                        await send(.switchToHost)
+                    } catch {
+                        await send(.switchToHostError(error))
+                    }
+                }
+            case .switchToHost:
+                accountRepository.updateUserRole(.host)
+                return .none
+            case .switchToHostError(_):
+                // TODO: handle error
                 return .none
             case .logOut:
                 do {

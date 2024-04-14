@@ -1,5 +1,5 @@
 //
-//  AppTabBarView.swift
+//  UserAppTabBarView.swift
 //
 //
 //  Created by Kostya Tsyvilko on 24.03.24.
@@ -13,7 +13,7 @@ import BooksFeature
 import ProfileFeature
 import FHCommon
 
-struct AppTabBarView: View {
+struct UserAppTabBarView: View {
     @Perception.Bindable private var store: StoreOf<UserAppTabBarFeature>
 
     init(store: StoreOf<UserAppTabBarFeature>) {

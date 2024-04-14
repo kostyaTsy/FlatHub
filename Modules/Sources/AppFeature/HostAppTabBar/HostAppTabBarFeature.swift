@@ -5,4 +5,21 @@
 //  Created by Kostya Tsyvilko on 14.04.24.
 //
 
-import Foundation
+import ComposableArchitecture
+
+@Reducer
+public struct HostAppTabBarFeature {
+    public struct State {
+        public init() {}
+    }
+
+    public enum Action {}
+
+    public init() {}
+
+    public var body: some Reducer<State, Action> {
+        Reduce { state, action in
+            return .none
+        }
+    }
+}

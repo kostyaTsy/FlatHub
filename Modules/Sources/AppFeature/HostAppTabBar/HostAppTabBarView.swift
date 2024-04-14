@@ -1,18 +1,33 @@
 //
-//  SwiftUIView.swift
-//  
+//  HostAppTabBarView.swift
+//
 //
 //  Created by Kostya Tsyvilko on 14.04.24.
 //
 
+import ComposableArchitecture
 import SwiftUI
 
-struct SwiftUIView: View {
+struct HostAppTabBarView: View {
+    @Perception.Bindable private var store: StoreOf<HostAppTabBarFeature>
+
+    init(store: StoreOf<HostAppTabBarFeature>) {
+        self.store = store
+    }
+
     var body: some View {
-        Text(/*@START_MENU_TOKEN@*/"Hello, World!"/*@END_MENU_TOKEN@*/)
+        Text("HostAppTabBarView")
     }
 }
 
-#Preview {
-    SwiftUIView()
-}
+#if DEBUG
+    #Preview {
+        HostAppTabBarView(
+            store: .init(
+                initialState: .init(), reducer: {
+                    HostAppTabBarFeature()
+                }
+            )
+        )
+    }
+#endif
