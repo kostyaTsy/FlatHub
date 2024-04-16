@@ -17,8 +17,18 @@ public struct ListingsView: View {
 
     public var body: some View {
         WithPerceptionTracking {
-            Text("Listings")
+            NavigationStack(
+                path: $store.scope(state: \.path, action: \.path)
+            ) {
+                content()
+            } destination: { store in
+                EmptyView()
+            }
         }
+    }
+
+    @ViewBuilder private func content() -> some View {
+        Text("Listings")
     }
 }
 

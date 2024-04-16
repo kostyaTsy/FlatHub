@@ -11,16 +11,28 @@ import ComposableArchitecture
 public struct ListingsFeature {
     @ObservableState
     public struct State {
+        var path = StackState<Path.State>()
+
         public init() {}
     }
 
-    public enum Action {}
+    public enum Action {
+        case path(StackAction<Path.State, Path.Action>)
+    }
+
+    @Reducer
+    public enum Path {
+    }
 
     public init() {}
 
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
-            return .none
+            switch action {
+            case .path:
+                return .none
+            }
         }
+        .forEach(\.path, action: \.path)
     }
 }
