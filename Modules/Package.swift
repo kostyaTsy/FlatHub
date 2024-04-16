@@ -20,6 +20,8 @@ let package = Package(
         .library(
             name: "BooksFeature",
             targets: ["BooksFeature"]),
+        .library(name: "CreateAppartementFeature",
+                 targets: ["CreateAppartementFeature"]),
         .library(
             name: "EarningsFeature",
             targets: ["EarningsFeature"]),
@@ -77,6 +79,11 @@ let package = Package(
                 .tca, "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
+            name: "CreateAppartementFeature",
+            dependencies: [
+                .tca, "FHCommon", "FHRepository"
+            ]),
+        .target(
             name: "EarningsFeature",
             dependencies: [
                 .tca, "FHCommon", "FHRepository"
@@ -106,7 +113,7 @@ let package = Package(
         .target(
             name: "ListingsFeature",
             dependencies: [
-                .tca, "FHCommon", "FHRepository"
+                .tca, "CreateAppartementFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "ProfileFeature",

@@ -52,4 +52,9 @@ public enum Strings {
     public static let switchToHostingAlertQuestion = "Are you certain you want to become a host?"
     public static let yourSpaceText = "Your space"
     public static let logOutButton = "Log out"
+
+    // MARK: - Create appartement
+    public static let navigationNextButtonTitle = "Next"
+    public static let navigationBackButtonTitle = "Back"
+    public static let navigationExitButtonTitle = "Exit"
 }
