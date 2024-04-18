@@ -16,7 +16,7 @@ struct ChooseAppartementTypeView: View {
     }
 
     var body: some View {
-        Text("")
+        Text("\(store.types.count)")
     }
 }
 

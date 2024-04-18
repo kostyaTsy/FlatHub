@@ -8,11 +8,11 @@
 import Dependencies
 
 public struct AppartementTypesRepositoryDependency: Sendable {
-    var loadTypes: @Sendable () async throws -> [AppartementType]
-    var loadOffers: @Sendable () async throws -> [AppartementOfferType]
-    var loadLivingTypes: @Sendable () async throws -> [AppartementLivingType]
-    var loadDescriptions: @Sendable () async throws -> [AppartementDescriptionType]
-    var loadCancellationPolicies: @Sendable () async throws -> [AppartementCancellationPolicyType]
+    public var loadTypes: @Sendable () async throws -> [AppartementType]
+    public var loadOffers: @Sendable () async throws -> [AppartementOfferType]
+    public var loadLivingTypes: @Sendable () async throws -> [AppartementLivingType]
+    public var loadDescriptions: @Sendable () async throws -> [AppartementDescriptionType]
+    public var loadCancellationPolicies: @Sendable () async throws -> [AppartementCancellationPolicyType]
 }
 
 // MARK: - Live
@@ -43,16 +43,59 @@ extension AppartementTypesRepositoryDependency {
     }
 }
 
+// MARK: - Preview
+
+extension AppartementTypesRepositoryDependency {
+    static func mock() -> AppartementTypesRepositoryDependency {
+        let dependencyRepository = AppartementTypesRepositoryDependency(
+            loadTypes: {
+                [
+                    AppartementType(id: 1, name: "Type", iconName: "person"),
+                    AppartementType(id: 2, name: "Type", iconName: "person")
+                ]
+            },
+            loadOffers: {
+                [
+                    AppartementOfferType(id: 1, name: "Offer", iconName: "person"),
+                    AppartementOfferType(id: 2, name: "Offer", iconName: "person")
+                ]
+            },
+            loadLivingTypes: {
+                [
+                    AppartementLivingType(id: 1, title: "Living", description: "Desc", iconName: "person"),
+                    AppartementLivingType(id: 1, title: "Living", description: "Desc", iconName: "person")
+                ]
+            },
+            loadDescriptions: {
+                []
+            },
+            loadCancellationPolicies: {
+                []
+            }
+        )
+
+        return dependencyRepository
+    }
+}
+
 // MARK: - Dependency
 
 extension AppartementTypesRepositoryDependency: DependencyKey {
     public static var liveValue: AppartementTypesRepositoryDependency {
         AppartementTypesRepositoryDependency.live()
     }
+
+    public static var previewValue: AppartementTypesRepositoryDependency {
+        AppartementTypesRepositoryDependency.mock()
+    }
+
+    public static var testValue: AppartementTypesRepositoryDependency {
+        AppartementTypesRepositoryDependency.mock()
+    }
 }
 
 extension DependencyValues {
-    public var appartementTypesRepostory: AppartementTypesRepositoryDependency {
+    public var appartementTypesRepository: AppartementTypesRepositoryDependency {
         get { self[AppartementTypesRepositoryDependency.self] }
         set { self[AppartementTypesRepositoryDependency.self] = newValue }
     }

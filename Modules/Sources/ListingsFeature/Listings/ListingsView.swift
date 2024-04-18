@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import CreateAppartementFeature
 import SwiftUI
 
 public struct ListingsView: View {
@@ -28,7 +29,13 @@ public struct ListingsView: View {
     }
 
     @ViewBuilder private func content() -> some View {
-        Text("Listings")
+        CreateAppartementView(
+            store: .init(
+                initialState: .init(), reducer: {
+                    CreateAppartementFeature()
+                }
+            )
+        )
     }
 }
 

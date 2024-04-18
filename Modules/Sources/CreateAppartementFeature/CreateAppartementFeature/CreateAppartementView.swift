@@ -19,8 +19,12 @@ public struct CreateAppartementView: View {
     public var body: some View {
         WithPerceptionTracking {
             VStack {
-                contentView()
-                footerView()
+                if store.isLoading {
+                    ProgressView(Strings.loadingText)
+                } else {
+                    contentView()
+                    footerView()
+                }
             }
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
@@ -34,16 +38,20 @@ public struct CreateAppartementView: View {
                 }
             }
         }
+        .onAppear {
+            store.send(.onAppear)
+        }
     }
 
     @ViewBuilder private func contentView() -> some View {
-        TabView(selection: .constant(1)) {
-            VStack {
-                Text("1")
-                Spacer()
-            }
-            Text("2")
-            Text("3")
+        TabView(selection: $store.selection.sending(\.onSelectionChanged)) {
+            ChooseAppartementTypeView(
+                store: store.scope(state: \.chooseType, action: \.chooseType)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseType)
+
+            Text("Last")
+                .tag(CreateAppartementFeature.Selection.last)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .onAppear {
@@ -53,10 +61,13 @@ public struct CreateAppartementView: View {
 
     @ViewBuilder private func footerView() -> some View {
         VStack(spacing: .zero) {
-            ProgressView(value: 10, total: 100)
+            ProgressView(
+                value: store.progress,
+                total: store.total
+            )
             HStack {
                 Button {
-
+                    store.send(.onBackTapped)
                 } label: {
                     Text(Strings.navigationBackButtonTitle)
                         .underline()
@@ -66,9 +77,10 @@ public struct CreateAppartementView: View {
                 Spacer()
                 FHOvalButton(
                     title: Strings.navigationNextButtonTitle,
+                    disabled: store.isNextDisabled,
                     configuration: Constants.nextButtonConfiguration
                 ) {
-
+                    store.send(.onNextTapped)
                 }
                 .frame(width: Constants.nextButtonWidth)
             }
@@ -100,6 +112,8 @@ private extension CreateAppartementView {
                 store: .init(
                     initialState: .init(), reducer: {
                         CreateAppartementFeature()
+                    }, withDependencies: {
+                        $0.appartementTypesRepository = .previewValue
                     }
                 )
             )

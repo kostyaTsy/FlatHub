@@ -6,12 +6,13 @@
 //
 
 import ComposableArchitecture
+import FHRepository
 
 @Reducer
-struct ChooseAppartementTypeFeature {
+public struct ChooseAppartementTypeFeature {
     @ObservableState
     public struct State {
-
+        public var types: [AppartementType] = []
         public init() {}
     }
 
