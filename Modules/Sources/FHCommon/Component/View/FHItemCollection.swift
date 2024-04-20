@@ -117,7 +117,8 @@ private extension FHItemCollection {
             VStack(alignment: .leading, spacing: Layout.Spacing.small) {
                 Image(systemName: item.iconName)
                     .resizable()
-                    .frame(width: configuration.iconSize, height: configuration.iconSize)
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: configuration.iconSize)
                 Text(item.title)
             }
 
@@ -140,7 +141,8 @@ private extension FHItemCollection {
 
             Image(systemName: item.iconName)
                 .resizable()
-                .frame(width: configuration.iconSize, height: configuration.iconSize)
+                .aspectRatio(contentMode: .fit)
+                .frame(height: configuration.iconSize)
         }
     }
 
@@ -167,8 +169,8 @@ private extension FHItemCollection {
 
     private func onItemTapped(_ item: Item) {
         let selectedItems = items.filter { $0.isSelected }
-        if !configuration.supportMultipleSelection && selectedItems.count > 0 && !item.isSelected {
-            return
+        if !configuration.supportMultipleSelection {
+            selectedItems.forEach { onChangeSelection?($0) }
         }
         onChangeSelection?(item)
     }

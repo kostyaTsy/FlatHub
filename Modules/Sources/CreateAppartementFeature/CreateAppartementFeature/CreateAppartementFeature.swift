@@ -28,6 +28,7 @@ public struct CreateAppartementFeature {
         var appartementTitle = AppartementTitleFeature.State()
         var appartementDescription = AppartementDescriptionFeature.State()
         var chooseDescriptions = ChooseDescriptionTypesFeature.State()
+        var addPrice = AddPriceFeature.State()
 
         var progress: Double {
             Double(selection.rawValue)
@@ -58,6 +59,7 @@ public struct CreateAppartementFeature {
         case appartementTitle(AppartementTitleFeature.Action)
         case appartementDescription(AppartementDescriptionFeature.Action)
         case chooseDescriptions(ChooseDescriptionTypesFeature.Action)
+        case addPrice(AddPriceFeature.Action)
     }
 
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
@@ -133,8 +135,14 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
+            case .addPrice(.onPriceValidationChanged(let isValid)):
+                if state.selection == .addPrice {
+                    state.isNextDisabled = !isValid
+                }
+                return .none
             case .chooseType, .chooseLivingType, .chooseGuestsCount,
-                    .chooseOffers, .appartementTitle, .appartementDescription, .chooseDescriptions:
+                    .chooseOffers, .appartementTitle, .appartementDescription,
+                    .chooseDescriptions, .addPrice:
                 return .none
             }
         }
@@ -170,6 +178,10 @@ public struct CreateAppartementFeature {
         Scope(state: \.chooseDescriptions, action: \.chooseDescriptions) {
             ChooseDescriptionTypesFeature()
         }
+
+        Scope(state: \.addPrice, action: \.addPrice) {
+            AddPriceFeature()
+        }
     }
 }
 
@@ -185,6 +197,7 @@ public extension CreateAppartementFeature {
         case appartementTitle
         case appartementDescription
         case chooseDescriptions
+        case addPrice
 
         case last
 
@@ -249,6 +262,7 @@ private extension CreateAppartementFeature {
                     )
                 }
             return .send(.chooseOffers(.setData(items)))
+//        case .choosePhotos:
         case .appartementTitle:
             state.isNextDisabled = true
             let title = state.appartement.title ?? ""
@@ -270,6 +284,10 @@ private extension CreateAppartementFeature {
                     )
                 }
             return .send(.chooseDescriptions(.setData(items)))
+        case .addPrice:
+            state.isNextDisabled = true
+            let price = state.appartement.price
+            return .send(.addPrice(.setPrice(price)))
         default: return .none
         }
     }
@@ -314,6 +332,8 @@ private extension CreateAppartementFeature {
                 .filter { $0.isSelected }
                 .map { AppartementTypeMapper.mapToDescriptionType(from: $0) }
             appartement.descriptions = descriptions
+        case .addPrice:
+            appartement.price = Int(state.addPrice.price)
         default: ()
         }
     }

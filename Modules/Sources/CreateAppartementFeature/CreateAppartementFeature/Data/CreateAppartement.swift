@@ -23,4 +23,5 @@ final class CreateAppartement {
     var title: String?
     var description: String?
     var descriptions: [AppartementDescriptionType] = []
+    var price: Int?
 }

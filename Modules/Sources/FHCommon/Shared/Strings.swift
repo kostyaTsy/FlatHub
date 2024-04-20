@@ -19,6 +19,7 @@ public enum Strings {
     public static let bedroomsText = "Bedrooms"
     public static let bedsText = "Beds"
     public static let bathroomsText = "Bathrooms"
+    public static let currencySign = "$"
 
     // MARK: - Auth
     public static let loginTitle = "Login"
@@ -44,7 +45,6 @@ public enum Strings {
     public static let earningsTabTitle = "Earnings"
 
     // MARK: - AppartementList
-    public static let currencySign = "$"
     public static let nightText = "night"
 
     // MARK: - Profile
@@ -74,4 +74,6 @@ public enum Strings {
     public static let appartementDescriptionSubtitle = "Share what makes your place special."
     public static let appartementDescriptionTextFieldPlaceholder = "Your description"
     public static let chooseDescriptionTypesTitle = "Next, let's describe your house"
+    public static let addPriceTitle = "Now, set your price"
+    public static let addPriceSubtitle = "You can change it anytime."
 }

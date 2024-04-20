@@ -85,6 +85,11 @@ public struct CreateAppartementView: View {
             )
             .tag(CreateAppartementFeature.Selection.chooseDescriptions)
 
+            AddPriceView(
+                store: store.scope(state: \.addPrice, action: \.addPrice)
+            )
+            .tag(CreateAppartementFeature.Selection.addPrice)
+
             Text("Last")
                 .tag(CreateAppartementFeature.Selection.last)
         }
@@ -102,6 +107,7 @@ public struct CreateAppartementView: View {
             )
             HStack {
                 Button {
+                    hideKeyboard()
                     store.send(.onBackTapped)
                 } label: {
                     Text(Strings.navigationBackButtonTitle)
@@ -115,6 +121,7 @@ public struct CreateAppartementView: View {
                     disabled: store.isNextDisabled,
                     configuration: Constants.nextButtonConfiguration
                 ) {
+                    hideKeyboard()
                     store.send(.onNextTapped)
                 }
                 .frame(width: Constants.nextButtonWidth)
