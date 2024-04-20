@@ -1,18 +1,18 @@
 //
-//  ChooseAppartementTypeView.swift
+//  ChooseLivingTypeView.swift
 //
 //
-//  Created by Kostya Tsyvilko on 17.04.24.
+//  Created by Kostya Tsyvilko on 20.04.24.
 //
 
 import ComposableArchitecture
 import SwiftUI
 import FHCommon
 
-struct ChooseAppartementTypeView: View {
-    @Perception.Bindable private var store: StoreOf<ChooseAppartementTypeFeature>
+struct ChooseLivingTypeView: View {
+    @Perception.Bindable private var store: StoreOf<ChooseLivingTypeFeature>
 
-    init(store: StoreOf<ChooseAppartementTypeFeature>) {
+    init(store: StoreOf<ChooseLivingTypeFeature>) {
         self.store = store
     }
 
@@ -24,10 +24,13 @@ struct ChooseAppartementTypeView: View {
     }
 
     @ViewBuilder private func content() -> some View {
-        FHContentView(title: Strings.chooseAppartementTypeTitle) {
+        FHContentView(title: Strings.chooseLivingTypeTitle) {
             FHItemCollection(
                 items: store.items,
-                configuration: .init(supportMultipleSelection: false)
+                configuration: .init(
+                    presentationType: .full, 
+                    supportMultipleSelection: false
+                )
             ) { item in
                 store.send(.onSelectionChange(item))
             }
@@ -38,10 +41,10 @@ struct ChooseAppartementTypeView: View {
 
 #if DEBUG
     #Preview {
-        ChooseAppartementTypeView(
+        ChooseLivingTypeView(
             store: .init(
                 initialState: .init(), reducer: {
-                    ChooseAppartementTypeFeature()
+                    ChooseLivingTypeFeature()
                 }
             )
         )

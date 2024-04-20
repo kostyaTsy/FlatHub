@@ -15,6 +15,10 @@ public enum Strings {
     public static let alertYesButtonText = "Yes"
     public static let alertNoButtonText = "No"
     public static let empty = ""
+    public static let guestsText = "Guests"
+    public static let bedroomsText = "Bedrooms"
+    public static let bedsText = "Beds"
+    public static let bathroomsText = "Bathrooms"
 
     // MARK: - Auth
     public static let loginTitle = "Login"
@@ -57,4 +61,13 @@ public enum Strings {
     public static let navigationNextButtonTitle = "Next"
     public static let navigationBackButtonTitle = "Back"
     public static let navigationExitButtonTitle = "Exit"
+
+    public static let chooseAppartementTypeTitle = "Which of these best describes your place?"
+    public static let chooseLivingTypeTitle = "What type of place will guests have?"
+
+    public static let chooseGuestsCountTitle = "Share some basics about your place"
+    public static let chooseOfferTypesTitle = "Tell guests what your place has to offer"
+    public static let appartementTitleText = "Now, let's give your house a title"
+    public static let appartementTitleSubtext = "Short titles work best. Have fun with it - you can always change it later."
+    public static let appartementTitleTextFieldPlaceholder = "Your title"
 }

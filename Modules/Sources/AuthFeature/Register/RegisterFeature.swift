@@ -39,7 +39,6 @@ public struct RegisterFeature {
 
     @Dependency(\.authService) var authService
     @Dependency(\.accountRepository) var accountRepository
-    @Dependency(\.dismiss) var dismiss
 
     public var body: some Reducer<State, Action> {
         Reduce { state, action in

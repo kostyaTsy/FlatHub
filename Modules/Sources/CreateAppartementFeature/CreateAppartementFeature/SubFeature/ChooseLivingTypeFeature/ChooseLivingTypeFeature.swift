@@ -1,15 +1,15 @@
 //
-//  ChooseAppartementTypeFeature.swift
+//  ChooseLivingTypeFeature.swift
 //
 //
-//  Created by Kostya Tsyvilko on 17.04.24.
+//  Created by Kostya Tsyvilko on 20.04.24.
 //
 
 import ComposableArchitecture
 import FHRepository
 
 @Reducer
-public struct ChooseAppartementTypeFeature {
+public struct ChooseLivingTypeFeature {
     @ObservableState
     public struct State {
         var items: [AppartementItem] = []
@@ -35,6 +35,7 @@ public struct ChooseAppartementTypeFeature {
                 if let index = state.items.firstIndex(where: { $0.id == item.id }) {
                     state.items[index] = item
                 }
+                print(state.items)
                 return .send(.itemsChanged)
             case .setData(let items):
                 state.items = items

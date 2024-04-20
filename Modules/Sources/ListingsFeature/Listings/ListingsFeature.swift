@@ -6,6 +6,7 @@
 //
 
 import ComposableArchitecture
+import CreateAppartementFeature
 
 @Reducer
 public struct ListingsFeature {
@@ -17,11 +18,13 @@ public struct ListingsFeature {
     }
 
     public enum Action {
+        case addButtonTapped
         case path(StackAction<Path.State, Path.Action>)
     }
 
     @Reducer
     public enum Path {
+        case create(CreateAppartementFeature)
     }
 
     public init() {}
@@ -29,6 +32,9 @@ public struct ListingsFeature {
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .addButtonTapped:
+                state.path.append(.create(.init()))
+                return .none
             case .path:
                 return .none
             }

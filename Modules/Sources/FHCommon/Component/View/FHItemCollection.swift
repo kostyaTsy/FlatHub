@@ -7,27 +7,14 @@
 
 import SwiftUI
 
-public struct FHItemCollection: View {
-    public struct Item: Identifiable {
-        public let id = UUID()
-        let title: String
-        let description: String?
-        let iconName: String
-        let isSelected: Bool
+public protocol FHCollectionItem: Identifiable {
+    var title: String { get }
+    var description: String? { get }
+    var iconName: String { get }
+    var isSelected: Bool { get set }
+}
 
-        public init(
-            title: String,
-            description: String? = nil,
-            iconName: String,
-            isSelected: Bool = false
-        ) {
-            self.title = title
-            self.description = description
-            self.iconName = iconName
-            self.isSelected = isSelected
-        }
-    }
-
+public struct FHItemCollection<Item: FHCollectionItem>: View {
     public enum PresentationType {
         case compact
         case full
@@ -42,6 +29,7 @@ public struct FHItemCollection: View {
 
     public struct Configuration {
         let presentationType: PresentationType
+        let supportMultipleSelection: Bool
         let iconSize: CGFloat
         let cellColor: Color
         let cellSelectedColor: Color
@@ -54,6 +42,7 @@ public struct FHItemCollection: View {
 
         public init(
             presentationType: PresentationType = .compact,
+            supportMultipleSelection: Bool = true,
             iconSize: CGFloat = 25,
             cellColor: Color = Colors.system,
             cellSelectedColor: Color = Colors.gray6,
@@ -63,6 +52,7 @@ public struct FHItemCollection: View {
             cellBorderWidth: CGFloat = 1
         ) {
             self.presentationType = presentationType
+            self.supportMultipleSelection = supportMultipleSelection
             self.iconSize = iconSize
             self.cellColor = cellColor
             self.cellSelectedColor = cellSelectedColor
@@ -80,7 +70,7 @@ public struct FHItemCollection: View {
 
     public init(
         items: [Item],
-        configuration: Configuration,
+        configuration: Configuration = Configuration(),
         onChangeSelection: ((Item) -> Void)? = nil
     ) {
         self.items = items
@@ -176,16 +166,27 @@ private extension FHItemCollection {
     }
 
     private func onItemTapped(_ item: Item) {
+        let selectedItems = items.filter { $0.isSelected }
+        if !configuration.supportMultipleSelection && selectedItems.count > 0 && !item.isSelected {
+            return
+        }
         onChangeSelection?(item)
     }
 }
 
 #if DEBUG
     #Preview {
-        @State var items = (0..<10).map { i in
-            FHItemCollection.Item(title: "Test", description: "123", iconName: "person", isSelected: i % 2 == 0)
+        struct Item: FHCollectionItem {
+            let id = UUID()
+            let title: String
+            let description: String?
+            let iconName: String
+            var isSelected: Bool
         }
-        let configuration = FHItemCollection.Configuration(
+        @State var items = (0..<10).map { i in
+            Item(title: "Test", description: "123", iconName: "person", isSelected: i % 2 == 0)
+        }
+        let configuration = FHItemCollection<Item>.Configuration(
             presentationType: .compact
         )
         return FHItemCollection(

@@ -6,8 +6,9 @@
 //
 
 import ComposableArchitecture
-import CreateAppartementFeature
 import SwiftUI
+import CreateAppartementFeature
+import FHCommon
 
 public struct ListingsView: View {
     @Perception.Bindable private var store: StoreOf<ListingsFeature>
@@ -22,20 +23,30 @@ public struct ListingsView: View {
                 path: $store.scope(state: \.path, action: \.path)
             ) {
                 content()
+                    .toolbar {
+                        ToolbarItem(placement: .topBarTrailing) {
+                            Button {
+                                store.send(.addButtonTapped)
+                            } label: {
+                                Icons.plusIcon
+                                    .padding(.all, Layout.Spacing.xSmall)
+                                    .foregroundStyle(Colors.system)
+                                    .background(Colors.secondary)
+                                    .clipShape(Circle())
+                            }
+                        }
+                    }
             } destination: { store in
-                EmptyView()
+                switch store.case {
+                case .create(let store):
+                    CreateAppartementView(store: store)
+                }
             }
         }
     }
 
     @ViewBuilder private func content() -> some View {
-        CreateAppartementView(
-            store: .init(
-                initialState: .init(), reducer: {
-                    CreateAppartementFeature()
-                }
-            )
-        )
+        Text("Listings")
     }
 }
 

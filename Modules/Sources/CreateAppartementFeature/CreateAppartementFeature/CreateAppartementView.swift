@@ -29,7 +29,7 @@ public struct CreateAppartementView: View {
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
-
+                        store.send(.onExitTapped)
                     } label: {
                         Text(Strings.navigationExitButtonTitle)
                             .underline()
@@ -37,6 +37,7 @@ public struct CreateAppartementView: View {
                     .foregroundStyle(.black)
                 }
             }
+            .navigationBarBackButtonHidden(true)
         }
         .onAppear {
             store.send(.onAppear)
@@ -49,6 +50,30 @@ public struct CreateAppartementView: View {
                 store: store.scope(state: \.chooseType, action: \.chooseType)
             )
             .tag(CreateAppartementFeature.Selection.chooseType)
+
+            ChooseLivingTypeView(
+                store: store.scope(state: \.chooseLivingType, action: \.chooseLivingType)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseLivingType)
+
+            // TODO: add location
+
+            ChooseGuestsCountView(
+                store: store.scope(state: \.chooseGuestsCount, action: \.chooseGuestsCount)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseGuestsCount)
+
+            ChooseOfferTypesView(
+                store: store.scope(state: \.chooseOffers, action: \.chooseOffers)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseOffers)
+
+            // TODO: add upload photos
+
+            AppartementTitleView(
+                store: store.scope(state: \.appartementTitle, action: \.appartementTitle)
+            )
+            .tag(CreateAppartementFeature.Selection.appartementTitle)
 
             Text("Last")
                 .tag(CreateAppartementFeature.Selection.last)

@@ -24,4 +24,5 @@ public enum Icons {
     public static let chevronRight = Image(systemName: "chevron.right")
     public static let listBulletIcon = Image(systemName: "list.bullet")
     public static let dollarsignIcon = Image(systemName: "dollarsign.circle")
+    public static let plusIcon = Image(systemName: "plus")
 }

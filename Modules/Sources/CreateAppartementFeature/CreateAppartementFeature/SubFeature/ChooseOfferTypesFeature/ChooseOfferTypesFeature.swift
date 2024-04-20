@@ -1,15 +1,15 @@
 //
-//  ChooseAppartementTypeFeature.swift
+//  ChooseOfferTypesFeature.swift
+//  
 //
-//
-//  Created by Kostya Tsyvilko on 17.04.24.
+//  Created by Kostya Tsyvilko on 20.04.24.
 //
 
 import ComposableArchitecture
 import FHRepository
 
 @Reducer
-public struct ChooseAppartementTypeFeature {
+public struct ChooseOfferTypesFeature {
     @ObservableState
     public struct State {
         var items: [AppartementItem] = []
