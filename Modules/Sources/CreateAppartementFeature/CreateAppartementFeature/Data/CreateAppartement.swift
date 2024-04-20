@@ -22,4 +22,5 @@ final class CreateAppartement {
     var offers: [AppartementOfferType] = []
     var title: String?
     var description: String?
+    var descriptions: [AppartementDescriptionType] = []
 }

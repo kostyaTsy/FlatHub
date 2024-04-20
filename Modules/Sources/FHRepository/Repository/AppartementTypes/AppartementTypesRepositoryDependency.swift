@@ -63,14 +63,20 @@ extension AppartementTypesRepositoryDependency {
             loadLivingTypes: {
                 [
                     AppartementLivingType(id: 1, title: "Living", description: "Desc", iconName: "person"),
-                    AppartementLivingType(id: 1, title: "Living", description: "Desc", iconName: "person")
+                    AppartementLivingType(id: 2, title: "Living", description: "Desc", iconName: "person")
                 ]
             },
             loadDescriptions: {
-                []
+                [
+                    AppartementDescriptionType(id: 1, name: "Desc", iconName: "person"),
+                    AppartementDescriptionType(id: 2, name: "Desc", iconName: "person")
+                ]
             },
             loadCancellationPolicies: {
-                []
+                [
+                    AppartementCancellationPolicyType(id: 1, title: "Title", hostDescription: "HostDesc", travelDescription: "TravelDesc"),
+                    AppartementCancellationPolicyType(id: 2, title: "Title", hostDescription: "HostDesc", travelDescription: "TravelDesc")
+                ]
             }
         )
 

@@ -9,6 +9,9 @@ import Foundation
 import FHRepository
 
 enum AppartementTypeMapper {
+
+    // MARK: - Map to Item
+
     static func mapToItem(
         from: AppartementType,
         isSelected: Bool = false
@@ -46,6 +49,20 @@ enum AppartementTypeMapper {
         )
     }
 
+    static func mapToItem(
+        from: AppartementDescriptionType,
+        isSelected: Bool = false
+    ) -> AppartementItem {
+        AppartementItem(
+            id: from.id,
+            title: from.name,
+            iconName: from.iconName,
+            isSelected: isSelected
+        )
+    }
+
+    // MARK: - Map from Item
+
     static func mapToType(
         from: AppartementItem
     ) -> AppartementType {
@@ -71,6 +88,16 @@ enum AppartementTypeMapper {
         from: AppartementItem
     ) -> AppartementOfferType {
         AppartementOfferType(
+            id: from.id,
+            name: from.title,
+            iconName: from.iconName
+        )
+    }
+
+    static func mapToDescriptionType(
+        from: AppartementItem
+    ) -> AppartementDescriptionType {
+        AppartementDescriptionType(
             id: from.id,
             name: from.title,
             iconName: from.iconName

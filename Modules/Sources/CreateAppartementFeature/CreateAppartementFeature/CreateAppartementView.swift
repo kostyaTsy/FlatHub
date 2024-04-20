@@ -80,6 +80,11 @@ public struct CreateAppartementView: View {
             )
             .tag(CreateAppartementFeature.Selection.appartementDescription)
 
+            ChooseDescriptionTypesView(
+                store: store.scope(state: \.chooseDescriptions, action: \.chooseDescriptions)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseDescriptions)
+
             Text("Last")
                 .tag(CreateAppartementFeature.Selection.last)
         }

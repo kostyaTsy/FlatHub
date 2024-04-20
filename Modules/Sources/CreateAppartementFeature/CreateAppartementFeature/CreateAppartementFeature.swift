@@ -27,6 +27,7 @@ public struct CreateAppartementFeature {
 //        var choosePhotos
         var appartementTitle = AppartementTitleFeature.State()
         var appartementDescription = AppartementDescriptionFeature.State()
+        var chooseDescriptions = ChooseDescriptionTypesFeature.State()
 
         var progress: Double {
             Double(selection.rawValue)
@@ -56,6 +57,7 @@ public struct CreateAppartementFeature {
 //        case choosePhotos
         case appartementTitle(AppartementTitleFeature.Action)
         case appartementDescription(AppartementDescriptionFeature.Action)
+        case chooseDescriptions(ChooseDescriptionTypesFeature.Action)
     }
 
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
@@ -126,7 +128,13 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
-            case .chooseType, .chooseLivingType, .chooseGuestsCount, .chooseOffers, .appartementTitle, .appartementDescription:
+            case .chooseDescriptions(.onDataValidationChanged(let isValid)):
+                if state.selection == .chooseDescriptions {
+                    state.isNextDisabled = !isValid
+                }
+                return .none
+            case .chooseType, .chooseLivingType, .chooseGuestsCount,
+                    .chooseOffers, .appartementTitle, .appartementDescription, .chooseDescriptions:
                 return .none
             }
         }
@@ -158,6 +166,10 @@ public struct CreateAppartementFeature {
         Scope(state: \.appartementDescription, action: \.appartementDescription) {
             AppartementDescriptionFeature()
         }
+
+        Scope(state: \.chooseDescriptions, action: \.chooseDescriptions) {
+            ChooseDescriptionTypesFeature()
+        }
     }
 }
 
@@ -172,6 +184,7 @@ public extension CreateAppartementFeature {
 //        case choosePhotos
         case appartementTitle
         case appartementDescription
+        case chooseDescriptions
 
         case last
 
@@ -244,6 +257,19 @@ private extension CreateAppartementFeature {
             state.isNextDisabled = true
             let description = state.appartement.description ?? ""
             return .send(.appartementDescription(.setDescription(description)))
+        case .chooseDescriptions:
+            state.isNextDisabled = true
+            let appartement = state.appartement
+            let items = state.dataModel.descriptions
+                .map { item in
+                    let description = appartement.descriptions.first(where: { $0.id == item.id })
+                    let isSelected = item.id == description?.id
+                    return AppartementTypeMapper.mapToItem(
+                        from: item,
+                        isSelected: isSelected
+                    )
+                }
+            return .send(.chooseDescriptions(.setData(items)))
         default: return .none
         }
     }
@@ -283,6 +309,11 @@ private extension CreateAppartementFeature {
             appartement.title = state.appartementTitle.title
         case .appartementDescription:
             appartement.description = state.appartementDescription.description
+        case .chooseDescriptions:
+            let descriptions = state.chooseDescriptions.items
+                .filter { $0.isSelected }
+                .map { AppartementTypeMapper.mapToDescriptionType(from: $0) }
+            appartement.descriptions = descriptions
         default: ()
         }
     }
