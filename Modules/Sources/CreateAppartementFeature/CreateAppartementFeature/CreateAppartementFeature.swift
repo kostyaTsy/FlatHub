@@ -21,7 +21,7 @@ public struct CreateAppartementFeature {
 
         var chooseType = ChooseAppartementTypeFeature.State()
         var chooseLivingType = ChooseLivingTypeFeature.State()
-//        var chooseLocation
+        var chooseLocation = ChooseLocationFeature.State()
         var chooseGuestsCount = ChooseGuestsCountFeature.State()
         var chooseOffers = ChooseOfferTypesFeature.State()
 //        var choosePhotos
@@ -54,7 +54,7 @@ public struct CreateAppartementFeature {
 
         case chooseType(ChooseAppartementTypeFeature.Action)
         case chooseLivingType(ChooseLivingTypeFeature.Action)
-//        case chooseLocation
+        case chooseLocation(ChooseLocationFeature.Action)
         case chooseGuestsCount(ChooseGuestsCountFeature.Action)
         case chooseOffers(ChooseOfferTypesFeature.Action)
 //        case choosePhotos
@@ -118,7 +118,6 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
-//            case .chooseLocation
             case .chooseOffers(.onDataValidationChanged(let isValid)):
                 if state.selection == .chooseOffers {
                     state.isNextDisabled = !isValid
@@ -150,7 +149,7 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
-            case .chooseType, .chooseLivingType, .chooseGuestsCount,
+            case .chooseType, .chooseLivingType, .chooseLocation, .chooseGuestsCount,
                     .chooseOffers, .appartementTitle, .appartementDescription,
                     .chooseDescriptions, .addPrice, .chooseCancellationPolicy:
                 return .none
@@ -165,7 +164,9 @@ public struct CreateAppartementFeature {
             ChooseLivingTypeFeature()
         }
 
-        // Location
+        Scope(state: \.chooseLocation, action: \.chooseLocation) {
+            ChooseLocationFeature()
+        }
 
         Scope(state: \.chooseGuestsCount, action: \.chooseGuestsCount) {
             ChooseGuestsCountFeature()
@@ -204,7 +205,7 @@ public extension CreateAppartementFeature {
     enum Selection: Int, CaseIterable {
         case chooseType
         case chooseLivingType
-//        case chooseLocation
+        case chooseLocation
         case chooseGuestsCount
         case chooseOffers
 //        case choosePhotos
@@ -251,7 +252,18 @@ private extension CreateAppartementFeature {
                     )
                 }
             return .send(.chooseLivingType(.setData(items)))
-//        case .chooseLocation
+        case .chooseLocation:
+            let appartement = state.appartement
+            guard let latitude = appartement.latitude,
+                  let longitude = appartement.longitude
+            else {
+                return .none
+            }
+            let model = ChooseLocationModel(
+                longitude: longitude,
+                latitude: latitude
+            )
+            return .send(.chooseLocation(.setLocation(model)))
         case .chooseGuestsCount:
             state.isNextDisabled = false
             let appartement = state.appartement
@@ -334,7 +346,11 @@ private extension CreateAppartementFeature {
                 .first
                 .map { AppartementTypeMapper.mapToLivingType(from: $0) }
             appartement.livingType = livingType
-//        case .chooseLocation
+        case .chooseLocation:
+            let location = state.chooseLocation.location
+            appartement.latitude = location.latitude
+            appartement.longitude = location.longitude
+            // TODO: load city and country depends on latitude and longitude
         case .chooseGuestsCount:
             let state = state.chooseGuestsCount
             appartement.guestsCount = state.guestsCount

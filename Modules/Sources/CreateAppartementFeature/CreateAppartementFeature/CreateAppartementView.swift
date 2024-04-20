@@ -56,7 +56,10 @@ public struct CreateAppartementView: View {
             )
             .tag(CreateAppartementFeature.Selection.chooseLivingType)
 
-            // TODO: add location
+            ChooseLocationView(
+                store: store.scope(state: \.chooseLocation, action: \.chooseLocation)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseLocation)
 
             ChooseGuestsCountView(
                 store: store.scope(state: \.chooseGuestsCount, action: \.chooseGuestsCount)

@@ -12,7 +12,8 @@ final class CreateAppartement {
     var type: AppartementType?
     var livingType: AppartementLivingType?
 
-    // Location data
+    var longitude: Double?
+    var latitude: Double?
 
     var guestsCount: Int = 4
     var bedroomsCount: Int = 1

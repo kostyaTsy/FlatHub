@@ -15,11 +15,20 @@ public struct ChooseLocationFeature {
     @ObservableState
     public struct State {
         var locationRegion = Constants.defaultLocationCoordinates
+
+        var location: ChooseLocationModel {
+            ChooseLocationModel(
+                longitude: locationRegion.center.longitude,
+                latitude: locationRegion.center.latitude
+            )
+        }
+
         public init() {}
     }
 
     public enum Action {
         case onAppear
+        case setLocation(ChooseLocationModel)
         case onMapLocationChanged(MKCoordinateRegion)
     }
 
@@ -35,6 +44,12 @@ public struct ChooseLocationFeature {
             switch action {
             case .onAppear:
                 locationManager.requestWhenInUseAuthorization()
+                return .none
+            case .setLocation(let location):
+                state.locationRegion.center = .init(
+                    latitude: location.latitude,
+                    longitude: location.longitude
+                )
                 return .none
             case .onMapLocationChanged(let region):
                 state.locationRegion = region
