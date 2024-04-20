@@ -108,7 +108,7 @@ private struct EarningsFeatureTab: View {
             .tabItem {
                 HStack {
                     Text(Strings.earningsTabTitle)
-                    Icons.dollarsignIcon
+                    Icons.dollarSignIcon
                 }
             }
     }

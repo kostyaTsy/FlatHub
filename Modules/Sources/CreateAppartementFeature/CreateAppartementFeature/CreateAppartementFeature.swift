@@ -87,7 +87,6 @@ public struct CreateAppartementFeature {
                     await send(.dataLoaded(dataModel))
                 }
             case .onPublishTapped:
-                print("Publish")
                 return .none
             case .onBackTapped:
                 let selection = state.selection.prev

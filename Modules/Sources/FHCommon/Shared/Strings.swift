@@ -65,7 +65,8 @@ public enum Strings {
 
     public static let chooseAppartementTypeTitle = "Which of these best describes your place?"
     public static let chooseLivingTypeTitle = "What type of place will guests have?"
-
+    public static let chooseLocationTitle = "Is the pin in the right spot?"
+    public static let chooseLocationSubtitle = "Choose location of your place"
     public static let chooseGuestsCountTitle = "Share some basics about your place"
     public static let chooseOfferTypesTitle = "Tell guests what your place has to offer"
     public static let appartementTitleText = "Now, let's give your house a title"

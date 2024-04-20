@@ -13,17 +13,20 @@ public struct FHContentView<Content: View>: View {
         let titleColor: Color
         let subtitleFont: Font
         let subtitleColor: Color
+        let horizontalPadding: CGFloat
 
         public init(
             titleFont: Font = .system(size: 22, weight: .medium),
             titleColor: Color = .primary,
             subtitleFont: Font = .system(size: 16),
-            subtitleColor: Color = .secondary
+            subtitleColor: Color = .secondary,
+            horizontalPadding: CGFloat = .zero
         ) {
             self.titleFont = titleFont
             self.titleColor = titleColor
             self.subtitleFont = subtitleFont
             self.subtitleColor = subtitleColor
+            self.horizontalPadding = horizontalPadding
         }
     }
 
@@ -50,10 +53,12 @@ public struct FHContentView<Content: View>: View {
             Text(title)
                 .font(configuration.titleFont)
                 .foregroundStyle(configuration.titleColor)
+                .padding(.horizontal, configuration.horizontalPadding)
             if let subtitle {
                 Text(subtitle)
                     .font(configuration.subtitleFont)
                     .foregroundStyle(configuration.subtitleColor)
+                    .padding(.horizontal, configuration.horizontalPadding)
             }
             
             content()
