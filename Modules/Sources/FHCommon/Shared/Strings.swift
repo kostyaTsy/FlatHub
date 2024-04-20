@@ -70,4 +70,7 @@ public enum Strings {
     public static let appartementTitleText = "Now, let's give your house a title"
     public static let appartementTitleSubtext = "Short titles work best. Have fun with it - you can always change it later."
     public static let appartementTitleTextFieldPlaceholder = "Your title"
+    public static let appartementDescriptionTitle = "Create your description"
+    public static let appartementDescriptionSubtitle = "Share what makes your place special."
+    public static let appartementDescriptionTextFieldPlaceholder = "Your description"
 }

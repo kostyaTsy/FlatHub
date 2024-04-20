@@ -35,7 +35,6 @@ public struct ChooseLivingTypeFeature {
                 if let index = state.items.firstIndex(where: { $0.id == item.id }) {
                     state.items[index] = item
                 }
-                print(state.items)
                 return .send(.itemsChanged)
             case .setData(let items):
                 state.items = items

@@ -34,7 +34,7 @@ public struct CreateAppartementView: View {
                         Text(Strings.navigationExitButtonTitle)
                             .underline()
                     }
-                    .foregroundStyle(.black)
+                    .foregroundStyle(Colors.label)
                 }
             }
             .navigationBarBackButtonHidden(true)
@@ -75,6 +75,11 @@ public struct CreateAppartementView: View {
             )
             .tag(CreateAppartementFeature.Selection.appartementTitle)
 
+            AppartementDescriptionView(
+                store: store.scope(state: \.appartementDescription, action: \.appartementDescription)
+            )
+            .tag(CreateAppartementFeature.Selection.appartementDescription)
+
             Text("Last")
                 .tag(CreateAppartementFeature.Selection.last)
         }
@@ -97,7 +102,7 @@ public struct CreateAppartementView: View {
                     Text(Strings.navigationBackButtonTitle)
                         .underline()
                 }
-                .foregroundStyle(.black)
+                .foregroundStyle(Colors.label)
 
                 Spacer()
                 FHOvalButton(
@@ -118,13 +123,13 @@ private extension CreateAppartementView {
     enum Constants {
         static let exitButtonConfiguration = FHOvalButton.Configuration(
             backgroundColor: Colors.system,
-            foregroundColor: .black,
+            foregroundColor: Colors.label,
             borderColor: .gray,
             borderWidth: 1)
         static let exitButtonWidth: CGFloat = 100
         static let nextButtonConfiguration = FHOvalButton.Configuration(
-            backgroundColor: .black,
-            foregroundColor: .white
+            backgroundColor: Colors.label,
+            foregroundColor: Colors.system
         )
         static let nextButtonWidth: CGFloat = 100
     }

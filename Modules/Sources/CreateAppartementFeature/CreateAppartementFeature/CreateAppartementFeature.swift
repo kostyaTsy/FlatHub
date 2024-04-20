@@ -26,6 +26,7 @@ public struct CreateAppartementFeature {
         var chooseOffers = ChooseOfferTypesFeature.State()
 //        var choosePhotos
         var appartementTitle = AppartementTitleFeature.State()
+        var appartementDescription = AppartementDescriptionFeature.State()
 
         var progress: Double {
             Double(selection.rawValue)
@@ -54,6 +55,7 @@ public struct CreateAppartementFeature {
         case chooseOffers(ChooseOfferTypesFeature.Action)
 //        case choosePhotos
         case appartementTitle(AppartementTitleFeature.Action)
+        case appartementDescription(AppartementDescriptionFeature.Action)
     }
 
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
@@ -119,7 +121,12 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
-            case .chooseType, .chooseLivingType, .chooseGuestsCount, .chooseOffers, .appartementTitle:
+            case .appartementDescription(.onDescriptionValidationChanged(let isValid)):
+                if state.selection == .appartementDescription {
+                    state.isNextDisabled = !isValid
+                }
+                return .none
+            case .chooseType, .chooseLivingType, .chooseGuestsCount, .chooseOffers, .appartementTitle, .appartementDescription:
                 return .none
             }
         }
@@ -147,6 +154,10 @@ public struct CreateAppartementFeature {
         Scope(state: \.appartementTitle, action: \.appartementTitle) {
             AppartementTitleFeature()
         }
+
+        Scope(state: \.appartementDescription, action: \.appartementDescription) {
+            AppartementDescriptionFeature()
+        }
     }
 }
 
@@ -160,6 +171,7 @@ public extension CreateAppartementFeature {
         case chooseOffers
 //        case choosePhotos
         case appartementTitle
+        case appartementDescription
 
         case last
 
@@ -228,6 +240,10 @@ private extension CreateAppartementFeature {
             state.isNextDisabled = true
             let title = state.appartement.title ?? ""
             return .send(.appartementTitle(.setTitle(title)))
+        case .appartementDescription:
+            state.isNextDisabled = true
+            let description = state.appartement.description ?? ""
+            return .send(.appartementDescription(.setDescription(description)))
         default: return .none
         }
     }
@@ -265,6 +281,8 @@ private extension CreateAppartementFeature {
 //        case .choosePhotos
         case .appartementTitle:
             appartement.title = state.appartementTitle.title
+        case .appartementDescription:
+            appartement.description = state.appartementDescription.description
         default: ()
         }
     }

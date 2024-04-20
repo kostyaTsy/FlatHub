@@ -1,5 +1,5 @@
 //
-//  AppartementTitleView.swift
+//  AppartementDescriptionView.swift
 //
 //
 //  Created by Kostya Tsyvilko on 20.04.24.
@@ -9,10 +9,10 @@ import ComposableArchitecture
 import SwiftUI
 import FHCommon
 
-struct AppartementTitleView: View {
-    @Perception.Bindable private var store: StoreOf<AppartementTitleFeature>
+struct AppartementDescriptionView: View {
+    @Perception.Bindable private var store: StoreOf<AppartementDescriptionFeature>
 
-    init(store: StoreOf<AppartementTitleFeature>) {
+    init(store: StoreOf<AppartementDescriptionFeature>) {
         self.store = store
     }
 
@@ -32,13 +32,13 @@ struct AppartementTitleView: View {
 
     @ViewBuilder private func content() -> some View {
         FHContentView(
-            title: Strings.appartementTitleText,
-            subtitle: Strings.appartementTitleSubtext
+            title: Strings.appartementDescriptionTitle,
+            subtitle: Strings.appartementDescriptionSubtitle
         ) {
             VStack {
                 TextField(
-                    Strings.appartementTitleTextFieldPlaceholder,
-                    text: $store.title.sending(\.onTitleChanged),
+                    Strings.appartementDescriptionTextFieldPlaceholder,
+                    text: $store.description.sending(\.onDescriptionChanged),
                     axis: .vertical
                 )
                 .lineLimit(Constants.textFieldLines, reservesSpace: true)
@@ -52,18 +52,18 @@ struct AppartementTitleView: View {
     }
 }
 
-private extension AppartementTitleView {
+private extension AppartementDescriptionView {
     enum Constants {
-        static let textFieldLines = 4
+        static let textFieldLines = 6
     }
 }
 
 #if DEBUG
     #Preview {
-        AppartementTitleView(
+        AppartementDescriptionView(
             store: .init(
                 initialState: .init(), reducer: {
-                    AppartementTitleFeature()
+                    AppartementDescriptionFeature()
                 }
             )
         )

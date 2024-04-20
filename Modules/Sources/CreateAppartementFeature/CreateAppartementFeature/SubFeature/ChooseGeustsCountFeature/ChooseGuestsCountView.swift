@@ -30,6 +30,7 @@ struct ChooseGuestsCountView: View {
                 Spacer()
             }
         }
+        .padding(.top, Layout.Spacing.medium)
     }
 
     @ViewBuilder private func chooseItemsList() -> some View {
