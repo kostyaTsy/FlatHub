@@ -12,14 +12,14 @@ public struct AppartementItem: FHCollectionItem {
     public var id: Int
     public let title: String
     public let description: String?
-    public let iconName: String
+    public let iconName: String?
     public var isSelected: Bool
 
     public init(
         id: Int,
         title: String,
         description: String? = nil,
-        iconName: String,
+        iconName: String? = nil,
         isSelected: Bool = false
     ) {
         self.id = id

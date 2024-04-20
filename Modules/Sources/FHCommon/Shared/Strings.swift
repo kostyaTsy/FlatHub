@@ -61,6 +61,7 @@ public enum Strings {
     public static let navigationNextButtonTitle = "Next"
     public static let navigationBackButtonTitle = "Back"
     public static let navigationExitButtonTitle = "Exit"
+    public static let navigationPublishButtonTitle = "Publish"
 
     public static let chooseAppartementTypeTitle = "Which of these best describes your place?"
     public static let chooseLivingTypeTitle = "What type of place will guests have?"
@@ -76,4 +77,5 @@ public enum Strings {
     public static let chooseDescriptionTypesTitle = "Next, let's describe your house"
     public static let addPriceTitle = "Now, set your price"
     public static let addPriceSubtitle = "You can change it anytime."
+    public static let chooseCancellationPolicyTitle = "Now, set cancellation policy"
 }

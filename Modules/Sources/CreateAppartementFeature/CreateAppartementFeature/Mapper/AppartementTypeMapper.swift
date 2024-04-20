@@ -61,6 +61,18 @@ enum AppartementTypeMapper {
         )
     }
 
+    static func mapToItem(
+        from: AppartementCancellationPolicyType,
+        isSelected: Bool = false
+    ) -> AppartementItem {
+        AppartementItem(
+            id: from.id,
+            title: from.title,
+            description: from.hostDescription,
+            isSelected: isSelected
+        )
+    }
+
     // MARK: - Map from Item
 
     static func mapToType(
@@ -69,7 +81,7 @@ enum AppartementTypeMapper {
         AppartementType(
             id: from.id,
             name: from.title,
-            iconName: from.iconName
+            iconName: from.iconName ?? ""
         )
     }
 
@@ -80,7 +92,7 @@ enum AppartementTypeMapper {
             id: from.id,
             title: from.title,
             description: from.description ?? "",
-            iconName: from.iconName
+            iconName: from.iconName ?? ""
         )
     }
 
@@ -90,7 +102,7 @@ enum AppartementTypeMapper {
         AppartementOfferType(
             id: from.id,
             name: from.title,
-            iconName: from.iconName
+            iconName: from.iconName ?? ""
         )
     }
 
@@ -100,7 +112,7 @@ enum AppartementTypeMapper {
         AppartementDescriptionType(
             id: from.id,
             name: from.title,
-            iconName: from.iconName
+            iconName: from.iconName ?? ""
         )
     }
 }

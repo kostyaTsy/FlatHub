@@ -90,8 +90,10 @@ public struct CreateAppartementView: View {
             )
             .tag(CreateAppartementFeature.Selection.addPrice)
 
-            Text("Last")
-                .tag(CreateAppartementFeature.Selection.last)
+            ChooseCancellationPolicyView(
+                store: store.scope(state: \.chooseCancellationPolicy, action: \.chooseCancellationPolicy)
+            )
+            .tag(CreateAppartementFeature.Selection.chooseCancellationPolicy)
         }
         .tabViewStyle(.page(indexDisplayMode: .never))
         .onAppear {
@@ -106,23 +108,29 @@ public struct CreateAppartementView: View {
                 total: store.total
             )
             HStack {
-                Button {
-                    hideKeyboard()
-                    store.send(.onBackTapped)
-                } label: {
-                    Text(Strings.navigationBackButtonTitle)
-                        .underline()
+                if store.progress != .zero {
+                    Button {
+                        hideKeyboard()
+                        store.send(.onBackTapped)
+                    } label: {
+                        Text(Strings.navigationBackButtonTitle)
+                            .underline()
+                    }
+                    .foregroundStyle(Colors.label)
                 }
-                .foregroundStyle(Colors.label)
 
                 Spacer()
                 FHOvalButton(
-                    title: Strings.navigationNextButtonTitle,
+                    title: store.progress == store.total ? Strings.navigationPublishButtonTitle : Strings.navigationNextButtonTitle,
                     disabled: store.isNextDisabled,
                     configuration: Constants.nextButtonConfiguration
                 ) {
                     hideKeyboard()
-                    store.send(.onNextTapped)
+                    if store.progress == store.total {
+                        store.send(.onPublishTapped)
+                    } else {
+                        store.send(.onNextTapped)
+                    }
                 }
                 .frame(width: Constants.nextButtonWidth)
             }
@@ -144,6 +152,8 @@ private extension CreateAppartementView {
             foregroundColor: Colors.system
         )
         static let nextButtonWidth: CGFloat = 100
+        static let backButtonDisabledOpacity: CGFloat = 0.6
+        static let backButtonEnabledOpacity: CGFloat = 1.0
     }
 }
 

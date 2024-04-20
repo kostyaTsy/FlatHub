@@ -29,13 +29,14 @@ public struct CreateAppartementFeature {
         var appartementDescription = AppartementDescriptionFeature.State()
         var chooseDescriptions = ChooseDescriptionTypesFeature.State()
         var addPrice = AddPriceFeature.State()
+        var chooseCancellationPolicy = ChooseCancellationPolicyFeature.State()
 
         var progress: Double {
             Double(selection.rawValue)
         }
 
         var total: Double {
-            Double(Selection.allCases.count)
+            Double(Selection.allCases.count - 1)
         }
 
         public init() {}
@@ -46,6 +47,7 @@ public struct CreateAppartementFeature {
         case onBackTapped
         case onNextTapped
         case onExitTapped
+        case onPublishTapped
         case onSelectionChanged(Selection)
 
         case dataLoaded(AppartementTypesDataModel?)
@@ -60,6 +62,7 @@ public struct CreateAppartementFeature {
         case appartementDescription(AppartementDescriptionFeature.Action)
         case chooseDescriptions(ChooseDescriptionTypesFeature.Action)
         case addPrice(AddPriceFeature.Action)
+        case chooseCancellationPolicy(ChooseCancellationPolicyFeature.Action)
     }
 
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
@@ -83,6 +86,9 @@ public struct CreateAppartementFeature {
 
                     await send(.dataLoaded(dataModel))
                 }
+            case .onPublishTapped:
+                print("Publish")
+                return .none
             case .onBackTapped:
                 let selection = state.selection.prev
                 return .send(.onSelectionChanged(selection))
@@ -140,9 +146,14 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
+            case .chooseCancellationPolicy(.onDataValidationChanged(let isValid)):
+                if state.selection == .chooseCancellationPolicy {
+                    state.isNextDisabled = !isValid
+                }
+                return .none
             case .chooseType, .chooseLivingType, .chooseGuestsCount,
                     .chooseOffers, .appartementTitle, .appartementDescription,
-                    .chooseDescriptions, .addPrice:
+                    .chooseDescriptions, .addPrice, .chooseCancellationPolicy:
                 return .none
             }
         }
@@ -182,6 +193,10 @@ public struct CreateAppartementFeature {
         Scope(state: \.addPrice, action: \.addPrice) {
             AddPriceFeature()
         }
+
+        Scope(state: \.chooseCancellationPolicy, action: \.chooseCancellationPolicy) {
+            ChooseCancellationPolicyFeature()
+        }
     }
 }
 
@@ -198,15 +213,14 @@ public extension CreateAppartementFeature {
         case appartementDescription
         case chooseDescriptions
         case addPrice
-
-        case last
+        case chooseCancellationPolicy
 
         var prev: Self {
             Self(rawValue: self.rawValue - 1) ?? .chooseType
         }
 
         var next: Self {
-            Self(rawValue: self.rawValue + 1) ?? .last
+            Self(rawValue: self.rawValue + 1) ?? .chooseCancellationPolicy
         }
     }
 }
@@ -288,7 +302,18 @@ private extension CreateAppartementFeature {
             state.isNextDisabled = true
             let price = state.appartement.price
             return .send(.addPrice(.setPrice(price)))
-        default: return .none
+        case .chooseCancellationPolicy:
+            state.isNextDisabled = true
+            let appartement = state.appartement
+            let items = state.dataModel.policies
+                .map {
+                    let isSelected = $0.id == appartement.cancellationPolicy?.id
+                    return AppartementTypeMapper.mapToItem(
+                        from: $0,
+                        isSelected: isSelected
+                    )
+                }
+            return .send(.chooseCancellationPolicy(.setData(items)))
         }
     }
 
@@ -334,7 +359,13 @@ private extension CreateAppartementFeature {
             appartement.descriptions = descriptions
         case .addPrice:
             appartement.price = Int(state.addPrice.price)
-        default: ()
+        case .chooseCancellationPolicy:
+            let policies = state.dataModel.policies
+            let policyItem = state.chooseCancellationPolicy.items
+                .filter { $0.isSelected }
+                .first
+            let policy = policies.first(where: { $0.id == policyItem?.id })
+            appartement.cancellationPolicy = policy
         }
     }
 }

@@ -10,7 +10,7 @@ import SwiftUI
 public protocol FHCollectionItem: Identifiable {
     var title: String { get }
     var description: String? { get }
-    var iconName: String { get }
+    var iconName: String? { get }
     var isSelected: Bool { get set }
 }
 
@@ -37,8 +37,6 @@ public struct FHItemCollection<Item: FHCollectionItem>: View {
         let cellBorderColor: Color
         let cellSelectedBorderColor: Color
         let cellBorderWidth: CGFloat
-
-        // TODO: add - allowMultipleSelection
 
         public init(
             presentationType: PresentationType = .compact,
@@ -115,10 +113,12 @@ private extension FHItemCollection {
     @ViewBuilder func compactItemCell(_ item: Item) -> some View {
         HStack {
             VStack(alignment: .leading, spacing: Layout.Spacing.small) {
-                Image(systemName: item.iconName)
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(height: configuration.iconSize)
+                if let iconName = item.iconName {
+                    Image(systemName: iconName)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(height: configuration.iconSize)
+                }
                 Text(item.title)
             }
 
@@ -139,10 +139,12 @@ private extension FHItemCollection {
 
             Spacer()
 
-            Image(systemName: item.iconName)
-                .resizable()
-                .aspectRatio(contentMode: .fit)
-                .frame(height: configuration.iconSize)
+            if let iconName = item.iconName {
+                Image(systemName: iconName)
+                    .resizable()
+                    .aspectRatio(contentMode: .fit)
+                    .frame(height: configuration.iconSize)
+            }
         }
     }
 
@@ -182,7 +184,7 @@ private extension FHItemCollection {
             let id = UUID()
             let title: String
             let description: String?
-            let iconName: String
+            let iconName: String?
             var isSelected: Bool
         }
         @State var items = (0..<10).map { i in
