@@ -13,6 +13,8 @@ public protocol UploadManagerProtocol {
         _ imageData: ImageDataDTO,
         onProgress: ((TaskProgress) -> Void)?
     ) async throws -> URL
+
+    func getImageURL(_ imageData: ImageDataDTO) async -> URL?
 }
 
 final public class UploadManager: UploadManagerProtocol {
@@ -29,6 +31,10 @@ final public class UploadManager: UploadManagerProtocol {
         let path = Constants.imageFolderPath + imageData.name
         let storageRef = storage.reference(withPath: path)
 
+        if let url = await getImageURL(imageData) {
+            return url
+        }
+
         let _ = try await storageRef.putDataAsync(imageData.data) { progress in
             guard let progress else { return }
             let taskProgress = TaskProgress(
@@ -41,6 +47,13 @@ final public class UploadManager: UploadManagerProtocol {
 
         let downloadURL = try await storageRef.downloadURL()
         return downloadURL
+    }
+
+    public func getImageURL(_ imageData: ImageDataDTO) async -> URL? {
+        let path = Constants.imageFolderPath + imageData.name
+        let storageRef = storage.reference(withPath: path)
+
+        return try? await storageRef.downloadURL()
     }
 }
 

@@ -416,10 +416,9 @@ private extension CreateAppartementFeature {
             return true
         case .choosePhotos:
             let photosData = state.choosePhotos.photosDataModel
-            let photosToUpload = photosData.filter { !$0.isUploaded }
 
             let urls = await withTaskGroup(of: (URL?, PhotoDataModel).self, returning: [URL].self) { group in
-                for photo in photosToUpload {
+                for photo in photosData {
                     let imageDTO = PhotoDataMapper.mapToImageDataDTO(from: photo)
                     group.addTask { (try? await uploadManager.uploadImageData(imageDTO, nil), photo) }
                 }
@@ -436,6 +435,7 @@ private extension CreateAppartementFeature {
 
                 return urls
             }
+
             appartement.photosData = photosData
             appartement.imageUrls = urls
             return true
