@@ -48,6 +48,7 @@ public struct CreateAppartementFeature {
         case onNextTapped
         case onExitTapped
         case onPublishTapped
+        case updateLoadingState(Bool)
         case onSelectionChanged(Selection)
 
         case dataLoaded(AppartementTypesDataModel?)
@@ -66,6 +67,7 @@ public struct CreateAppartementFeature {
     }
 
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
+    @Dependency(\.geolocationRepository) var geolocationRepository
     @Dependency(\.dismiss) var dismiss
 
     public init() {}
@@ -93,13 +95,26 @@ public struct CreateAppartementFeature {
                 return .send(.onSelectionChanged(selection))
             case .onNextTapped:
                 let currentSelection = state.selection
-                updateAppartementOnNextTapped(state: &state, for: currentSelection)
-                let selection = state.selection.next
-                return .send(.onSelectionChanged(selection))
+                let state = state
+                return .run { send in
+                    let shouldShowLoading = currentSelection == .chooseLocation
+                    await send(.updateLoadingState(shouldShowLoading))
+                    let updateSuccessful = await updateAppartementOnNextTapped(
+                        state: state,
+                        for: currentSelection
+                    )
+                    await send(.updateLoadingState(false))
+                    guard updateSuccessful else { return }
+                    let selection = currentSelection.next
+                    await send(.onSelectionChanged(selection))
+                }
             case .onExitTapped:
                 return .run { send in
                     await dismiss()
                 }
+            case .updateLoadingState(let isLoading):
+                state.isLoading = isLoading
+                return .none
             case .onSelectionChanged(let selection):
                 let effect = onChangeSelection(state: &state, selection: selection)
                 state.selection = selection
@@ -329,9 +344,9 @@ private extension CreateAppartementFeature {
     }
 
     func updateAppartementOnNextTapped(
-        state: inout State,
+        state: State,
         for selection: Selection
-    ) {
+    ) async -> Bool {
         let appartement = state.appartement
         switch selection {
         case .chooseType:
@@ -340,40 +355,66 @@ private extension CreateAppartementFeature {
                 .first
                 .map { AppartementTypeMapper.mapToType(from: $0) }
             appartement.type = type
+            return true
         case .chooseLivingType:
             let livingType = state.chooseLivingType.items
                 .filter { $0.isSelected }
                 .first
                 .map { AppartementTypeMapper.mapToLivingType(from: $0) }
             appartement.livingType = livingType
+            return true
         case .chooseLocation:
             let location = state.chooseLocation.location
+            guard shouldUpdateGeolocation(
+                appartement: appartement,
+                latitude: location.latitude,
+                longitude: location.longitude
+            ) else { return true }
+
+            let route = GeolocationRoute.reverseGeocode(location.latitude, location.longitude)
+            let response = try? await geolocationRepository.loadGeocodeReverse(route)
+            guard let response,
+                  let geolocation = GeolocationMapper.mapToGeolocation(from: response)
+            else {
+                return false
+            }
+            print(geolocation)
             appartement.latitude = location.latitude
             appartement.longitude = location.longitude
-            // TODO: load city and country depends on latitude and longitude
+            appartement.city = geolocation.city
+            appartement.country = geolocation.country
+            appartement.countryCode = geolocation.countryCode
+
+            return true
         case .chooseGuestsCount:
             let state = state.chooseGuestsCount
             appartement.guestsCount = state.guestsCount
             appartement.bedroomsCount = state.bedroomsCount
             appartement.bedsCount = state.bedsCount
             appartement.bathroomsCount = state.bathroomsCount
+            return true
         case .chooseOffers:
             let offers = state.chooseOffers.items
                 .filter { $0.isSelected }
                 .map { AppartementTypeMapper.mapToOfferType(from: $0) }
             appartement.offers = offers
+            return true
 //        case .choosePhotos
         case .appartementTitle:
             appartement.title = state.appartementTitle.title
+            return true
         case .appartementDescription:
             appartement.description = state.appartementDescription.description
+            return true
         case .chooseDescriptions:
             let descriptions = state.chooseDescriptions.items
                 .filter { $0.isSelected }
                 .map { AppartementTypeMapper.mapToDescriptionType(from: $0) }
             appartement.descriptions = descriptions
+            return true
         case .addPrice:
             appartement.price = Int(state.addPrice.price)
+            return true
         case .chooseCancellationPolicy:
             let policies = state.dataModel.policies
             let policyItem = state.chooseCancellationPolicy.items
@@ -381,6 +422,19 @@ private extension CreateAppartementFeature {
                 .first
             let policy = policies.first(where: { $0.id == policyItem?.id })
             appartement.cancellationPolicy = policy
+            return true
         }
+    }
+
+    private func shouldUpdateGeolocation(
+        appartement: CreateAppartement,
+        latitude: Double,
+        longitude: Double
+    ) -> Bool {
+        appartement.longitude != longitude ||
+        appartement.latitude != latitude ||
+        appartement.city == nil ||
+        appartement.country == nil ||
+        appartement.countryCode == nil
     }
 }

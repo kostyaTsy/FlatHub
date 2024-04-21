@@ -14,6 +14,9 @@ final class CreateAppartement {
 
     var longitude: Double?
     var latitude: Double?
+    var city: String?
+    var country: String?
+    var countryCode: String?
 
     var guestsCount: Int = 4
     var bedroomsCount: Int = 1
