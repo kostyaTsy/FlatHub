@@ -26,6 +26,7 @@ public struct CreateAppartementView: View {
                     footerView()
                 }
             }
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
@@ -71,7 +72,10 @@ public struct CreateAppartementView: View {
             )
             .tag(CreateAppartementFeature.Selection.chooseOffers)
 
-            // TODO: add upload photos
+            ChoosePhotosView(
+                store: store.scope(state: \.choosePhotos, action: \.choosePhotos)
+            )
+            .tag(CreateAppartementFeature.Selection.choosePhotos)
 
             AppartementTitleView(
                 store: store.scope(state: \.appartementTitle, action: \.appartementTitle)

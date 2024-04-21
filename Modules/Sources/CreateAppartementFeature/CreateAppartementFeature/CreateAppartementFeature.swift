@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import FHRepository
+import Foundation
 
 @Reducer
 public struct CreateAppartementFeature {
@@ -24,7 +25,7 @@ public struct CreateAppartementFeature {
         var chooseLocation = ChooseLocationFeature.State()
         var chooseGuestsCount = ChooseGuestsCountFeature.State()
         var chooseOffers = ChooseOfferTypesFeature.State()
-//        var choosePhotos
+        var choosePhotos = ChoosePhotosFeature.State()
         var appartementTitle = AppartementTitleFeature.State()
         var appartementDescription = AppartementDescriptionFeature.State()
         var chooseDescriptions = ChooseDescriptionTypesFeature.State()
@@ -58,7 +59,7 @@ public struct CreateAppartementFeature {
         case chooseLocation(ChooseLocationFeature.Action)
         case chooseGuestsCount(ChooseGuestsCountFeature.Action)
         case chooseOffers(ChooseOfferTypesFeature.Action)
-//        case choosePhotos
+        case choosePhotos(ChoosePhotosFeature.Action)
         case appartementTitle(AppartementTitleFeature.Action)
         case appartementDescription(AppartementDescriptionFeature.Action)
         case chooseDescriptions(ChooseDescriptionTypesFeature.Action)
@@ -68,6 +69,7 @@ public struct CreateAppartementFeature {
 
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
     @Dependency(\.geolocationRepository) var geolocationRepository
+    @Dependency(\.uploadManager) var uploadManager
     @Dependency(\.dismiss) var dismiss
 
     public init() {}
@@ -97,16 +99,20 @@ public struct CreateAppartementFeature {
                 let currentSelection = state.selection
                 let state = state
                 return .run { send in
-                    let shouldShowLoading = currentSelection == .chooseLocation
+                    let shouldShowLoading = currentSelection == .chooseLocation || currentSelection == .choosePhotos
                     await send(.updateLoadingState(shouldShowLoading))
                     let updateSuccessful = await updateAppartementOnNextTapped(
                         state: state,
                         for: currentSelection
                     )
-                    await send(.updateLoadingState(false))
-                    guard updateSuccessful else { return }
+
+                    guard updateSuccessful else {
+                        await send(.updateLoadingState(false))
+                        return
+                    }
                     let selection = currentSelection.next
                     await send(.onSelectionChanged(selection))
+                    await send(.updateLoadingState(false))
                 }
             case .onExitTapped:
                 return .run { send in
@@ -138,7 +144,11 @@ public struct CreateAppartementFeature {
                     state.isNextDisabled = !isValid
                 }
                 return .none
-//            case .choosePhotos
+            case .choosePhotos(.onPhotosValidationChanged(let isValid)):
+                if state.selection == .choosePhotos {
+                    state.isNextDisabled = !isValid
+                }
+                return .none
             case .appartementTitle(.onTitleValidationChanged(let isValid)):
                 if state.selection == .appartementTitle {
                     state.isNextDisabled = !isValid
@@ -165,7 +175,7 @@ public struct CreateAppartementFeature {
                 }
                 return .none
             case .chooseType, .chooseLivingType, .chooseLocation, .chooseGuestsCount,
-                    .chooseOffers, .appartementTitle, .appartementDescription,
+                    .chooseOffers, .choosePhotos, .appartementTitle, .appartementDescription,
                     .chooseDescriptions, .addPrice, .chooseCancellationPolicy:
                 return .none
             }
@@ -191,7 +201,9 @@ public struct CreateAppartementFeature {
             ChooseOfferTypesFeature()
         }
 
-        // Photos
+        Scope(state: \.choosePhotos, action: \.choosePhotos) {
+            ChoosePhotosFeature()
+        }
 
         Scope(state: \.appartementTitle, action: \.appartementTitle) {
             AppartementTitleFeature()
@@ -223,7 +235,7 @@ public extension CreateAppartementFeature {
         case chooseLocation
         case chooseGuestsCount
         case chooseOffers
-//        case choosePhotos
+        case choosePhotos
         case appartementTitle
         case appartementDescription
         case chooseDescriptions
@@ -302,7 +314,10 @@ private extension CreateAppartementFeature {
                     )
                 }
             return .send(.chooseOffers(.setData(items)))
-//        case .choosePhotos:
+        case .choosePhotos:
+            state.isNextDisabled = true
+            let photosData = state.appartement.photosData
+            return .send(.choosePhotos(.setPhotosData(photosData)))
         case .appartementTitle:
             state.isNextDisabled = true
             let title = state.appartement.title ?? ""
@@ -378,7 +393,7 @@ private extension CreateAppartementFeature {
             else {
                 return false
             }
-            print(geolocation)
+
             appartement.latitude = location.latitude
             appartement.longitude = location.longitude
             appartement.city = geolocation.city
@@ -399,7 +414,31 @@ private extension CreateAppartementFeature {
                 .map { AppartementTypeMapper.mapToOfferType(from: $0) }
             appartement.offers = offers
             return true
-//        case .choosePhotos
+        case .choosePhotos:
+            let photosData = state.choosePhotos.photosDataModel
+            let photosToUpload = photosData.filter { !$0.isUploaded }
+
+            let urls = await withTaskGroup(of: (URL?, PhotoDataModel).self, returning: [URL].self) { group in
+                for photo in photosToUpload {
+                    let imageDTO = PhotoDataMapper.mapToImageDataDTO(from: photo)
+                    group.addTask { (try? await uploadManager.uploadImageData(imageDTO, nil), photo) }
+                }
+
+                var urls: [URL] = []
+                for await result in group {
+                    guard let url = result.0 else { continue }
+                    let photo = result.1
+                    if let index = photosData.firstIndex(where: { $0.id == photo.id }) {
+                        photosData[index].isUploaded = true
+                    }
+                    urls.append(url)
+                }
+
+                return urls
+            }
+            appartement.photosData = photosData
+            appartement.imageUrls = urls
+            return true
         case .appartementTitle:
             appartement.title = state.appartementTitle.title
             return true

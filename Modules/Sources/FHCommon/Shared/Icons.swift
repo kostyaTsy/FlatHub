@@ -26,4 +26,5 @@ public enum Icons {
     public static let dollarSignIcon = Image(systemName: "dollarsign.circle")
     public static let plusIcon = Image(systemName: "plus")
     public static let handPointIcon = Image(systemName: "hand.point.down.fill")
+    public static let closeIcon = Image(systemName: "xmark.circle.fill")
 }

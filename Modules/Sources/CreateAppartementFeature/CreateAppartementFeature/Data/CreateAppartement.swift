@@ -24,6 +24,8 @@ final class CreateAppartement {
     var bathroomsCount: Int = 1
 
     var offers: [AppartementOfferType] = []
+    var photosData: [PhotoDataModel] = []
+    var imageUrls: [URL] = []
     var title: String?
     var description: String?
     var descriptions: [AppartementDescriptionType] = []

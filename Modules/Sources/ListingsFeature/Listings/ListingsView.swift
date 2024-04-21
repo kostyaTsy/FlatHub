@@ -23,6 +23,7 @@ public struct ListingsView: View {
                 path: $store.scope(state: \.path, action: \.path)
             ) {
                 content()
+                    .toolbar(.visible, for: .navigationBar)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Button {
