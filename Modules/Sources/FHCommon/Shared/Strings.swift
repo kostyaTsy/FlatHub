@@ -82,4 +82,8 @@ public enum Strings {
     public static let addPriceTitle = "Now, set your price"
     public static let addPriceSubtitle = "You can change it anytime."
     public static let chooseCancellationPolicyTitle = "Now, set cancellation policy"
+
+    // MARK: - ListingList
+    public static let availableAppartementText = "Online"
+    public static let notAvailableAppartementText = "Offline"
 }

@@ -12,4 +12,16 @@ public struct AppartementCancellationPolicyType: Identifiable, Codable {
     public let title: String
     public let hostDescription: String
     public let travelDescription: String
+
+    public init(
+        id: Int,
+        title: String,
+        hostDescription: String,
+        travelDescription: String
+    ) {
+        self.id = id
+        self.title = title
+        self.hostDescription = hostDescription
+        self.travelDescription = travelDescription
+    }
 }
