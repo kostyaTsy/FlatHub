@@ -9,6 +9,8 @@ import Foundation
 
 enum DBTableName {
     static let userTable = "User"
+    static let appartementTable = "Appartement"
+    static let appartementInfoTable = "AppartementInfo"
     static let appartementTypeTable = "AppartementType"
     static let appartementOfferTypeTable = "AppartementOfferType"
     static let appartementLivingTypeTable = "AppartementLivingType"

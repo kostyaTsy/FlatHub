@@ -49,6 +49,8 @@ public struct CreateAppartementFeature {
         case onNextTapped
         case onExitTapped
         case onPublishTapped
+        case publishedSuccess
+        case publishedFailure
         case updateLoadingState(Bool)
         case onSelectionChanged(Selection)
 
@@ -67,6 +69,8 @@ public struct CreateAppartementFeature {
         case chooseCancellationPolicy(ChooseCancellationPolicyFeature.Action)
     }
 
+    @Dependency(\.accountRepository) var accountRepository
+    @Dependency(\.appartementRepository) var appartementRepository
     @Dependency(\.appartementTypesRepository) var appartementTypesRepository
     @Dependency(\.geolocationRepository) var geolocationRepository
     @Dependency(\.uploadManager) var uploadManager
@@ -91,6 +95,33 @@ public struct CreateAppartementFeature {
                     await send(.dataLoaded(dataModel))
                 }
             case .onPublishTapped:
+                let userId = accountRepository.user().id
+                let currentSelection = state.selection
+                let appartement = state.appartement
+
+                state.isLoading = true
+                
+                let state = state
+                return .run { send in
+                    do {
+                        _ = await updateAppartementOnNextTapped(state: state, for: currentSelection)
+                        guard let dto = try? AppartementMapper.mapToCreateDTO(
+                            from: appartement,
+                            userId: userId
+                        ) else { return await send(.publishedFailure) }
+
+                        try await appartementRepository.createAppartement(dto)
+                        await send(.publishedSuccess)
+                    } catch {
+                        await send(.publishedFailure)
+                    }
+                }
+            case .publishedSuccess:
+                return .run { send in
+                    await dismiss()
+                }
+            case .publishedFailure:
+                state.isLoading = false
                 return .none
             case .onBackTapped:
                 let selection = state.selection.prev
