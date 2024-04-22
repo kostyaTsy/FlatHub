@@ -42,4 +42,22 @@ enum AppartementMapper {
             cancellationPolicy: from.cancellationPolicy
         )
     }
+
+    static func mapToAppartementDetailsDTO(
+        from: CreateAppartementDTO
+    ) -> AppartementDetailsDTO {
+        let info = mapToAppartementInfoDTO(from: from)
+        return AppartementDetailsDTO(
+            id: from.id,
+            hostUserId: from.hostUserId,
+            title: from.title,
+            city: from.city,
+            country: from.county,
+            countryCode: from.countryCode,
+            pricePerNight: from.pricePerNight,
+            guestCount: from.guestsCount,
+            photosStringURL: from.photosStringURL,
+            info: info
+        )
+    }
 }

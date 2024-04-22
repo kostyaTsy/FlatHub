@@ -9,7 +9,7 @@ import Foundation
 import Dependencies
 
 public struct AppartementRepositoryDependency: Sendable {
-    public var createAppartement: @Sendable (_ dto: CreateAppartementDTO) async throws -> Void
+    public var createAppartement: @Sendable (_ dto: CreateAppartementDTO) async throws -> AppartementDetailsDTO
 }
 
 // MARK: - Live
@@ -34,7 +34,31 @@ extension AppartementRepositoryDependency {
     static func mock() -> AppartementRepositoryDependency {
         let mockDependency = AppartementRepositoryDependency(
             createAppartement: { _ in
-                ()
+                AppartementDetailsDTO(
+                    id: "id",
+                    hostUserId: "",
+                    title: "title",
+                    city: "city",
+                    country: "county",
+                    countryCode: "countyCode",
+                    pricePerNight: 12,
+                    guestCount: 3,
+                    photosStringURL: [],
+                    info: .init(
+                        appartementId: "id",
+                        latitude: 12,
+                        longitude: 12,
+                        description: "description",
+                        bedrooms: 1,
+                        beds: 1,
+                        bathrooms: 1,
+                        type: .init(id: 1, name: "name", iconName: "person"),
+                        livingType: .init(id: 1, title: "title", description: "description", iconName: "person"),
+                        offers: [],
+                        descriptionTypes: [],
+                        cancellationPolicy: .init(id: 1, title: "", hostDescription: "", travelDescription: "")
+                    )
+                )
             }
         )
 
