@@ -28,6 +28,8 @@ public struct CreateAppartementDTO {
     let bathrooms: Int
     let beds: Int
 
+    let createDate: Date
+
     let type: AppartementType
     let livingType: AppartementLivingType
     let offers: [AppartementOfferType]
@@ -50,6 +52,7 @@ public struct CreateAppartementDTO {
         bedrooms: Int,
         bathrooms: Int,
         beds: Int,
+        createDate: Date = Date.now,
         type: AppartementType,
         livingType: AppartementLivingType,
         offers: [AppartementOfferType],
@@ -71,6 +74,7 @@ public struct CreateAppartementDTO {
         self.bedrooms = bedrooms
         self.bathrooms = bathrooms
         self.beds = beds
+        self.createDate = createDate
         self.type = type
         self.livingType = livingType
         self.offers = offers

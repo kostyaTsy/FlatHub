@@ -20,7 +20,8 @@ enum AppartementMapper {
             countryCode: from.countryCode,
             pricePerNight: from.pricePerNight,
             guestCount: from.guestsCount,
-            photosStringURL: from.photosStringURL
+            photosStringURL: from.photosStringURL,
+            createDate: from.createDate
         )
     }
 
@@ -57,6 +58,7 @@ enum AppartementMapper {
             pricePerNight: from.pricePerNight,
             guestCount: from.guestsCount,
             photosStringURL: from.photosStringURL,
+            createDate: from.createDate,
             info: info
         )
     }

@@ -10,6 +10,9 @@ import Dependencies
 
 public struct AppartementRepositoryDependency: Sendable {
     public var createAppartement: @Sendable (_ dto: CreateAppartementDTO) async throws -> AppartementDetailsDTO
+    public var deleteAppartement: @Sendable (_ id: String) async throws -> Void
+    public var updateAppartementAvailability: @Sendable (_ dto: AppartementAvailabilityDTO) async throws -> Void
+
 }
 
 // MARK: - Live
@@ -21,6 +24,10 @@ extension AppartementRepositoryDependency {
         let dependency = AppartementRepositoryDependency(
             createAppartement: { dto in
                 try await appartementRepository.createAppartement(with: dto)
+            }, deleteAppartement: { id in
+                try await appartementRepository.deleteAppartement(with: id)
+            }, updateAppartementAvailability: { dto in
+                try await appartementRepository.updateAppartementAvailability(with: dto)
             }
         )
 
@@ -44,6 +51,7 @@ extension AppartementRepositoryDependency {
                     pricePerNight: 12,
                     guestCount: 3,
                     photosStringURL: [],
+                    createDate: Date.now,
                     info: .init(
                         appartementId: "id",
                         latitude: 12,
@@ -59,6 +67,10 @@ extension AppartementRepositoryDependency {
                         cancellationPolicy: .init(id: 1, title: "", hostDescription: "", travelDescription: "")
                     )
                 )
+            }, deleteAppartement: { _ in
+                ()
+            }, updateAppartementAvailability: { _ in
+                ()
             }
         )
 

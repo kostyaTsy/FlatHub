@@ -14,12 +14,13 @@ public struct HostAppartement: Identifiable {
     let city: String
     let country: String
     let countryCode: String
-    let isAvailableForBook: Bool
+    var isAvailableForBook: Bool
     let pricePerNight: Int
     let guestCount: Int
     let rating: Double?
     let reviewCount: Int
     let photosStringURL: [String]
+    let createDate: Date
 
     let details: HostAppartementDetails
 
@@ -40,6 +41,7 @@ public struct HostAppartement: Identifiable {
         rating: Double? = nil,
         reviewCount: Int = 0,
         photosStringURL: [String],
+        createDate: Date = Date.now,
         details: HostAppartementDetails
     ) {
         self.id = id
@@ -54,6 +56,7 @@ public struct HostAppartement: Identifiable {
         self.rating = rating
         self.reviewCount = reviewCount
         self.photosStringURL = photosStringURL
+        self.createDate = createDate
         self.details = details
     }
 }

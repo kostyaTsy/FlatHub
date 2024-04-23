@@ -20,6 +20,7 @@ public struct AppartementDTO: Codable {
     let rating: Double?
     let reviewCount: Int
     let photosStringURL: [String]
+    let createDate: Date
 
     public init(
         id: String,
@@ -33,7 +34,8 @@ public struct AppartementDTO: Codable {
         guestCount: Int,
         rating: Double? = nil,
         reviewCount: Int = 0,
-        photosStringURL: [String]
+        photosStringURL: [String],
+        createDate: Date
     ) {
         self.id = id
         self.hostUserId = hostUserId
@@ -47,5 +49,6 @@ public struct AppartementDTO: Codable {
         self.rating = rating
         self.reviewCount = reviewCount
         self.photosStringURL = photosStringURL
+        self.createDate = createDate
     }
 }

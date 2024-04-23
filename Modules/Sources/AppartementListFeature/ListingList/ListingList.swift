@@ -25,6 +25,12 @@ public struct ListingList: View {
             } else {
                 content()
                     .padding(.horizontal, Layout.Spacing.smallMedium)
+                    .sheet(
+                        item: $store.scope(state: \.bottomSheet, action: \.bottomSheet)
+                    ) { store in
+                        ListingCellActionsBottomSheet(store: store)
+                            .presentationDetents([.fraction(Constants.sheetFraction)])
+                    }
             }
         }
     }
@@ -34,6 +40,7 @@ public struct ListingList: View {
             LazyVStack {
                 ForEach(store.appartements) { appartement in
                     ListingCell(appartement: appartement)
+                        .background(Colors.system)
                         .padding(.bottom, Layout.Spacing.big50)
                         .onTapGesture {
                             store.send(.onAppartementTapped(appartement))
@@ -41,6 +48,12 @@ public struct ListingList: View {
                 }
             }
         }
+    }
+}
+
+private extension ListingList {
+    enum Constants {
+        static let sheetFraction: CGFloat = 0.38
     }
 }
 

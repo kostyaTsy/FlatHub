@@ -86,4 +86,9 @@ public enum Strings {
     // MARK: - ListingList
     public static let availableAppartementText = "Online"
     public static let notAvailableAppartementText = "Offline"
+
+    public static let editAppartementButtonTitle = "Edit"
+    public static let deleteAppartementButtonTitle = "Remove"
+    public static let changeAvailabilityToOnlineButtonTitle = "Continue booking"
+    public static let changeAvailabilityToOfflineButtonTitle = "Stop booking"
 }

@@ -12,6 +12,12 @@ public protocol AppartementRepositoryProtocol {
     func createAppartement(
         with dto: CreateAppartementDTO
     ) async throws -> AppartementDetailsDTO
+
+    func deleteAppartement(with id: String) async throws
+    
+    func updateAppartementAvailability(
+        with dto: AppartementAvailabilityDTO
+    ) async throws
 }
 
 public final class AppartementRepository: AppartementRepositoryProtocol {
@@ -33,7 +39,24 @@ public final class AppartementRepository: AppartementRepositoryProtocol {
 
         return AppartementMapper.mapToAppartementDetailsDTO(from: dto)
     }
+
+    public func deleteAppartement(with id: String) async throws {
+        async let deleteAppartementRequest: () = deleteAppartementData(with: id)
+        async let deleteAppartementInfoRequest: () = deleteAppartementInfo(with: id)
+
+        _ = try await [deleteAppartementRequest, deleteAppartementInfoRequest]
+    }
+
+    public func updateAppartementAvailability(
+        with dto: AppartementAvailabilityDTO
+    ) async throws {
+        try await store.collection(DBTableName.appartementTable)
+            .document(dto.id)
+            .updateData(["isAvailableForBook": dto.isAvailable])
+    }
 }
+
+// MARK: - Upload
 
 private extension AppartementRepository {
     private func uploadAppartement(with dto: AppartementDTO) async throws {
@@ -46,5 +69,21 @@ private extension AppartementRepository {
         try store.collection(DBTableName.appartementInfoTable)
             .document(dto.appartementId)
             .setData(from: dto)
+    }
+}
+
+// MARK: - Delete
+
+private extension AppartementRepository {
+    private func deleteAppartementData(with id: String) async throws {
+        try await store.collection(DBTableName.appartementTable)
+            .document(id)
+            .delete()
+    }
+
+    private func deleteAppartementInfo(with id: String) async throws {
+        try await store.collection(DBTableName.appartementInfoTable)
+            .document(id)
+            .delete()
     }
 }
