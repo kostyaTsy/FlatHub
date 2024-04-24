@@ -18,6 +18,8 @@ public protocol AppartementRepositoryProtocol {
     func updateAppartementAvailability(
         with dto: AppartementAvailabilityDTO
     ) async throws
+
+    func loadHostAppartements(for userId: String) async throws -> [AppartementDetailsDTO]
 }
 
 public final class AppartementRepository: AppartementRepositoryProtocol {
@@ -54,18 +56,36 @@ public final class AppartementRepository: AppartementRepositoryProtocol {
             .document(dto.id)
             .updateData(["isAvailableForBook": dto.isAvailable])
     }
+
+    public func loadHostAppartements(for userId: String) async throws -> [AppartementDetailsDTO] {
+        let appartements = try await loadAppartementsData(for: userId)
+        let ids = appartements.map { $0.id }
+
+        let infos = try await loadAppartementInfos(for: ids)
+
+        return appartements.compactMap { appartement in
+            guard let info = infos[appartement.id] else {
+                return nil
+            }
+            return AppartementMapper.mapToAppartementDetailsDTO(
+                from: appartement,
+                with: info
+            )
+        }
+
+    }
 }
 
 // MARK: - Upload
 
 private extension AppartementRepository {
-    private func uploadAppartement(with dto: AppartementDTO) async throws {
+    func uploadAppartement(with dto: AppartementDTO) async throws {
         try store.collection(DBTableName.appartementTable)
             .document(dto.id)
             .setData(from: dto)
     }
 
-    private func uploadAppartementInfo(with dto: AppartementInfoDTO) async throws {
+    func uploadAppartementInfo(with dto: AppartementInfoDTO) async throws {
         try store.collection(DBTableName.appartementInfoTable)
             .document(dto.appartementId)
             .setData(from: dto)
@@ -75,15 +95,53 @@ private extension AppartementRepository {
 // MARK: - Delete
 
 private extension AppartementRepository {
-    private func deleteAppartementData(with id: String) async throws {
+    func deleteAppartementData(with id: String) async throws {
         try await store.collection(DBTableName.appartementTable)
             .document(id)
             .delete()
     }
 
-    private func deleteAppartementInfo(with id: String) async throws {
+    func deleteAppartementInfo(with id: String) async throws {
         try await store.collection(DBTableName.appartementInfoTable)
             .document(id)
             .delete()
+    }
+}
+
+// MARK: - Load
+
+private extension AppartementRepository {
+    func loadAppartementsData(for userId: String) async throws -> [AppartementDTO] {
+        try await store.collection(DBTableName.appartementTable)
+            .whereField("hostUserId", isEqualTo: userId)
+            .getDocuments()
+            .documents
+            .compactMap { snapshot in
+                try? snapshot.data(as: AppartementDTO.self)
+            }
+    }
+
+    func loadAppartementInfos(for ids: [String]) async throws -> [String: AppartementInfoDTO] {
+        try await withThrowingTaskGroup(of: (String, AppartementInfoDTO).self) { taskGroup in
+            for id in ids {
+                taskGroup.addTask { (id, try await self.loadAppartementInfo(for: id)) }
+            }
+
+            var appartementInfos: [String: AppartementInfoDTO] = [:]
+            for try await item in taskGroup {
+                let id = item.0
+                let info = item.1
+                appartementInfos[id] = info
+            }
+
+            return appartementInfos
+        }
+    }
+
+    func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO {
+        try await store.collection(DBTableName.appartementInfoTable)
+            .document(appartementId)
+            .getDocument()
+            .data(as: AppartementInfoDTO.self)
     }
 }

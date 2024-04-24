@@ -8,6 +8,7 @@
 import ComposableArchitecture
 import SwiftUI
 import CreateAppartementFeature
+import AppartementListFeature
 import FHCommon
 
 public struct ListingsView: View {
@@ -23,7 +24,11 @@ public struct ListingsView: View {
                 path: $store.scope(state: \.path, action: \.path)
             ) {
                 content()
+                    .onAppear {
+                        store.send(.onAppear)
+                    }
                     .toolbar(.visible, for: .navigationBar)
+                    .navigationBarTitleDisplayMode(.inline)
                     .toolbar {
                         ToolbarItem(placement: .topBarTrailing) {
                             Button {
@@ -36,7 +41,13 @@ public struct ListingsView: View {
                                     .clipShape(Circle())
                             }
                         }
+
+                        ToolbarItem(placement: .principal) {
+                            Text(Strings.listingsTabTitle)
+                        }
                     }
+                    .toolbarBackground(Colors.system, for: .navigationBar)
+                    .toolbarBackground(.visible, for: .navigationBar)
             } destination: { store in
                 switch store.case {
                 case .create(let store):
@@ -47,7 +58,10 @@ public struct ListingsView: View {
     }
 
     @ViewBuilder private func content() -> some View {
-        Text("Listings")
+        ListingList(
+            store: store.scope(state: \.listings, action: \.listings)
+        )
+        .padding(.top, Layout.Spacing.small)
     }
 }
 

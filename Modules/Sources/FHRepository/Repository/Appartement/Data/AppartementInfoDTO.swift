@@ -8,18 +8,18 @@
 import Foundation
 
 public struct AppartementInfoDTO: Codable {
-    let appartementId: String
-    let latitude: Double
-    let longitude: Double
-    let description: String
-    let bedrooms: Int
-    let beds: Int
-    let bathrooms: Int
-    let type: AppartementType
-    let livingType: AppartementLivingType
-    let offers: [AppartementOfferType]
-    let descriptionTypes: [AppartementDescriptionType]
-    let cancellationPolicy: AppartementCancellationPolicyType
+    public let appartementId: String
+    public let latitude: Double
+    public let longitude: Double
+    public let description: String
+    public let bedrooms: Int
+    public let beds: Int
+    public let bathrooms: Int
+    public let type: AppartementType
+    public let livingType: AppartementLivingType
+    public let offers: [AppartementOfferType]
+    public let descriptionTypes: [AppartementDescriptionType]
+    public let cancellationPolicy: AppartementCancellationPolicyType
 
     public init(
         appartementId: String,

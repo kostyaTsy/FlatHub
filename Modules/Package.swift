@@ -113,7 +113,7 @@ let package = Package(
         .target(
             name: "ListingsFeature",
             dependencies: [
-                .tca, "CreateAppartementFeature", "FHCommon", "FHRepository"
+                .tca, "CreateAppartementFeature", "AppartementListFeature", "FHCommon", "FHRepository"
             ]),
         .target(
             name: "ProfileFeature",

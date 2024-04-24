@@ -12,6 +12,7 @@ public struct AppartementRepositoryDependency: Sendable {
     public var createAppartement: @Sendable (_ dto: CreateAppartementDTO) async throws -> AppartementDetailsDTO
     public var deleteAppartement: @Sendable (_ id: String) async throws -> Void
     public var updateAppartementAvailability: @Sendable (_ dto: AppartementAvailabilityDTO) async throws -> Void
+    public var loadHostAppartements: @Sendable (_ userId: String) async throws -> [AppartementDetailsDTO]
 
 }
 
@@ -28,6 +29,8 @@ extension AppartementRepositoryDependency {
                 try await appartementRepository.deleteAppartement(with: id)
             }, updateAppartementAvailability: { dto in
                 try await appartementRepository.updateAppartementAvailability(with: dto)
+            }, loadHostAppartements: { userId in
+                try await appartementRepository.loadHostAppartements(for: userId)
             }
         )
 
@@ -71,6 +74,8 @@ extension AppartementRepositoryDependency {
                 ()
             }, updateAppartementAvailability: { _ in
                 ()
+            }, loadHostAppartements: { _ in
+                []
             }
         )
 

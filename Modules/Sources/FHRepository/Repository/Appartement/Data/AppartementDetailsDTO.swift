@@ -8,21 +8,21 @@
 import Foundation
 
 public struct AppartementDetailsDTO: Codable {
-    let id: String
-    let hostUserId: String
-    let title: String
-    let city: String
-    let country: String
-    let countryCode: String
-    let isAvailableForBook: Bool
-    let pricePerNight: Int
-    let guestCount: Int
-    let rating: Double?
-    let reviewCount: Int
-    let photosStringURL: [String]
-    let createDate: Date
+    public let id: String
+    public let hostUserId: String
+    public let title: String
+    public let city: String
+    public let country: String
+    public let countryCode: String
+    public let isAvailableForBook: Bool
+    public let pricePerNight: Int
+    public let guestCount: Int
+    public let rating: Double?
+    public let reviewCount: Int
+    public let photosStringURL: [String]
+    public let createDate: Date
 
-    let info: AppartementInfoDTO
+    public let info: AppartementInfoDTO
 
     public init(
         id: String,
