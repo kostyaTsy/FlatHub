@@ -15,6 +15,11 @@ public enum Strings {
     public static let alertYesButtonText = "Yes"
     public static let alertNoButtonText = "No"
     public static let empty = ""
+    public static let guestsText = "Guests"
+    public static let bedroomsText = "Bedrooms"
+    public static let bedsText = "Beds"
+    public static let bathroomsText = "Bathrooms"
+    public static let currencySign = "$"
 
     // MARK: - Auth
     public static let loginTitle = "Login"
@@ -40,7 +45,6 @@ public enum Strings {
     public static let earningsTabTitle = "Earnings"
 
     // MARK: - AppartementList
-    public static let currencySign = "$"
     public static let nightText = "night"
 
     // MARK: - Profile
@@ -52,4 +56,39 @@ public enum Strings {
     public static let switchToHostingAlertQuestion = "Are you certain you want to become a host?"
     public static let yourSpaceText = "Your space"
     public static let logOutButton = "Log out"
+
+    // MARK: - Create appartement
+    public static let navigationNextButtonTitle = "Next"
+    public static let navigationBackButtonTitle = "Back"
+    public static let navigationExitButtonTitle = "Exit"
+    public static let navigationPublishButtonTitle = "Publish"
+
+    public static let choosePhotosButtonTitle = "Select photos"
+
+    public static let chooseAppartementTypeTitle = "Which of these best describes your place?"
+    public static let chooseLivingTypeTitle = "What type of place will guests have?"
+    public static let chooseLocationTitle = "Is the pin in the right spot?"
+    public static let chooseLocationSubtitle = "Choose location of your place"
+    public static let chooseGuestsCountTitle = "Share some basics about your place"
+    public static let chooseOfferTypesTitle = "Tell guests what your place has to offer"
+    public static let choosePhotosTitle = "Choose photos of your place"
+    public static let appartementTitleText = "Now, let's give your house a title"
+    public static let appartementTitleSubtext = "Short titles work best. Have fun with it - you can always change it later."
+    public static let appartementTitleTextFieldPlaceholder = "Your title"
+    public static let appartementDescriptionTitle = "Create your description"
+    public static let appartementDescriptionSubtitle = "Share what makes your place special."
+    public static let appartementDescriptionTextFieldPlaceholder = "Your description"
+    public static let chooseDescriptionTypesTitle = "Next, let's describe your house"
+    public static let addPriceTitle = "Now, set your price"
+    public static let addPriceSubtitle = "You can change it anytime."
+    public static let chooseCancellationPolicyTitle = "Now, set cancellation policy"
+
+    // MARK: - ListingList
+    public static let availableAppartementText = "Online"
+    public static let notAvailableAppartementText = "Offline"
+
+    public static let editAppartementButtonTitle = "Edit"
+    public static let deleteAppartementButtonTitle = "Remove"
+    public static let changeAvailabilityToOnlineButtonTitle = "Continue booking"
+    public static let changeAvailabilityToOfflineButtonTitle = "Stop booking"
 }

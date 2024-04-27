@@ -11,17 +11,23 @@ public struct FHOvalButton: View {
     public struct Configuration {
         let backgroundColor: Color
         let foregroundColor: Color
+        let borderColor: Color
+        let borderWidth: CGFloat
         let cornerRadius: CGFloat
         let font: Font
 
         public init(
             backgroundColor: Color = .blue,
             foregroundColor: Color = .white,
+            borderColor: Color = .clear,
+            borderWidth: CGFloat = .zero,
             cornerRadius: CGFloat = 10,
             font: Font = .system(size: 17, weight: .semibold)
         ) {
             self.backgroundColor = backgroundColor
             self.foregroundColor = foregroundColor
+            self.borderColor = borderColor
+            self.borderWidth = borderWidth
             self.cornerRadius = cornerRadius
             self.font = font
         }
@@ -53,6 +59,10 @@ public struct FHOvalButton: View {
             .buttonStyle(
                 FHOvalButtonStyle(backgroundColor: configuration.backgroundColor,
                                   foregroundColor: configuration.foregroundColor,
+                                  borderColor: configuration.borderColor,
+                                  borderWidth: configuration.borderWidth,
+                                  cornerRadius: configuration.cornerRadius,
+                                  font: configuration.font,
                                   isDisabled: disabled)
             )
             .disabled(self.disabled)

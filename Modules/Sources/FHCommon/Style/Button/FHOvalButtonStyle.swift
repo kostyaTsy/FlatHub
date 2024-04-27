@@ -10,6 +10,8 @@ import SwiftUI
 public struct FHOvalButtonStyle: ButtonStyle {
     let backgroundColor: Color
     let foregroundColor: Color
+    let borderColor: Color
+    let borderWidth: CGFloat
     let cornerRadius: CGFloat
     let font: Font
     let isDisabled: Bool
@@ -17,12 +19,16 @@ public struct FHOvalButtonStyle: ButtonStyle {
     public init(
         backgroundColor: Color,
         foregroundColor: Color,
+        borderColor: Color = .clear,
+        borderWidth: CGFloat = .zero,
         cornerRadius: CGFloat = 10,
         font: Font = .system(size: 17, weight: .semibold),
         isDisabled: Bool = false
     ) {
         self.backgroundColor = backgroundColor
         self.foregroundColor = foregroundColor
+        self.borderColor = borderColor
+        self.borderWidth = borderWidth
         self.cornerRadius = cornerRadius
         self.font = font
         self.isDisabled = isDisabled
@@ -37,7 +43,7 @@ public struct FHOvalButtonStyle: ButtonStyle {
             .cornerRadius(cornerRadius)
             .overlay(
                 RoundedRectangle(cornerRadius: cornerRadius)
-                    .stroke(currentForegroundColor, lineWidth: .zero)
+                    .stroke(borderColor, lineWidth: borderWidth)
             )
             .padding([.top, .bottom])
             .font(font)

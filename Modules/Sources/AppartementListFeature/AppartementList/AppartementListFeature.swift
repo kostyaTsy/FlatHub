@@ -15,17 +15,11 @@ public struct AppartementListFeature {
         var appartements: [Appartement]
         var isDataLoaded = false
 
-
         public init(appartements: [Appartement]) {
             self.appartements = appartements
             if !appartements.isEmpty {
                 isDataLoaded = true
             }
-        }
-
-        mutating public func updateAppartements(with appartements: [Appartement]) {
-            self.appartements = appartements
-            self.isDataLoaded = true
         }
     }
 

@@ -62,7 +62,7 @@ public struct ProfileView: View {
                             .fontWeight(.medium)
                     }
                 }
-                .foregroundStyle(.black)
+                .foregroundStyle(Colors.label)
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
