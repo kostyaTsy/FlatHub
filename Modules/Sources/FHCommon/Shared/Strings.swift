@@ -44,6 +44,9 @@ public enum Strings {
     public static let listingsTabTitle = "Listings"
     public static let earningsTabTitle = "Earnings"
 
+    // MARK: - Explore
+    public static let searchContainerText = "Where to go?"
+
     // MARK: - AppartementList
     public static let nightText = "night"
 

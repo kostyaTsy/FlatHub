@@ -14,12 +14,14 @@ public struct ExploreFeature {
     @ObservableState
     public struct State {
         var appartementList = AppartementListFeature.State(appartements: [])
+        @Presents var search: SearchFeature.State?
         public init() {}
     }
 
     public enum Action {
         case task
-
+        case onSearchContainerTaped
+        case search(PresentationAction<SearchFeature.Action>)
         case appartementList(AppartementListFeature.Action)
     }
 
@@ -37,9 +39,15 @@ public struct ExploreFeature {
                     // TODO: load appartements
                     await send(.appartementList(.appartementsChanged(mockApps)))
                 }
-            case .appartementList:
+            case .onSearchContainerTaped:
+                state.search = .init()
+                return .none
+            case .appartementList, .search:
                 return .none
             }
+        }
+        .ifLet(\.$search, action: \.search) {
+            SearchFeature()
         }
 
         Scope(state: \.appartementList, action: \.appartementList) {

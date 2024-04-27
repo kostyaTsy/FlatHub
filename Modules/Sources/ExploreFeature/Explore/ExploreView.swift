@@ -8,9 +8,10 @@
 import SwiftUI
 import ComposableArchitecture
 import AppartementListFeature
+import FHCommon
 
 public struct ExploreView: View {
-    private let store: StoreOf<ExploreFeature>
+    @Perception.Bindable private var store: StoreOf<ExploreFeature>
 
     public init(store: StoreOf<ExploreFeature>) {
         self.store = store
@@ -19,6 +20,12 @@ public struct ExploreView: View {
     public var body: some View {
         WithPerceptionTracking {
             contentView()
+                .toolbar(.hidden, for: .navigationBar)
+                .fullScreenCover(
+                    item: $store.scope(state: \.search, action: \.search)
+                ) { store in
+                    SearchView(store: store)
+                }
         }
         .task {
             store.send(.task)
@@ -27,24 +34,37 @@ public struct ExploreView: View {
 
     @ViewBuilder private func contentView() -> some View {
         VStack {
-            AppartementList(
-                store: store.scope(
-                    state: \.appartementList,
-                    action: \.appartementList
+            SearchContainer()
+                .padding(.bottom, Layout.Spacing.small)
+                .padding(.horizontal, Layout.Spacing.smallMedium)
+                .onTapGesture {
+                    store.send(.onSearchContainerTaped)
+                }
+            
+            VStack {
+                Spacer()
+                AppartementList(
+                    store: store.scope(
+                        state: \.appartementList,
+                        action: \.appartementList
+                    )
                 )
-            )
+                Spacer()
+            }
         }
     }
 }
 
 #if DEBUG
     #Preview {
-        ExploreView(
-            store: .init(
-                initialState: .init(), reducer: {
-                    ExploreFeature()
-                }
+        NavigationStack {
+            ExploreView(
+                store: .init(
+                    initialState: .init(), reducer: {
+                        ExploreFeature()
+                    }
+                )
             )
-        )
+        }
     }
 #endif
