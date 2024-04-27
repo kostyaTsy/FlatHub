@@ -55,3 +55,4 @@ fastlane/test_output
 
 # Config
 FlatHub/GoogleService-Info.plist
+Modules/Sources/FHRepository/Constants/APIConstants.swift
