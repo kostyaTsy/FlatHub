@@ -8,7 +8,8 @@
 import Foundation
 import FHRepository
 
-final class CreateAppartement {
+final public class CreateAppartement {
+    let id: String
     var type: AppartementType?
     var livingType: AppartementLivingType?
 
@@ -31,4 +32,48 @@ final class CreateAppartement {
     var descriptions: [AppartementDescriptionType] = []
     var price: Int?
     var cancellationPolicy: AppartementCancellationPolicyType?
+
+    public init(
+        id: String = UUID().uuidString,
+        type: AppartementType? = nil,
+        livingType: AppartementLivingType? = nil,
+        longitude: Double? = nil,
+        latitude: Double? = nil,
+        city: String? = nil,
+        country: String? = nil,
+        countryCode: String? = nil,
+        guestsCount: Int = 4,
+        bedroomsCount: Int = 1,
+        bedsCount: Int = 1,
+        bathroomsCount: Int = 1,
+        offers: [AppartementOfferType] = [],
+        photosData: [PhotoDataModel] = [],
+        imageUrls: [URL] = [],
+        title: String? = nil,
+        description: String? = nil,
+        descriptions: [AppartementDescriptionType] = [],
+        price: Int? = nil,
+        cancellationPolicy: AppartementCancellationPolicyType? = nil
+    ) {
+        self.id = id
+        self.type = type
+        self.livingType = livingType
+        self.longitude = longitude
+        self.latitude = latitude
+        self.city = city
+        self.country = country
+        self.countryCode = countryCode
+        self.guestsCount = guestsCount
+        self.bedroomsCount = bedroomsCount
+        self.bedsCount = bedsCount
+        self.bathroomsCount = bathroomsCount
+        self.offers = offers
+        self.photosData = photosData
+        self.imageUrls = imageUrls
+        self.title = title
+        self.description = description
+        self.descriptions = descriptions
+        self.price = price
+        self.cancellationPolicy = cancellationPolicy
+    }
 }

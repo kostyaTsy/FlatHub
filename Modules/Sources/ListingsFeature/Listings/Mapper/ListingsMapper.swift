@@ -7,6 +7,7 @@
 
 import Foundation
 import AppartementListFeature
+import CreateAppartementFeature
 import FHRepository
 
 enum ListingsMapper {
@@ -47,6 +48,33 @@ enum ListingsMapper {
             offers: appartementInfo.offers,
             descriptionTypes: appartementInfo.descriptionTypes,
             cancellationPolicy: appartementInfo.cancellationPolicy
+        )
+    }
+
+    static func mapToCreateAppartement(
+        from appartement: HostAppartement
+    ) -> CreateAppartement {
+        CreateAppartement(
+            id: appartement.id,
+            type: appartement.details.type,
+            livingType: appartement.details.livingType,
+            longitude: appartement.details.longitude,
+            latitude: appartement.details.latitude,
+            city: appartement.city,
+            country: appartement.country,
+            countryCode: appartement.countryCode,
+            guestsCount: appartement.guestCount,
+            bedroomsCount: appartement.details.bedrooms,
+            bedsCount: appartement.details.beds,
+            bathroomsCount: appartement.details.bathrooms,
+            offers: appartement.details.offers,
+            photosData: [],
+            imageUrls: appartement.photosStringURL.compactMap { URL(string: $0) },
+            title: appartement.title,
+            description: appartement.details.description,
+            descriptions: appartement.details.descriptionTypes,
+            price: appartement.pricePerNight,
+            cancellationPolicy: appartement.details.cancellationPolicy
         )
     }
 }

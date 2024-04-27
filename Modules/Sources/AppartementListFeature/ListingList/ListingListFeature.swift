@@ -25,6 +25,7 @@ public struct ListingListFeature {
     }
 
     public enum Action {
+        case onEdit(HostAppartement)
         case onDeleteDone(HostAppartement)
         case onChangeDone(HostAppartement)
         case onAddedNewAppartement(HostAppartement)
@@ -42,13 +43,14 @@ public struct ListingListFeature {
         Reduce { state, action in
             switch action {
             case .bottomSheet(.presented(.onEditAppartement(let appartement))):
-                print(appartement)
+                return .send(.onEdit(appartement))
+            case .onEdit:
                 return .none
             case .bottomSheet(.presented(.onDeleteAppartement(let appartement))):
                 return .run { send in
                     do {
                         try await appartementRepository.deleteAppartement(appartement.id)
-                        await send(.onDeleteDone(appartement))
+                        await send(.onDeleteDone(appartement), animation: .linear(duration: 0.3))
                     } catch {
                         // TODO: handle error
                     }
@@ -78,6 +80,7 @@ public struct ListingListFeature {
                 return .none
             case .setAppartements(let appartements):
                 state.appartements = appartements
+                state.appartements.sort { $0.createDate > $1.createDate }
                 state.isDataLoaded = true
                 return .none
             case .onAppartementTapped(let appartement):

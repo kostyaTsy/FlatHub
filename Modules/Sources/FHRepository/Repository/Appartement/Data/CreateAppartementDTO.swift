@@ -37,7 +37,7 @@ public struct CreateAppartementDTO {
     let cancellationPolicy: AppartementCancellationPolicyType
 
     public init(
-        id: String = UUID().uuidString,
+        id: String,
         hostUserId: String,
         title: String,
         description: String,

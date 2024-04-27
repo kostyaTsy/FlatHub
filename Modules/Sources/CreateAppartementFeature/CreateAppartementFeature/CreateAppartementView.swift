@@ -106,6 +106,9 @@ public struct CreateAppartementView: View {
         .onAppear {
             UIScrollView.appearance().isScrollEnabled = false
         }
+        .onDisappear {
+            UIScrollView.appearance().isScrollEnabled = true
+        }
     }
 
     @ViewBuilder private func footerView() -> some View {

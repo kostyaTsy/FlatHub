@@ -25,6 +25,7 @@ public struct ListingsView: View {
             ) {
                 content()
                     .onAppear {
+                        UIScrollView.appearance().isScrollEnabled = true
                         store.send(.onAppear)
                     }
                     .toolbar(.visible, for: .navigationBar)
@@ -42,11 +43,10 @@ public struct ListingsView: View {
                             }
                         }
 
-                        ToolbarItem(placement: .principal) {
+                        ToolbarItem(placement: .navigation) {
                             Text(Strings.listingsTabTitle)
                         }
                     }
-                    .toolbarBackground(Colors.system, for: .navigationBar)
                     .toolbarBackground(.visible, for: .navigationBar)
             } destination: { store in
                 switch store.case {

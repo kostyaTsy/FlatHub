@@ -27,11 +27,27 @@ struct ListingCell: View {
 
     @ViewBuilder private func content() -> some View {
         VStack(alignment: .leading, spacing: Layout.Spacing.small) {
-            // Image
-            HStack {}
-                .frame(height: 300)
-                .frame(maxWidth: .infinity)
-                .background(.green)
+            GeometryReader { geometry in
+                KFImage(appartement.firstPhotoURL)
+                    .loadDiskFileSynchronously(false)
+                    .cacheMemoryOnly(false)
+                    .placeholder({
+                        AppartementIcons.placeholder
+                    })
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(
+                        width: geometry.size.width,
+                        height: geometry.size.height
+                    )
+                    .clipShape(
+                        RoundedRectangle(
+                            cornerRadius: Constants.photoCornerRadius
+                        )
+                    )
+                    .clipped()
+            }
+            .frame(height: Constants.photoHeight)
 
             Text(appartement.title)
                 .font(Constants.titleFont)
@@ -76,6 +92,9 @@ private extension ListingCell {
         static let titleFont: Font = .system(size: 16, weight: .medium)
         static let locationFont: Font = .system(size: 14)
         static let locationTextColor: Color = .secondary
+
+        static let photoHeight: CGFloat = 300
+        static let photoCornerRadius: CGFloat = 20
     }
 }
 

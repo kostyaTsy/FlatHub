@@ -48,6 +48,7 @@ public struct ListingList: View {
                 }
             }
         }
+        .scrollIndicators(.never)
     }
 }
 

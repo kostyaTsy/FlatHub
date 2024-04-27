@@ -57,6 +57,11 @@ public struct ListingsFeature {
             case .addButtonTapped:
                 state.path.append(.create(.init()))
                 return .none
+            case .listings(.onEdit(let appartement)):
+                let createAppartement = ListingsMapper.mapToCreateAppartement(from: appartement)
+                let createState = CreateAppartementFeature.State(appartement: createAppartement)
+                state.path.append(.create(createState))
+                return .none
             case .path, .listings:
                 return .none
             }

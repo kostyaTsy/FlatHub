@@ -18,7 +18,7 @@ public struct CreateAppartementFeature {
         var selection: CreateAppartementFeature.Selection = .chooseType
 
         var dataModel = AppartementTypesDataModel()
-        var appartement = CreateAppartement()
+        var appartement: CreateAppartement
 
         var chooseType = ChooseAppartementTypeFeature.State()
         var chooseLivingType = ChooseLivingTypeFeature.State()
@@ -40,7 +40,9 @@ public struct CreateAppartementFeature {
             Double(Selection.allCases.count - 1)
         }
 
-        public init() {}
+        public init(appartement: CreateAppartement = CreateAppartement()) {
+            self.appartement = appartement
+        }
     }
 
     public enum Action {
@@ -54,7 +56,7 @@ public struct CreateAppartementFeature {
         case updateLoadingState(Bool)
         case onSelectionChanged(Selection)
 
-        case dataLoaded(AppartementTypesDataModel?)
+        case dataLoaded(AppartementTypesDataModel?, [ImageDataResponse])
 
         case chooseType(ChooseAppartementTypeFeature.Action)
         case chooseLivingType(ChooseLivingTypeFeature.Action)
@@ -83,6 +85,7 @@ public struct CreateAppartementFeature {
             switch action {
             case .onAppear:
                 state.isLoading = true
+                let appartement = state.appartement
                 return .run { send in
                     let dataModel = try? await AppartementTypesDataModel(
                         types: appartementTypesRepository.loadTypes(),
@@ -92,7 +95,9 @@ public struct CreateAppartementFeature {
                         policies: appartementTypesRepository.loadCancellationPolicies()
                     )
 
-                    await send(.dataLoaded(dataModel))
+                    let imagesResponse = try? await uploadManager.getImagesData(appartement.imageUrls)
+
+                    await send(.dataLoaded(dataModel, imagesResponse ?? []))
                 }
             case .onPublishTapped:
                 let userId = accountRepository.user().id
@@ -110,7 +115,7 @@ public struct CreateAppartementFeature {
                             userId: userId
                         ) else { return await send(.publishedFailure) }
 
-                        try await appartementRepository.createAppartement(dto)
+                        _ = try await appartementRepository.createAppartement(dto)
                         await send(.publishedSuccess)
                     } catch {
                         await send(.publishedFailure)
@@ -156,9 +161,13 @@ public struct CreateAppartementFeature {
                 let effect = onChangeSelection(state: &state, selection: selection)
                 state.selection = selection
                 return effect
-            case .dataLoaded(let dataModel):
+            case .dataLoaded(let dataModel, let response):
                 state.isLoading = false
                 state.dataModel = dataModel ?? AppartementTypesDataModel()
+                let photosData = response.map {
+                    PhotoDataMapper.mapToPhotoDataModel(from: $0)
+                }
+                state.appartement.photosData = photosData
                 return .send(.onSelectionChanged(.chooseType))
             case .chooseType(.onDataValidationChanged(let isValid)):
                 if state.selection == .chooseType {
@@ -448,6 +457,7 @@ private extension CreateAppartementFeature {
         case .choosePhotos:
             let photosData = state.choosePhotos.photosDataModel
 
+            // TODO: make uploadImagesData in uploadManager
             let urls = await withTaskGroup(of: (URL?, PhotoDataModel).self, returning: [URL].self) { group in
                 for photo in photosData {
                     let imageDTO = PhotoDataMapper.mapToImageDataDTO(from: photo)

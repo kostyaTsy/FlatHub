@@ -33,6 +33,7 @@ enum AppartementMapper {
         }
 
         return CreateAppartementDTO(
+            id: from.id,
             hostUserId: userId,
             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
             description: description.trimmingCharacters(in: .whitespacesAndNewlines),

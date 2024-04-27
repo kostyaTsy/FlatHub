@@ -9,23 +9,30 @@ import Foundation
 
 public struct HostAppartement: Identifiable {
     public let id: String
-    let hostUserId: String
-    let title: String
-    let city: String
-    let country: String
-    let countryCode: String
-    var isAvailableForBook: Bool
-    let pricePerNight: Int
-    let guestCount: Int
-    let rating: Double?
-    let reviewCount: Int
-    let photosStringURL: [String]
-    let createDate: Date
+    public let hostUserId: String
+    public let title: String
+    public let city: String
+    public let country: String
+    public let countryCode: String
+    public var isAvailableForBook: Bool
+    public let pricePerNight: Int
+    public let guestCount: Int
+    public let rating: Double?
+    public let reviewCount: Int
+    public let photosStringURL: [String]
+    public let createDate: Date
 
-    let details: HostAppartementDetails
+    public let details: HostAppartementDetails
 
     var location: String {
         "\(city), \(country)"
+    }
+
+    var firstPhotoURL: URL? {
+        guard let stringURL = photosStringURL.first else {
+            return nil
+        }
+        return URL(string: stringURL)
     }
 
     public init(

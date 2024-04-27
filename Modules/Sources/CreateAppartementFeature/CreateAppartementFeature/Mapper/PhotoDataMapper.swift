@@ -19,4 +19,17 @@ enum PhotoDataMapper {
             fileExtension: from.fileExtension
         )
     }
+
+    static func mapToPhotoDataModel(
+        from response: ImageDataResponse
+    ) -> PhotoDataModel {
+        let fileName = response.url.getFileNameWithoutExtension()
+        let fileExtension = response.url.getFileExtension()
+        return PhotoDataModel(
+            id: fileName ?? UUID().uuidString,
+            data: response.data,
+            fileExtension: fileExtension,
+            isSaved: true
+        )
+    }
 }
