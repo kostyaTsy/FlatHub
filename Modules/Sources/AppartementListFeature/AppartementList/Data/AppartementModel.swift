@@ -1,13 +1,13 @@
 //
-//  Appartement.swift
+//  AppartementModel.swift
 //
 //
-//  Created by Kostya Tsyvilko on 1.04.24.
+//  Created by Kostya Tsyvilko on 28.04.24.
 //
 
 import Foundation
 
-public struct Appartement: Identifiable {
+public struct AppartementModel: Identifiable {
     public let id: String
     public let hostUserId: String
     public let title: String
@@ -17,7 +17,9 @@ public struct Appartement: Identifiable {
     public let guestCount: Int
     public var isFavourite: Bool
     public let rating: Double?
+    public let reviewCount: Int
     public let photos: [String]
+    public let createDate: Date
 
     /// City + CountryCode, format 'City, CountryCode'
     public var location: String {
@@ -47,7 +49,9 @@ public struct Appartement: Identifiable {
         guestCount: Int,
         isFavourite: Bool = false,
         rating: Double? = nil,
-        photos: [String] = []
+        reviewCount: Int = 0,
+        photos: [String] = [],
+        createDate: Date = Date.now
     ) {
         self.id = id
         self.hostUserId = hostUserId
@@ -58,7 +62,8 @@ public struct Appartement: Identifiable {
         self.guestCount = guestCount
         self.isFavourite = isFavourite
         self.rating = rating
+        self.reviewCount = reviewCount
         self.photos = photos
+        self.createDate = createDate
     }
-
 }

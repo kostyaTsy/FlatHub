@@ -31,12 +31,18 @@ struct AppartementPhotoSlider: View {
         image: String,
         geometry: GeometryProxy
     ) -> some View {
-        // TODO: change to KF
-        // TODO: add placeholder image
-        Image(image, bundle: .module)
+        KFImage(URL(string: image))
+            .loadDiskFileSynchronously(false)
+            .cacheMemoryOnly(false)
+            .placeholder({
+                AppartementIcons.placeholder
+            })
             .resizable()
             .aspectRatio(contentMode: .fill)
-            .frame(width: geometry.size.width, height: Constants.contentHeight)
+            .frame(
+                width: geometry.size.width,
+                height: geometry.size.height
+            )
             .clipped()
     }
 }

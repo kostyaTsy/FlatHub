@@ -12,10 +12,10 @@ import FHRepository
 public struct AppartementListFeature {
     @ObservableState
     public struct State {
-        var appartements: [Appartement]
+        var appartements: [AppartementModel]
         var isDataLoaded = false
 
-        public init(appartements: [Appartement]) {
+        public init(appartements: [AppartementModel]) {
             self.appartements = appartements
             if !appartements.isEmpty {
                 isDataLoaded = true
@@ -24,9 +24,9 @@ public struct AppartementListFeature {
     }
 
     public enum Action {
-        case onFavouriteButtonTapped(Appartement)
-        case onAppartementTapped(Appartement)
-        case appartementsChanged([Appartement])
+        case onFavouriteButtonTapped(AppartementModel)
+        case onAppartementTapped(AppartementModel)
+        case appartementsChanged([AppartementModel])
     }
 
     public init() {}

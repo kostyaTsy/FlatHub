@@ -10,10 +10,10 @@ import FHCommon
 import FHRepository
 
 struct AppartementCell: View {
-    private let appartement: Appartement
+    private let appartement: AppartementModel
     private let favouriteButtonTapped: (() -> Void)?
 
-    init(appartement: Appartement, favouriteButtonTapped: (() -> Void)? = nil) {
+    init(appartement: AppartementModel, favouriteButtonTapped: (() -> Void)? = nil) {
         self.appartement = appartement
         self.favouriteButtonTapped = favouriteButtonTapped
     }
@@ -105,7 +105,7 @@ private extension AppartementCell {
 
 #if DEBUG
 #Preview {
-    let mockAppartement = Appartement(
+    let mockAppartement = AppartementModel(
         id: "",
         hostUserId: "",
         title: "Tiny house",

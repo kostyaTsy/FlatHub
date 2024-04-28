@@ -1,5 +1,5 @@
 //
-//  ChooseCountryFeature.swift
+//  ChooseCityFeature.swift
 //
 //
 //  Created by Kostya Tsyvilko on 28.04.24.
@@ -9,13 +9,22 @@ import ComposableArchitecture
 import FHRepository
 
 @Reducer
-public struct ChooseCountryFeature {
+public struct ChooseCityFeature {
     @ObservableState
     public struct State {
         var isCollapsed: Bool = true
         var searchText: String = ""
+        var selectedCityResult: SearchCity?
 
         var searchResult: [SearchCity] = []
+
+        var selectedCity: String {
+            selectedCityResult?.city ?? searchText
+        }
+
+        var selectedCountryCode: String? {
+            selectedCityResult?.countryCode
+        }
 
         public init() {}
     }
@@ -55,6 +64,7 @@ public struct ChooseCountryFeature {
                 return .none
             case .onChoseLocation(let searchModel):
                 state.searchText = searchModel.city
+                state.selectedCityResult = searchModel
                 return .none
             }
         }

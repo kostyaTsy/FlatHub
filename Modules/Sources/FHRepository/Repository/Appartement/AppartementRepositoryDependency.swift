@@ -13,7 +13,9 @@ public struct AppartementRepositoryDependency: Sendable {
     public var deleteAppartement: @Sendable (_ id: String) async throws -> Void
     public var updateAppartementAvailability: @Sendable (_ dto: AppartementAvailabilityDTO) async throws -> Void
     public var loadHostAppartements: @Sendable (_ userId: String) async throws -> [AppartementDetailsDTO]
-
+    public var loadAppartements: @Sendable (_ userId: String) async throws -> [ExploreAppartementDTO]
+    public var searchAppartements: @Sendable (_ userId: String,
+                                              _ searchDTO: AppartementSearchDTO) async throws -> [ExploreAppartementDTO]
 }
 
 // MARK: - Live
@@ -31,6 +33,10 @@ extension AppartementRepositoryDependency {
                 try await appartementRepository.updateAppartementAvailability(with: dto)
             }, loadHostAppartements: { userId in
                 try await appartementRepository.loadHostAppartements(for: userId)
+            }, loadAppartements: { userId in
+                try await appartementRepository.loadAppartements(for: userId)
+            }, searchAppartements: { userId, searchDTO in
+                try await appartementRepository.searchAppartements(for: userId, with: searchDTO)
             }
         )
 
@@ -75,6 +81,10 @@ extension AppartementRepositoryDependency {
             }, updateAppartementAvailability: { _ in
                 ()
             }, loadHostAppartements: { _ in
+                []
+            }, loadAppartements: { _ in
+                []
+            }, searchAppartements: { _, _ in
                 []
             }
         )

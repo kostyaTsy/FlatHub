@@ -1,5 +1,5 @@
 //
-//  ChooseCountryView.swift
+//  ChooseCityView.swift
 //
 //
 //  Created by Kostya Tsyvilko on 28.04.24.
@@ -9,10 +9,10 @@ import ComposableArchitecture
 import SwiftUI
 import FHCommon
 
-struct ChooseCountryView: View {
-    @Perception.Bindable private var store: StoreOf<ChooseCountryFeature>
+struct ChooseCityView: View {
+    @Perception.Bindable private var store: StoreOf<ChooseCityFeature>
 
-    init(store: StoreOf<ChooseCountryFeature>) {
+    init(store: StoreOf<ChooseCityFeature>) {
         self.store = store
     }
 
@@ -84,7 +84,7 @@ struct ChooseCountryView: View {
     }
 }
 
-private extension ChooseCountryView {
+private extension ChooseCityView {
     enum Constants {
         static let searchSuggestionHeightMultiplier = 0.25
     }
@@ -92,10 +92,10 @@ private extension ChooseCountryView {
 
 #if DEBUG
     #Preview {
-        ChooseCountryView(
+        ChooseCityView(
             store: .init(
                 initialState: .init(), reducer: {
-                    ChooseCountryFeature()
+                    ChooseCityFeature()
                 }
             )
         )

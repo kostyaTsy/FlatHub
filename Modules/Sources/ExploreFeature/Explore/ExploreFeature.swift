@@ -25,6 +25,9 @@ public struct ExploreFeature {
         case appartementList(AppartementListFeature.Action)
     }
 
+    @Dependency(\.appartementRepository) var appartementRepository
+    @Dependency(\.accountRepository) var accountRepository
+
     public init() {}
 
     public var body: some Reducer<State, Action> {
@@ -32,14 +35,13 @@ public struct ExploreFeature {
             switch action {
             case .task:
                 return .run { send in
-                    try? await Task.sleep(for: .seconds(2))
-                    let mockApps = Array(0...10).map { id in
-                        Appartement(id: "\(id)", hostUserId: "", title: "Test", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
-                    }
-                    // TODO: load appartements
-                    await send(.appartementList(.appartementsChanged(mockApps)))
+                    let userId = accountRepository.user().id
+                    let appartements = (try? await appartementRepository.loadAppartements(userId)) ?? []
+                    let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
+                    await send(.appartementList(.appartementsChanged(appartementList)))
                 }
-            case .search(.presented(.onApplyTapped)):
+            case .search(.presented(.searchData(let searchModel))):
+                print(searchModel)
                 // TODO: Load appartement
                 return .none
             case .onSearchContainerTaped:

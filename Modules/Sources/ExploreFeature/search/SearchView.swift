@@ -56,8 +56,8 @@ struct SearchView: View {
     @ViewBuilder private func chooseContainers() -> some View {
         ScrollView {
             VStack(spacing: Layout.Spacing.medium) {
-                ChooseCountryView(
-                    store: store.scope(state: \.chooseCountry, action: \.chooseCountry)
+                ChooseCityView(
+                    store: store.scope(state: \.chooseCity, action: \.chooseCity)
                 )
 
                 ChooseTripDateView(

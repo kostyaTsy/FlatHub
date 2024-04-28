@@ -11,7 +11,7 @@ import ComposableArchitecture
 public struct SearchFeature {
     @ObservableState
     public struct State {
-        var chooseCountry = ChooseCountryFeature.State()
+        var chooseCity = ChooseCityFeature.State()
         var chooseDates = ChooseTripDateFeature.State()
         var chooseGuests = ChooseTravellersFeature.State()
 
@@ -22,7 +22,8 @@ public struct SearchFeature {
         case onAppear
         case closeIconTapped
         case onApplyTapped
-        case chooseCountry(ChooseCountryFeature.Action)
+        case searchData(SearchModel)
+        case chooseCity(ChooseCityFeature.Action)
         case chooseDates(ChooseTripDateFeature.Action)
         case chooseGuests(ChooseTravellersFeature.Action)
     }
@@ -35,23 +36,31 @@ public struct SearchFeature {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                state.chooseCountry.isCollapsed = false
+                state.chooseCity.isCollapsed = false
                 return .none
             case .closeIconTapped:
+                let model = SearchModel(
+                    city: state.chooseCity.selectedCity,
+                    countryCode: state.chooseCity.selectedCountryCode,
+                    startDate: state.chooseDates.startDate,
+                    endDate: state.chooseDates.endDate,
+                    guestsCount: state.chooseGuests.guestsCount
+                )
                 return .run { send in
+                    await send(.searchData(model))
                     await dismiss()
                 }
             case .onApplyTapped:
                 return .run { send in
                     await dismiss()
                 }
-            case .chooseCountry, .chooseDates, .chooseGuests:
+            case .chooseCity, .chooseDates, .chooseGuests, .searchData:
                 return .none
             }
         }
 
-        Scope(state: \.chooseCountry, action: \.chooseCountry) {
-            ChooseCountryFeature()
+        Scope(state: \.chooseCity, action: \.chooseCity) {
+            ChooseCityFeature()
         }
 
         Scope(state: \.chooseDates, action: \.chooseDates) {

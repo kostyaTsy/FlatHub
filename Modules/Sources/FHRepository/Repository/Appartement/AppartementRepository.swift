@@ -20,6 +20,11 @@ public protocol AppartementRepositoryProtocol {
     ) async throws
 
     func loadHostAppartements(for userId: String) async throws -> [AppartementDetailsDTO]
+    func loadAppartements(for userId: String) async throws -> [ExploreAppartementDTO]
+    func searchAppartements(
+        for userId: String,
+        with searchDTO: AppartementSearchDTO
+    ) async throws -> [ExploreAppartementDTO]
 }
 
 public final class AppartementRepository: AppartementRepositoryProtocol {
@@ -58,7 +63,7 @@ public final class AppartementRepository: AppartementRepositoryProtocol {
     }
 
     public func loadHostAppartements(for userId: String) async throws -> [AppartementDetailsDTO] {
-        let appartements = try await loadAppartementsData(for: userId)
+        let appartements = try await loadHostAppartementsData(for: userId)
         let ids = appartements.map { $0.id }
 
         let infos = try await loadAppartementInfos(for: ids)
@@ -72,7 +77,31 @@ public final class AppartementRepository: AppartementRepositoryProtocol {
                 with: info
             )
         }
+    }
 
+    public func loadAppartements(for userId: String) async throws -> [ExploreAppartementDTO] {
+        async let appartementsRequest = loadExploreAppartementsData()
+        async let favouriteAppartementsRequest = loadFavouriteAppartementsData(for: userId)
+
+        let result = try await (appartementsRequest, favouriteAppartementsRequest)
+
+        let appartements = result.0
+        let favouriteAppartements = result.1
+
+        return appartements.map { appartement in
+            let favouriteAppartement = favouriteAppartements.first(where: { $0.appartement.id == appartement.id })
+            return AppartementMapper.mapToExploreAppartementDTO(
+                from: appartement,
+                isFavourite: favouriteAppartement != nil
+            )
+        }
+    }
+
+    public func searchAppartements(
+        for userId: String,
+        with searchDTO: AppartementSearchDTO
+    ) async throws -> [ExploreAppartementDTO] {
+        []
     }
 }
 
@@ -111,13 +140,33 @@ private extension AppartementRepository {
 // MARK: - Load
 
 private extension AppartementRepository {
-    func loadAppartementsData(for userId: String) async throws -> [AppartementDTO] {
+    func loadHostAppartementsData(for userId: String) async throws -> [AppartementDTO] {
         try await store.collection(DBTableName.appartementTable)
             .whereField("hostUserId", isEqualTo: userId)
             .getDocuments()
             .documents
             .compactMap { snapshot in
                 try? snapshot.data(as: AppartementDTO.self)
+            }
+    }
+
+    func loadExploreAppartementsData() async throws -> [AppartementDTO] {
+        try await store.collection(DBTableName.appartementTable)
+            .whereField("isAvailableForBook", isEqualTo: true)
+            .getDocuments()
+            .documents
+            .compactMap { snapshot in
+                try? snapshot.data(as: AppartementDTO.self)
+            }
+    }
+
+    func loadFavouriteAppartementsData(for userId: String) async throws -> [FavouriteAppartementDTO] {
+        try await store.collection(DBTableName.favouriteAppartementTable)
+            .whereField("userId", isEqualTo: userId)
+            .getDocuments()
+            .documents
+            .compactMap { snapshot in
+                try? snapshot.data(as: FavouriteAppartementDTO.self)
             }
     }
 

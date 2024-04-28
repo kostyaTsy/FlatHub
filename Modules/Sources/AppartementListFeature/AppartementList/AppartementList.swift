@@ -58,7 +58,7 @@ private extension AppartementList {
 
 #if DEBUG
     #Preview {
-        let mockAppartement = Appartement(
+        let mockAppartement = AppartementModel(
             id: "",
             hostUserId: "",
             title: "Tiny house",
@@ -68,7 +68,7 @@ private extension AppartementList {
             guestCount: 2
         )
         let mockAppartements = Array(0...100).map { id in
-            Appartement(
+            AppartementModel(
                 id: "\(id)",
                 hostUserId: "",
                 title: "Tiny house",
