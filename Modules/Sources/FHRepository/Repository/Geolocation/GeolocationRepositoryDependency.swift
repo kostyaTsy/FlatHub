@@ -10,6 +10,7 @@ import Dependencies
 
 public struct GeolocationRepositoryDependency: Sendable {
     public var loadGeocodeReverse: @Sendable (_ route: GeolocationRoute) async throws -> GeocodeReverseResponse
+    public var searchCity: @Sendable (_ text: String) async throws -> [SearchCityResponse]
 }
 
 // MARK: - Live
@@ -21,6 +22,8 @@ extension GeolocationRepositoryDependency {
         let dependency = GeolocationRepositoryDependency(
             loadGeocodeReverse: { route in
                 try await repository.loadGeocodeReverse(route: route)
+            }, searchCity: { query in
+                try await repository.searchCity(with: query)
             }
         )
 
@@ -46,6 +49,10 @@ extension GeolocationRepositoryDependency {
                         )
                     ]
                 )
+            }, searchCity: { _ in
+                [
+                    SearchCityResponse(city: "Minsk", countryCode: "BY")
+                ]
             }
         )
 

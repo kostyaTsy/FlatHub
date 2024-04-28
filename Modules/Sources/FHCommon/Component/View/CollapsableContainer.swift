@@ -7,18 +7,18 @@
 
 import SwiftUI
 
-public struct CollapsableContainer<Content: View>: View {
+public struct CollapsableContainer<Header: View, Content: View>: View {
     @Binding private var collapsed: Bool
     private let cornerRadius: CGFloat
     private let backgroundColor: Color
-    @ViewBuilder private var headerContent: () -> Content
+    @ViewBuilder private var headerContent: () -> Header
     @ViewBuilder private var content: () -> Content
 
     public init(
         collapsed: Binding<Bool>,
         cornerRadius: CGFloat = 20,
-        backgroundColor: Color = .secondary,
-        headerContent: @escaping () -> Content,
+        backgroundColor: Color = Colors.lightGray,
+        headerContent: @escaping () -> Header,
         content: @escaping () -> Content
     ) {
         self._collapsed = collapsed
@@ -30,16 +30,20 @@ public struct CollapsableContainer<Content: View>: View {
 
     public var body: some View {
         contentView()
-            .onTapGesture {
-                withAnimation(.linear(duration: 0.2)) {
-                    collapsed.toggle()
-                }
-            }
     }
 
     @ViewBuilder private func contentView() -> some View {
         VStack {
             headerContent()
+                .background {
+                    RoundedRectangle(cornerRadius: cornerRadius)
+                        .foregroundStyle(backgroundColor)
+                }
+                .onTapGesture {
+                    withAnimation(.linear(duration: 0.2)) {
+                        collapsed.toggle()
+                    }
+                }
             if !collapsed {
                 content()
             }

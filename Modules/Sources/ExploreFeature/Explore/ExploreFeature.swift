@@ -39,6 +39,9 @@ public struct ExploreFeature {
                     // TODO: load appartements
                     await send(.appartementList(.appartementsChanged(mockApps)))
                 }
+            case .search(.presented(.onApplyTapped)):
+                // TODO: Load appartement
+                return .none
             case .onSearchContainerTaped:
                 state.search = .init()
                 return .none
