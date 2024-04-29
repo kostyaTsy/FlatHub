@@ -31,7 +31,7 @@ public struct UserBooksFeature {
             case .task:
                 return .run { send in
                     // TODO: load favourites appartements
-                    let mockApp = Appartement(id: "123", hostUserId: "", title: "Booked", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
+                    let mockApp = AppartementModel(id: "123", hostUserId: "", title: "Booked", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
                     await send(.appartementList(.appartementsChanged([mockApp])))
                 }
             case .appartementList:

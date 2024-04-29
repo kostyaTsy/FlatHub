@@ -84,4 +84,26 @@ enum AppartementMapper {
             info: info
         )
     }
+
+    static func mapToExploreAppartementDTO(
+        from appartement: AppartementDTO,
+        isFavourite: Bool
+    ) -> ExploreAppartementDTO {
+        ExploreAppartementDTO(
+            id: appartement.id,
+            hostUserId: appartement.hostUserId,
+            title: appartement.title,
+            city: appartement.city,
+            country: appartement.country,
+            countryCode: appartement.countryCode,
+            isAvailableForBook: appartement.isAvailableForBook,
+            pricePerNight: appartement.pricePerNight,
+            guestCount: appartement.guestCount,
+            isFavourite: isFavourite,
+            rating: appartement.rating,
+            reviewCount: appartement.reviewCount,
+            photosStringURL: appartement.photosStringURL,
+            createDate: appartement.createDate
+        )
+    }
 }

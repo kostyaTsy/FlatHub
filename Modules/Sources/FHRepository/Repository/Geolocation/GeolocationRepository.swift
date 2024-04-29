@@ -9,9 +9,14 @@ import Foundation
 
 public protocol GeolocationRepositoryProtocol {
     func loadGeocodeReverse(route: GeolocationRoute) async throws -> GeocodeReverseResponse
+    func searchCity(with text: String) async throws -> [SearchCityResponse]
 }
 
 final public class GeolocationRepository: GeolocationRepositoryProtocol {
+    enum Error: Swift.Error {
+        case cannotReadJSON
+    }
+
     private let apiManager: APIManager
 
     public init(apiManager: APIManager = URLSessionManager()) {
@@ -29,5 +34,16 @@ final public class GeolocationRepository: GeolocationRepositoryProtocol {
         case .failure(let error):
             throw error
         }
+    }
+
+    public func searchCity(with text: String) async throws -> [SearchCityResponse] {
+        guard let path = Bundle.module.path(forResource: "cities", ofType: "json"),
+              let data = try? Data(contentsOf: URL(fileURLWithPath: path)),
+              let cities = try? JSONDecoder().decode([SearchCityResponse].self, from: data)
+        else {
+            throw Error.cannotReadJSON
+        }
+
+        return cities.filter { $0.city.contains(text) }
     }
 }

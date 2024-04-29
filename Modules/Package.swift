@@ -109,7 +109,8 @@ let package = Package(
             name: "FHRepository",
             dependencies: [
                 .dependencies, .firebaseFireStore, .firebaseStorage, "FHAuth", "FHCommon"
-            ]),
+            ],
+            resources: [.process("Resources")]),
         .target(
             name: "ListingsFeature",
             dependencies: [

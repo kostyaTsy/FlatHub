@@ -20,6 +20,9 @@ public enum Strings {
     public static let bedsText = "Beds"
     public static let bathroomsText = "Bathrooms"
     public static let currencySign = "$"
+    public static let whereText = "Where"
+    public static let whenText = "When"
+    public static let whoText = "Who"
 
     // MARK: - Auth
     public static let loginTitle = "Login"
@@ -43,6 +46,14 @@ public enum Strings {
 
     public static let listingsTabTitle = "Listings"
     public static let earningsTabTitle = "Earnings"
+
+    // MARK: - Explore
+    public static let searchContainerText = "Where to go?"
+    public static let searchCountryText = "Search destinations"
+    public static let searchStartDate = "Start date"
+    public static let searchEndDate = "End date"
+    public static let searchApplyButtonTitle = "Apply"
+    public static let searchResetButtonTitle = "Reset"
 
     // MARK: - AppartementList
     public static let nightText = "night"

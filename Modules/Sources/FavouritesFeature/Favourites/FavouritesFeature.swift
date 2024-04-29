@@ -30,7 +30,7 @@ public struct FavouritesFeature {
             switch action {
             case .task:
                 return .run { send in
-                    let mockApp = Appartement(id: "123", hostUserId: "", title: "Favourite", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
+                    let mockApp = AppartementModel(id: "123", hostUserId: "", title: "Favourite", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
                     // TODO: load favourites appartements
                     await send(.appartementList(.appartementsChanged([mockApp])))
                 }
