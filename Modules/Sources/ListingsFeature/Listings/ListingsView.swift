@@ -28,26 +28,7 @@ public struct ListingsView: View {
                         UIScrollView.appearance().isScrollEnabled = true
                         store.send(.onAppear)
                     }
-                    .toolbar(.visible, for: .navigationBar)
                     .navigationBarTitleDisplayMode(.inline)
-                    .toolbar {
-                        ToolbarItem(placement: .topBarTrailing) {
-                            Button {
-                                store.send(.addButtonTapped)
-                            } label: {
-                                Icons.plusIcon
-                                    .padding(.all, Layout.Spacing.xSmall)
-                                    .foregroundStyle(Colors.system)
-                                    .background(Colors.secondary)
-                                    .clipShape(Circle())
-                            }
-                        }
-
-                        ToolbarItem(placement: .navigation) {
-                            Text(Strings.listingsTabTitle)
-                        }
-                    }
-                    .toolbarBackground(.visible, for: .navigationBar)
             } destination: { store in
                 switch store.case {
                 case .create(let store):
@@ -58,10 +39,34 @@ public struct ListingsView: View {
     }
 
     @ViewBuilder private func content() -> some View {
-        ListingList(
-            store: store.scope(state: \.listings, action: \.listings)
-        )
-        .padding(.top, Layout.Spacing.small)
+        VStack {
+            headerView()
+                .padding(.bottom, Layout.Spacing.xSmall)
+            Spacer()
+            ListingList(
+                store: store.scope(state: \.listings, action: \.listings)
+            )
+            .padding(.top, Layout.Spacing.small)
+            Spacer()
+        }
+    }
+
+    @ViewBuilder private func headerView() -> some View {
+        HStack {
+            Text(Strings.listingsTabTitle)
+            Spacer()
+
+            Button {
+                store.send(.addButtonTapped)
+            } label: {
+                Icons.plusIcon
+                    .padding(.all, Layout.Spacing.xSmall)
+                    .foregroundStyle(Colors.system)
+                    .background(Colors.secondary)
+                    .clipShape(Circle())
+            }
+        }
+        .padding(.horizontal, Layout.Spacing.smallMedium)
     }
 }
 
