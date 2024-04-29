@@ -74,6 +74,14 @@ struct SearchView: View {
 
     @ViewBuilder private func footerView() -> some View {
         HStack {
+            FHOvalButton(
+                title: Strings.searchResetButtonTitle,
+                configuration: Constants.applyButtonConfiguration
+            ) {
+                hideKeyboard()
+                store.send(.onResetTapped)
+            }
+            .frame(width: Constants.applyButtonWidth)
             Spacer()
             FHOvalButton(
                 title: Strings.searchApplyButtonTitle,

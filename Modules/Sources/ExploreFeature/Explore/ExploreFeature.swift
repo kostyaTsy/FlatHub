@@ -14,6 +14,7 @@ public struct ExploreFeature {
     @ObservableState
     public struct State {
         var appartementList = AppartementListFeature.State(appartements: [])
+        var searchModel: SearchModel?
         @Presents var search: SearchFeature.State?
         public init() {}
     }
@@ -35,17 +36,26 @@ public struct ExploreFeature {
             switch action {
             case .task:
                 return .run { send in
-                    let userId = accountRepository.user().id
-                    let appartements = (try? await appartementRepository.loadAppartements(userId)) ?? []
-                    let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
+                    let appartementList = await loadAppartements()
                     await send(.appartementList(.appartementsChanged(appartementList)))
                 }
             case .search(.presented(.searchData(let searchModel))):
-                print(searchModel)
-                // TODO: Load appartement
-                return .none
+                state.searchModel = searchModel
+                return .run { send in
+                    let userId = accountRepository.user().id
+                    let searchDTO = ExploreMapper.mapToSearchDTO(from: searchModel)
+                    let appartements = (try? await appartementRepository.searchAppartements(userId, searchDTO)) ?? []
+                    let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
+                    await send(.appartementList(.appartementsChanged(appartementList)))
+                }
+            case .search(.presented(.onResetTapped)):
+                state.searchModel = nil
+                return .run { send in
+                    let appartementList = await loadAppartements()
+                    await send(.appartementList(.appartementsChanged(appartementList)))
+                }
             case .onSearchContainerTaped:
-                state.search = .init()
+                state.search = .init(searchModel: state.searchModel)
                 return .none
             case .appartementList, .search:
                 return .none
@@ -58,5 +68,13 @@ public struct ExploreFeature {
         Scope(state: \.appartementList, action: \.appartementList) {
             AppartementListFeature()
         }
+    }
+}
+
+private extension ExploreFeature {
+    func loadAppartements() async -> [AppartementModel] {
+        let userId = accountRepository.user().id
+        let appartements = (try? await appartementRepository.loadAppartements(userId)) ?? []
+        return appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
     }
 }

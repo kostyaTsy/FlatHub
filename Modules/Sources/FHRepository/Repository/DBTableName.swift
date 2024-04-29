@@ -12,6 +12,7 @@ enum DBTableName {
     static let appartementTable = "Appartement"
     static let appartementInfoTable = "AppartementInfo"
     static let favouriteAppartementTable = "FavouriteAppartement"
+    static let bookAppartementTable = "BookAppartement"
     static let appartementTypeTable = "AppartementType"
     static let appartementOfferTypeTable = "AppartementOfferType"
     static let appartementLivingTypeTable = "AppartementLivingType"

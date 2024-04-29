@@ -53,6 +53,7 @@ public enum Strings {
     public static let searchStartDate = "Start date"
     public static let searchEndDate = "End date"
     public static let searchApplyButtonTitle = "Apply"
+    public static let searchResetButtonTitle = "Reset"
 
     // MARK: - AppartementList
     public static let nightText = "night"

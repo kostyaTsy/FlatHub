@@ -14,14 +14,18 @@ public struct SearchFeature {
         var chooseCity = ChooseCityFeature.State()
         var chooseDates = ChooseTripDateFeature.State()
         var chooseGuests = ChooseTravellersFeature.State()
+        var searchModel: SearchModel?
 
-        public init() {}
+        public init(searchModel: SearchModel? = nil) {
+            self.searchModel = searchModel
+        }
     }
 
     public enum Action {
         case onAppear
         case closeIconTapped
         case onApplyTapped
+        case onResetTapped
         case searchData(SearchModel)
         case chooseCity(ChooseCityFeature.Action)
         case chooseDates(ChooseTripDateFeature.Action)
@@ -36,9 +40,32 @@ public struct SearchFeature {
         Reduce { state, action in
             switch action {
             case .onAppear:
+                let searchModel = state.searchModel
                 state.chooseCity.isCollapsed = false
+                guard let searchModel else {
+                    return .none
+                }
+
+                state.chooseCity.searchText = searchModel.city
+                state.chooseCity.selectedCityResult = SearchCity(
+                    city: searchModel.city,
+                    countryCode: searchModel.countryCode ?? ""
+                )
+
+                state.chooseDates.startDate = searchModel.startDate
+                state.chooseDates.endDate = searchModel.endDate
+
+                state.chooseGuests.guestsCount = searchModel.guestsCount
                 return .none
             case .closeIconTapped:
+                return .run { send in
+                    await dismiss()
+                }
+            case .onResetTapped:
+                return .run { send in
+                    await dismiss()
+                }
+            case .onApplyTapped:
                 let model = SearchModel(
                     city: state.chooseCity.selectedCity,
                     countryCode: state.chooseCity.selectedCountryCode,
@@ -48,10 +75,6 @@ public struct SearchFeature {
                 )
                 return .run { send in
                     await send(.searchData(model))
-                    await dismiss()
-                }
-            case .onApplyTapped:
-                return .run { send in
                     await dismiss()
                 }
             case .chooseCity, .chooseDates, .chooseGuests, .searchData:
