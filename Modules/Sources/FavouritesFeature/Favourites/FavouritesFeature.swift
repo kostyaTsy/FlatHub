@@ -19,9 +19,11 @@ public struct FavouritesFeature {
 
     public enum Action {
         case task
-
         case appartementList(AppartementListFeature.Action)
     }
+
+    @Dependency(\.accountRepository) var accountRepository
+    @Dependency(\.appartementRepository) var appartementRepository
 
     public init() {}
     
@@ -30,9 +32,10 @@ public struct FavouritesFeature {
             switch action {
             case .task:
                 return .run { send in
-                    let mockApp = AppartementModel(id: "123", hostUserId: "", title: "Favourite", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
-                    // TODO: load favourites appartements
-                    await send(.appartementList(.appartementsChanged([mockApp])))
+                    let userId = accountRepository.user().id
+                    let appartements = (try? await appartementRepository.loadFavouriteAppartements(userId)) ?? []
+                    let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
+                    await send(.appartementList(.appartementsChanged(appartementList)))
                 }
             case .appartementList:
                 return .none

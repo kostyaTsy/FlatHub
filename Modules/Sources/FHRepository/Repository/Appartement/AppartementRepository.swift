@@ -14,7 +14,10 @@ public protocol AppartementRepositoryProtocol {
     ) async throws -> AppartementDetailsDTO
 
     func deleteAppartement(with id: String) async throws
-    
+
+    func addAppartementToFavorite(with dto: FavouriteAppartementRequestDTO) async throws
+    func remoteAppartementFromFavourite(with dto: FavouriteAppartementRequestDTO) async throws
+
     func updateAppartementAvailability(
         with dto: AppartementAvailabilityDTO
     ) async throws
@@ -25,9 +28,11 @@ public protocol AppartementRepositoryProtocol {
         for userId: String,
         with searchDTO: AppartementSearchDTO
     ) async throws -> [ExploreAppartementDTO]
+
+    func loadFavouriteAppartements(for userId: String) async throws -> [ExploreAppartementDTO]
 }
 
-public final class AppartementRepository: AppartementRepositoryProtocol {
+actor AppartementRepository: AppartementRepositoryProtocol {
     private let store: Firestore
 
     public init(store: Firestore = Firestore.firestore()) {
@@ -52,6 +57,23 @@ public final class AppartementRepository: AppartementRepositoryProtocol {
         async let deleteAppartementInfoRequest: () = deleteAppartementInfo(with: id)
 
         _ = try await [deleteAppartementRequest, deleteAppartementInfoRequest]
+    }
+
+    public func addAppartementToFavorite(with dto: FavouriteAppartementRequestDTO) async throws {
+        let appartement = try await getAppartement(by: dto.appartementId)
+        let favouriteAppartement = AppartementMapper.mapToFavouriteAppartementDTO(
+            with: dto.userId,
+            appartement: appartement
+        )
+        try store.collection(DBTableName.favouriteAppartementTable)
+            .document(dto.documentId)
+            .setData(from: favouriteAppartement)
+    }
+
+    public func remoteAppartementFromFavourite(with dto: FavouriteAppartementRequestDTO) async throws {
+        try await store.collection(DBTableName.favouriteAppartementTable)
+            .document(dto.documentId)
+            .delete()
     }
 
     public func updateAppartementAvailability(
@@ -127,6 +149,15 @@ public final class AppartementRepository: AppartementRepositoryProtocol {
                 )
             }
     }
+
+    public func loadFavouriteAppartements(for userId: String) async throws -> [ExploreAppartementDTO] {
+        let favoriteAppartements = try await loadFavouriteAppartementsData(for: userId)
+        return favoriteAppartements.map {
+            AppartementMapper.mapToExploreAppartementDTO(
+                from: $0.appartement, isFavourite: true
+            )
+        }
+    }
 }
 
 // MARK: - Upload
@@ -164,6 +195,13 @@ private extension AppartementRepository {
 // MARK: - Load
 
 private extension AppartementRepository {
+    func getAppartement(by id: String) async throws -> AppartementDTO {
+        try await store.collection(DBTableName.appartementTable)
+            .document(id)
+            .getDocument()
+            .data(as: AppartementDTO.self)
+    }
+
     func loadHostAppartementsData(for userId: String) async throws -> [AppartementDTO] {
         try await store.collection(DBTableName.appartementTable)
             .whereField("hostUserId", isEqualTo: userId)
@@ -212,7 +250,7 @@ private extension AppartementRepository {
     }
 
     func loadFavouriteAppartementsData(for userId: String) async throws -> [FavouriteAppartementDTO] {
-        try await store.collection(DBTableName.favouriteAppartementTable)
+        return try await store.collection(DBTableName.favouriteAppartementTable)
             .whereField("userId", isEqualTo: userId)
             .getDocuments()
             .documents
