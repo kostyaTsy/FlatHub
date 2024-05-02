@@ -14,6 +14,8 @@ public enum Strings {
     public static let alertCancelButtonText = "Cancel"
     public static let alertYesButtonText = "Yes"
     public static let alertNoButtonText = "No"
+    public static let alertOkButtonText = "Ok"
+    public static let errorAlertTitle = "Error"
     public static let empty = ""
     public static let guestsText = "Guests"
     public static let bedroomsText = "Bedrooms"
@@ -57,6 +59,7 @@ public enum Strings {
 
     // MARK: - AppartementList
     public static let nightText = "night"
+    public static let bookButtonTitle = "Book"
 
     // MARK: - Profile
     public static let settingsSectionText = "Settings"

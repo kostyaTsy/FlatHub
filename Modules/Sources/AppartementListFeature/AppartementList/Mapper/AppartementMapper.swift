@@ -28,6 +28,25 @@ public enum AppartementMapper {
         )
     }
 
+    public static func mapToAppartementsData(
+        with appartements: [AppartementModel],
+        startSearchDate: Date? = nil,
+        endSearchDate: Date? = nil
+    ) -> AppartementsData {
+        var searchDates: SearchDates?
+        if let startSearchDate, let endSearchDate {
+            searchDates = SearchDates(
+                startDate: startSearchDate,
+                endDate: endSearchDate
+            )
+        }
+
+        return AppartementsData(
+            appartements: appartements,
+            searchDates: searchDates
+        )
+    }
+
     static func mapToFavouriteAppartementDTO(
         for userId: String,
         from appartementId: String

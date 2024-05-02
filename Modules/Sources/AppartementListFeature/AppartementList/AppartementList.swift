@@ -29,6 +29,14 @@ public struct AppartementList: View {
                 }
             }
             .padding(.horizontal, Layout.Spacing.medium)
+            .navigationDestination(
+                store: store.scope(
+                    state: \.$appartementDetails,
+                    action: \.appartementDetails
+                )
+            ) { store in
+                AppartementDetailsView(store: store)
+            }
         }
     }
 

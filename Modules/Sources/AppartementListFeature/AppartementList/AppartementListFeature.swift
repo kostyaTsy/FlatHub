@@ -13,7 +13,10 @@ public struct AppartementListFeature {
     @ObservableState
     public struct State {
         var appartements: [AppartementModel]
+        var searchDates: SearchDates?
         var isDataLoaded = false
+
+        @Presents var appartementDetails: AppartementDetailsFeature.State?
 
         public init(appartements: [AppartementModel]) {
             self.appartements = appartements
@@ -27,7 +30,8 @@ public struct AppartementListFeature {
         case onFavouriteButtonTapped(AppartementModel)
         case onFavouriteSuccess(AppartementModel)
         case onAppartementTapped(AppartementModel)
-        case appartementsChanged([AppartementModel])
+        case setAppartementsData(AppartementsData)
+        case appartementDetails(PresentationAction<AppartementDetailsFeature.Action>)
     }
 
     @Dependency(\.accountRepository) var accountRepository
@@ -60,14 +64,25 @@ public struct AppartementListFeature {
                 }
                 return .none
             case .onAppartementTapped(let appartement):
-                print(">>> \(appartement)")
-                // TODO: navigate to details screen
+                let dataModel = AppartementDetailsMapper.mapToDataModel(
+                    with: state.searchDates
+                )
+                state.appartementDetails = .init(
+                    appartement: appartement,
+                    presentationType: state.searchDates == nil ? .travelWithoutBooksDate : .travelWithBooksDate,
+                    dataModel: dataModel
+                )
                 return .none
-            case .appartementsChanged(let appartements):
-                state.appartements = appartements
+            case .setAppartementsData(let data):
+                state.appartements = data.appartements
+                state.searchDates = data.searchDates
                 state.isDataLoaded = true
                 return .none
+            case .appartementDetails:
+                return .none
             }
+        }.ifLet(\.$appartementDetails, action: \.appartementDetails) {
+            AppartementDetailsFeature()
         }
     }
 }

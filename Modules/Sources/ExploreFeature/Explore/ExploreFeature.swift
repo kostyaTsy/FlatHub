@@ -36,8 +36,8 @@ public struct ExploreFeature {
             switch action {
             case .task:
                 return .run { send in
-                    let appartementList = await loadAppartements()
-                    await send(.appartementList(.appartementsChanged(appartementList)))
+                    let data = await loadAppartements()
+                    await send(.appartementList(.setAppartementsData(data)))
                 }
             case .search(.presented(.searchData(let searchModel))):
                 state.searchModel = searchModel
@@ -46,13 +46,18 @@ public struct ExploreFeature {
                     let searchDTO = ExploreMapper.mapToSearchDTO(from: searchModel)
                     let appartements = (try? await appartementRepository.searchAppartements(userId, searchDTO)) ?? []
                     let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
-                    await send(.appartementList(.appartementsChanged(appartementList)))
+                    let data = AppartementMapper.mapToAppartementsData(
+                        with: appartementList,
+                        startSearchDate: searchModel.startDate,
+                        endSearchDate: searchModel.endDate
+                    )
+                    await send(.appartementList(.setAppartementsData(data)))
                 }
             case .search(.presented(.onResetTapped)):
                 state.searchModel = nil
                 return .run { send in
-                    let appartementList = await loadAppartements()
-                    await send(.appartementList(.appartementsChanged(appartementList)))
+                    let data = await loadAppartements()
+                    await send(.appartementList(.setAppartementsData(data)))
                 }
             case .onSearchContainerTaped:
                 state.search = .init(searchModel: state.searchModel)
@@ -72,9 +77,10 @@ public struct ExploreFeature {
 }
 
 private extension ExploreFeature {
-    func loadAppartements() async -> [AppartementModel] {
+    func loadAppartements() async -> AppartementsData {
         let userId = accountRepository.user().id
         let appartements = (try? await appartementRepository.loadAppartements(userId)) ?? []
-        return appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
+        let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
+        return AppartementMapper.mapToAppartementsData(with: appartementList)
     }
 }

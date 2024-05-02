@@ -32,7 +32,8 @@ public struct UserBooksFeature {
                 return .run { send in
                     // TODO: load favourites appartements
                     let mockApp = AppartementModel(id: "123", hostUserId: "", title: "Booked", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
-                    await send(.appartementList(.appartementsChanged([mockApp])))
+                    let data = AppartementsData(appartements: [mockApp])
+                    await send(.appartementList(.setAppartementsData(data)))
                 }
             case .appartementList:
                 return .none

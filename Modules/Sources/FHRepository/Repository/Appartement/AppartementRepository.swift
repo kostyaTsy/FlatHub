@@ -32,7 +32,7 @@ public protocol AppartementRepositoryProtocol {
     func loadFavouriteAppartements(for userId: String) async throws -> [ExploreAppartementDTO]
 }
 
-actor AppartementRepository: AppartementRepositoryProtocol {
+public actor AppartementRepository: AppartementRepositoryProtocol {
     private let store: Firestore
 
     public init(store: Firestore = Firestore.firestore()) {
@@ -134,7 +134,7 @@ actor AppartementRepository: AppartementRepositoryProtocol {
 
         let appartements = result.0
         let favouriteAppartements = result.1
-        let bookedAppartements = [BookAppartementDTO]() // result.2
+        let bookedAppartements = result.2
 
         return appartements
             .filter { appartement in
@@ -238,8 +238,8 @@ private extension AppartementRepository {
         let startDateTimestamp = Timestamp(date: startDate)
         let endDateTimestamp = Timestamp(date: endDate)
 
-        // TODO: check
         return try await store.collection(DBTableName.bookAppartementTable)
+            .whereField("status", isEqualTo: BookStatus.booked.rawValue)
             .whereField("startDate", isLessThan: endDateTimestamp)
             .whereField("endDate", isGreaterThan: startDateTimestamp)
             .getDocuments()

@@ -35,7 +35,8 @@ public struct FavouritesFeature {
                     let userId = accountRepository.user().id
                     let appartements = (try? await appartementRepository.loadFavouriteAppartements(userId)) ?? []
                     let appartementList = appartements.map { AppartementMapper.mapToAppartementModel(from: $0) }
-                    await send(.appartementList(.appartementsChanged(appartementList)))
+                    let data = AppartementMapper.mapToAppartementsData(with: appartementList)
+                    await send(.appartementList(.setAppartementsData(data)))
                 }
             case .appartementList:
                 return .none
