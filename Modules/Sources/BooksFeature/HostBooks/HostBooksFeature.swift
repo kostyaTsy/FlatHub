@@ -7,6 +7,7 @@
 
 import ComposableArchitecture
 import AppartementListFeature
+import FHRepository
 
 @Reducer
 public struct HostBooksFeature {
@@ -29,7 +30,7 @@ public struct HostBooksFeature {
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
-            case .task:
+            case .onAppear:
                 return .run { send in
                     let user = accountRepository.user()
                     let bookedAppartements = (try? await bookAppartementRepository.loadUserBooks(user.id)) ?? []

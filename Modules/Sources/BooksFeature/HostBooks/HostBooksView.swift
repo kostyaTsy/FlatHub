@@ -22,7 +22,7 @@ public struct HostBooksView: View {
             contentView()
                 .toolbar(.hidden, for: .navigationBar)
         }
-        .onAppear {
+        .task {
             store.send(.onAppear)
         }
     }
