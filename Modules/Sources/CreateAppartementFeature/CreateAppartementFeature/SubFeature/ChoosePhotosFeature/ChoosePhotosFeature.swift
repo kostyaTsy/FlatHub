@@ -72,7 +72,6 @@ public struct ChoosePhotosFeature {
                 state.isLoading = isLoading
                 return .none
             case .deleteImage(let model):
-                print("delete")
                 if let index = state.selectedPhotoItems.firstIndex(where: { $0.itemIdentifier == model.id }) {
                     state.selectedPhotoItems.remove(at: index)
                 }

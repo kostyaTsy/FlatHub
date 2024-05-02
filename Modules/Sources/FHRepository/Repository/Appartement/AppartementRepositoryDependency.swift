@@ -11,11 +11,18 @@ import Dependencies
 public struct AppartementRepositoryDependency: Sendable {
     public var createAppartement: @Sendable (_ dto: CreateAppartementDTO) async throws -> AppartementDetailsDTO
     public var deleteAppartement: @Sendable (_ id: String) async throws -> Void
+
+    public var addAppartementToFavorite: @Sendable (_ dto: FavouriteAppartementRequestDTO) async throws -> Void
+    public var remoteAppartementFromFavourite: @Sendable (_ dto: FavouriteAppartementRequestDTO) async throws -> Void
+
     public var updateAppartementAvailability: @Sendable (_ dto: AppartementAvailabilityDTO) async throws -> Void
+
     public var loadHostAppartements: @Sendable (_ userId: String) async throws -> [AppartementDetailsDTO]
     public var loadAppartements: @Sendable (_ userId: String) async throws -> [ExploreAppartementDTO]
     public var searchAppartements: @Sendable (_ userId: String,
                                               _ searchDTO: AppartementSearchDTO) async throws -> [ExploreAppartementDTO]
+
+    public var loadFavouriteAppartements: @Sendable (_ userId: String) async throws -> [ExploreAppartementDTO]
 }
 
 // MARK: - Live
@@ -29,6 +36,10 @@ extension AppartementRepositoryDependency {
                 try await appartementRepository.createAppartement(with: dto)
             }, deleteAppartement: { id in
                 try await appartementRepository.deleteAppartement(with: id)
+            }, addAppartementToFavorite: { dto in
+                try await appartementRepository.addAppartementToFavorite(with: dto)
+            }, remoteAppartementFromFavourite: { dto in
+                try await appartementRepository.remoteAppartementFromFavourite(with: dto)
             }, updateAppartementAvailability: { dto in
                 try await appartementRepository.updateAppartementAvailability(with: dto)
             }, loadHostAppartements: { userId in
@@ -37,6 +48,8 @@ extension AppartementRepositoryDependency {
                 try await appartementRepository.loadAppartements(for: userId)
             }, searchAppartements: { userId, searchDTO in
                 try await appartementRepository.searchAppartements(for: userId, with: searchDTO)
+            }, loadFavouriteAppartements: { userId in
+                try await appartementRepository.loadFavouriteAppartements(for: userId)
             }
         )
 
@@ -78,6 +91,10 @@ extension AppartementRepositoryDependency {
                 )
             }, deleteAppartement: { _ in
                 ()
+            }, addAppartementToFavorite: { dto in
+                ()
+            }, remoteAppartementFromFavourite: { dto in
+                ()
             }, updateAppartementAvailability: { _ in
                 ()
             }, loadHostAppartements: { _ in
@@ -85,6 +102,8 @@ extension AppartementRepositoryDependency {
             }, loadAppartements: { _ in
                 []
             }, searchAppartements: { _, _ in
+                []
+            }, loadFavouriteAppartements: { _ in
                 []
             }
         )

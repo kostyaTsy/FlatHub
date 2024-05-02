@@ -106,4 +106,14 @@ enum AppartementMapper {
             createDate: appartement.createDate
         )
     }
+
+    static func mapToFavouriteAppartementDTO(
+        with userId: String,
+        appartement: AppartementDTO
+    ) -> FavouriteAppartementDTO {
+        FavouriteAppartementDTO(
+            userId: userId,
+            appartement: appartement
+        )
+    }
 }
