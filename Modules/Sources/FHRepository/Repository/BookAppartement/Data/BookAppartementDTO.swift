@@ -9,6 +9,9 @@ import Foundation
 
 public enum BookStatus: String, Codable {
     case booked
+
+    /// Indicated that booking period passed
+    case done
     case cancelled
 }
 

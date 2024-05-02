@@ -9,6 +9,8 @@ import Dependencies
 
 public struct BookAppartementRepositoryDependency: Sendable {
     public var bookAppartement: @Sendable (_ dto: BookAppartementRequestDTO) async throws -> Void
+    public var loadUserBooks: @Sendable (_ userId: String) async throws -> [BookAppartementDTO]
+    public var loadHostUserBooks: @Sendable (_ hostUserId: String) async throws -> [BookAppartementDTO]
     public var getBookedDates: @Sendable (_ appartementId: String) async throws -> [BookedDates]
 }
 
@@ -21,6 +23,10 @@ extension BookAppartementRepositoryDependency {
         let dependencyRepository = BookAppartementRepositoryDependency(
             bookAppartement: { dto in
                 try await repository.bookAppartement(dto)
+            }, loadUserBooks: { userId in
+                try await repository.loadUserBooks(for: userId)
+            }, loadHostUserBooks: { hostUserId in
+                try await repository.loadHostUserBooks(for: hostUserId)
             }, getBookedDates: { appartementId in
                 try await repository.getBookedDates(for: appartementId)
             }
@@ -37,6 +43,10 @@ extension BookAppartementRepositoryDependency {
         let dependencyRepository = BookAppartementRepositoryDependency(
             bookAppartement: { _ in
                 ()
+            }, loadUserBooks: { _ in
+                []
+            }, loadHostUserBooks: { _ in
+                []
             }, getBookedDates: { _ in
                 []
             }

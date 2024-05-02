@@ -28,6 +28,25 @@ public enum AppartementMapper {
         )
     }
 
+    public static func mapToAppartementModel(
+        from appartementDTO: AppartementDTO
+    ) -> AppartementModel {
+        AppartementModel(
+            id: appartementDTO.id,
+            hostUserId: appartementDTO.hostUserId,
+            title: appartementDTO.title,
+            city: appartementDTO.city,
+            countryCode: appartementDTO.countryCode,
+            pricePerNight: appartementDTO.pricePerNight,
+            guestCount: appartementDTO.guestCount,
+            isFavourite: false,
+            rating: appartementDTO.rating,
+            reviewCount: appartementDTO.reviewCount,
+            photos: appartementDTO.photosStringURL,
+            createDate: appartementDTO.createDate
+        )
+    }
+
     public static func mapToAppartementsData(
         with appartements: [AppartementModel],
         startSearchDate: Date? = nil,

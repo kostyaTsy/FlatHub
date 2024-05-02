@@ -10,7 +10,7 @@ import FHRepository
 
 enum AppartementDetailsMapper {
     static func mapToDataModel(
-        with searchDates: SearchDates?
+        with searchDates: SearchDates? = nil
     ) -> AppartementDetailsDataModel {
         AppartementDetailsDataModel(
             searchDates: searchDates

@@ -10,6 +10,8 @@ import FirebaseFirestore
 
 public protocol BookAppartementRepositoryProtocol {
     func bookAppartement(_ dto: BookAppartementRequestDTO) async throws
+    func loadUserBooks(for userId: String) async throws -> [BookAppartementDTO]
+    func loadHostUserBooks(for hostUserId: String) async throws -> [BookAppartementDTO]
     func getBookedDates(for appartementId: String) async throws -> [BookedDates]
 }
 
@@ -54,6 +56,26 @@ public actor BookAppartementRepository: BookAppartementRepositoryProtocol {
             from: dto, with: appartement
         )
         try await paymentRepository.createPayment(paymentDTO)
+    }
+
+    public func loadUserBooks(for userId: String) async throws -> [BookAppartementDTO] {
+        try await store.collection(DBTableName.bookAppartementTable)
+            .whereField("userId", isEqualTo: userId)
+            .getDocuments()
+            .documents
+            .compactMap { snapshot in
+                try? snapshot.data(as: BookAppartementDTO.self)
+            }
+    }
+
+    public func loadHostUserBooks(for hostUserId: String) async throws -> [BookAppartementDTO] {
+        try await store.collection(DBTableName.bookAppartementTable)
+            .whereField("hostUserId", isEqualTo: hostUserId)
+            .getDocuments()
+            .documents
+            .compactMap { snapshot in
+                try? snapshot.data(as: BookAppartementDTO.self)
+            }
     }
 
     public func getBookedDates(for appartementId: String) async throws -> [BookedDates] {
