@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  AppartementsData.swift
+//
 //
 //  Created by Kostya Tsyvilko on 2.05.24.
 //

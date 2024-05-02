@@ -21,8 +21,14 @@ struct AppartementDetailsView: View {
             content()
                 .alert(
                     $store.scope(
-                        state: \.destination?.alert,
-                        action: \.destination.alert
+                        state: \.destination?.errorAlert,
+                        action: \.destination.errorAlert
+                    )
+                )
+                .alert(
+                    $store.scope(
+                        state: \.destination?.cancelBookingAlert,
+                        action: \.destination.cancelBookingAlert
                     )
                 )
                 .sheet(
@@ -34,6 +40,9 @@ struct AppartementDetailsView: View {
                     SelectBookDatesView(store: store)
                         .presentationDetents([.fraction(Constants.selectDatesSheetFraction)])
                 }
+        }
+        .onAppear {
+            store.send(.onAppear)
         }
     }
 
@@ -53,6 +62,12 @@ struct AppartementDetailsView: View {
                 title: Strings.bookButtonTitle
             ) {
                 store.send(.onBookTapped)
+            }
+        } else if store.presentationType.shouldShowCancelBookButton {
+            FHOvalButton(
+                title: Strings.cancelBookButtonTitle
+            ) {
+                store.send(.onCancelBookTapped)
             }
         }
     }

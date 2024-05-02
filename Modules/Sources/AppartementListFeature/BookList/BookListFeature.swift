@@ -40,10 +40,13 @@ public struct BookListFeature {
         Reduce { state, action in
             switch action {
             case .onAppartementTapped(let bookModel):
-                let dataModel = AppartementDetailsMapper.mapToDataModel()
+                let user = accountRepository.user()
+                let dataModel = AppartementDetailsMapper.mapToDataModel(
+                    bookDates: BookDates(startDate: bookModel.startDate, endDate: bookModel.endDate)
+                )
                 state.appartementDetails = .init(
                     appartement: bookModel.appartement,
-                    presentationType: .travelBooked,
+                    presentationType: user.role == .traveller ? .travelBooked : .hostBooked,
                     dataModel: dataModel
                 )
                 return .none

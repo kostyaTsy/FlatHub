@@ -65,7 +65,7 @@ public struct AppartementListFeature {
                 return .none
             case .onAppartementTapped(let appartement):
                 let dataModel = AppartementDetailsMapper.mapToDataModel(
-                    with: state.searchDates
+                    searchDates: state.searchDates
                 )
                 state.appartementDetails = .init(
                     appartement: appartement,

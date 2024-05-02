@@ -60,6 +60,10 @@ public enum Strings {
     // MARK: - AppartementList
     public static let nightText = "night"
     public static let bookButtonTitle = "Book"
+    public static let cancelBookButtonTitle = "Cancel booking"
+    public static let cannotCancelBookingErrorText = "You cannot cancel this booking due to strict cancellation policy"
+    public static let cancelBookingAlertQuestion = "Are you sure you want to cancel booking?"
+    public static let cancelBookingAlertMessage = "You will receive back %d percent of your spent money"
 
     // MARK: - Profile
     public static let settingsSectionText = "Settings"

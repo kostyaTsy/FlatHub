@@ -23,6 +23,7 @@ public struct AppartementRepositoryDependency: Sendable {
                                               _ searchDTO: AppartementSearchDTO) async throws -> [ExploreAppartementDTO]
 
     public var loadFavouriteAppartements: @Sendable (_ userId: String) async throws -> [ExploreAppartementDTO]
+    public var loadAppartementInfo: @Sendable (_ appartementId: String) async throws -> AppartementInfoDTO
 }
 
 // MARK: - Live
@@ -50,6 +51,8 @@ extension AppartementRepositoryDependency {
                 try await appartementRepository.searchAppartements(for: userId, with: searchDTO)
             }, loadFavouriteAppartements: { userId in
                 try await appartementRepository.loadFavouriteAppartements(for: userId)
+            }, loadAppartementInfo: { appartementId in
+                try await appartementRepository.loadAppartementInfo(for: appartementId)
             }
         )
 
@@ -105,6 +108,8 @@ extension AppartementRepositoryDependency {
                 []
             }, loadFavouriteAppartements: { _ in
                 []
+            }, loadAppartementInfo: { _ in
+                throw FHRepositoryError.noData
             }
         )
 

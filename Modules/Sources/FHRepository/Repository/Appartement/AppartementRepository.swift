@@ -30,6 +30,7 @@ public protocol AppartementRepositoryProtocol {
     ) async throws -> [ExploreAppartementDTO]
 
     func loadFavouriteAppartements(for userId: String) async throws -> [ExploreAppartementDTO]
+    func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO
 }
 
 public actor AppartementRepository: AppartementRepositoryProtocol {
@@ -158,6 +159,13 @@ public actor AppartementRepository: AppartementRepositoryProtocol {
             )
         }
     }
+
+    public func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO {
+        try await store.collection(DBTableName.appartementInfoTable)
+            .document(appartementId)
+            .getDocument()
+            .data(as: AppartementInfoDTO.self)
+    }
 }
 
 // MARK: - Upload
@@ -274,12 +282,5 @@ private extension AppartementRepository {
 
             return appartementInfos
         }
-    }
-
-    func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO {
-        try await store.collection(DBTableName.appartementInfoTable)
-            .document(appartementId)
-            .getDocument()
-            .data(as: AppartementInfoDTO.self)
     }
 }

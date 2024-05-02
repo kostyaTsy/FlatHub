@@ -13,10 +13,17 @@ import FHCommon
 public enum AppartementDetailsPresentationType {
     case travelWithBooksDate
     case travelWithoutBooksDate
+    /// Indicates that traveller opens book details screen
     case travelBooked
+    /// Indicates that host opens book details screen
+    case hostBooked
 
     var shouldShowBookButton: Bool {
         [.travelWithBooksDate, .travelWithoutBooksDate].contains(self)
+    }
+
+    var shouldShowCancelBookButton: Bool {
+        [.travelBooked].contains(self)
     }
 }
 
@@ -27,7 +34,8 @@ public struct AppartementDetailsFeature {
     }
     @Reducer
     public enum Destination {
-        case alert(AlertState<AlertAction>)
+        case errorAlert(AlertState<ErrorAlertAction>)
+        case cancelBookingAlert(AlertState<CancelBookingAlertAction>)
         case selectDates(SelectBookDatesFeature)
     }
 
@@ -35,6 +43,8 @@ public struct AppartementDetailsFeature {
     public struct State {
         @Presents var destination: Destination.State?
         var appartement: AppartementModel
+        var details: AppartementInfoDTO?
+
         var presentationType: AppartementDetailsPresentationType
         var dataModel: AppartementDetailsDataModel
 
@@ -50,19 +60,27 @@ public struct AppartementDetailsFeature {
     }
 
     public enum Action {
+        case onAppear
+        case onDetailsLoaded(AppartementInfoDTO?)
         case onBookTapped
         case onBookRequest
         case onBookedSuccess
         case onBookedFailure(Swift.Error)
+        case onCancelBookTapped
         case shouldChooseDates
         case destination(PresentationAction<Destination.Action>)
     }
 
-    public enum AlertAction {
+    public enum ErrorAlertAction {
         case done
     }
 
+    public enum CancelBookingAlertAction {
+        case confirmed
+    }
+
     @Dependency(\.accountRepository) var accountRepository
+    @Dependency(\.appartementRepository) var appartementRepository
     @Dependency(\.bookAppartementRepository) var bookAppartementRepository
 
     public init() {}
@@ -70,6 +88,14 @@ public struct AppartementDetailsFeature {
     public var body: some Reducer<State, Action> {
         Reduce { state, action in
             switch action {
+            case .onAppear:
+                return .run { [id = state.appartement.id] send in
+                    let details = try? await appartementRepository.loadAppartementInfo(id)
+                    await send(.onDetailsLoaded(details))
+                }
+            case .onDetailsLoaded(let details):
+                state.details = details
+                return .none
             case .onBookTapped:
                 if state.presentationType == .travelWithBooksDate {
                     return .send(.onBookRequest)
@@ -101,11 +127,41 @@ public struct AppartementDetailsFeature {
                 state.presentationType = .travelBooked
                 return .none
             case .onBookedFailure(let error):
-                state.destination = .alert(makeErrorAlert(error: error))
+                state.destination = .errorAlert(makeErrorAlert(error: error))
+                return .none
+            case .onCancelBookTapped:
+                guard let cancellationPolicy = state.details?.cancellationPolicy,
+                      let bookDates = state.dataModel.bookDates
+                else {
+                    return .none
+                }
+                let params = CancelBookingUtil.makeCancelBookingParams(
+                    for: cancellationPolicy,
+                    bookingStartDate: bookDates.startDate
+                )
+
+                guard params.canCancel else {
+                    state.destination = .errorAlert(
+                        makeErrorAlert(stringError: Strings.cannotCancelBookingErrorText)
+                    )
+                    return .none
+                }
+
+                let cancelMessage = String(
+                    format: Strings.cancelBookingAlertMessage,
+                    params.refundPercentage
+                )
+                state.destination = .cancelBookingAlert(
+                    makeCancelBookingAlert(message: cancelMessage)
+                )
+
                 return .none
             case .shouldChooseDates:
                 let datesState = SelectBookDatesFeature.State(appartementId: state.appartement.id)
                 state.destination = .selectDates(datesState)
+                return .none
+            case .destination(.presented(.cancelBookingAlert(.confirmed))):
+                print(">>> Should cancel booking")
                 return .none
             case .destination(.presented(.selectDates(.onDatesApplied(let startDate, let endDate)))):
                 state.dataModel.searchDates = SearchDates(
@@ -123,7 +179,7 @@ public struct AppartementDetailsFeature {
 // MARK: - Alert
 
 private extension AppartementDetailsFeature {
-    private func makeErrorAlert(error: Swift.Error) -> AlertState<AlertAction> {
+    private func makeErrorAlert(error: Swift.Error) -> AlertState<ErrorAlertAction> {
         AlertState {
             TextState(Strings.errorAlertTitle)
         } actions: {
@@ -132,6 +188,33 @@ private extension AppartementDetailsFeature {
             }
         } message: {
             TextState(error.localizedDescription)
+        }
+    }
+
+    private func makeErrorAlert(stringError: String) -> AlertState<ErrorAlertAction> {
+        AlertState {
+            TextState(Strings.errorAlertTitle)
+        } actions: {
+            ButtonState(action: .done) {
+                TextState(Strings.alertOkButtonText)
+            }
+        } message: {
+            TextState(stringError)
+        }
+    }
+
+    private func makeCancelBookingAlert(message: String) -> AlertState<CancelBookingAlertAction> {
+        AlertState {
+            TextState(Strings.errorAlertTitle)
+        } actions: {
+            ButtonState(role: .cancel) {
+                TextState(Strings.alertNoButtonText)
+            }
+            ButtonState(action: .confirmed) {
+                TextState(Strings.alertYesButtonText)
+            }
+        } message: {
+            TextState(message)
         }
     }
 }
