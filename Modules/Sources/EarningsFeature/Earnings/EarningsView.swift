@@ -76,9 +76,7 @@ public struct EarningsView: View {
             }
 
             Button {
-                if !store.isChartHidden {
-                    store.send(.onMonthTapped)
-                }
+                store.send(.onMonthTapped)
             } label: {
                 Spacer()
                 Text(store.formattedMonth)

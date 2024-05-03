@@ -35,12 +35,12 @@ struct ProfileSectionView: View {
 
     @ViewBuilder private func profileSectionRow(item: ProfileItem) -> some View {
         if item.destination == .switchToHosting || item.destination == .switchToTravel {
-            profileSectionRowContent(item: item)
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .background(Colors.system)
-                .onTapGesture {
-                    onSwitchToTapped?()
-                }
+            Button {
+                onSwitchToTapped?()
+            } label: {
+                profileSectionRowContent(item: item)
+                    .foregroundStyle(Colors.label)
+            }
         } else {
             NavigationLink(value: item.destination) {
                 profileSectionRowContent(item: item)

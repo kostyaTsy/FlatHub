@@ -25,17 +25,18 @@ public struct ProfileView: View {
 
                 logOutButton()
             }
-            .navigationDestination(for: ProfileNavigationDestination.self) { destination in
-                switch destination {
-                case .personalInformation:
-                    // TODO: add views
-                    Text("Personal Info")
-                case .yourSpace:
-                    Text("YourSpace")
-                default:
-                    EmptyView()
-                }
-            }
+            // TODO: rewrite in future
+//            .navigationDestination(for: ProfileNavigationDestination.self) { destination in
+//                switch destination {
+//                case .personalInformation:
+//                    // TODO: add views
+//                    Text("Personal Info")
+//                case .yourSpace:
+//                    Text("YourSpace")
+//                default:
+//                    EmptyView()
+//                }
+//            }
             .alert(
                 $store.scope(state: \.switchToHostAlert, action: \.switchToHostAlert)
             )
