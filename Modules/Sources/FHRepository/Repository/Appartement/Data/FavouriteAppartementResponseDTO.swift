@@ -1,19 +1,15 @@
 //
-//  FavouriteAppartementRequestDTO.swift
+//  FavouriteAppartementResponseDTO.swift
 //
 //
-//  Created by Kostya Tsyvilko on 29.04.24.
+//  Created by Kostya Tsyvilko on 3.05.24.
 //
 
 import Foundation
 
-public struct FavouriteAppartementRequestDTO: Codable {
+public struct FavouriteAppartementResponseDTO: Codable {
     public let userId: String
     public let appartementId: String
-
-    public var documentId: String {
-        "\(userId)_\(appartementId)"
-    }
 
     public init(
         userId: String,

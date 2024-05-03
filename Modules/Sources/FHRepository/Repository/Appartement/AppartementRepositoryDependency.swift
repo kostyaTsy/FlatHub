@@ -40,7 +40,7 @@ extension AppartementRepositoryDependency {
             }, addAppartementToFavorite: { dto in
                 try await appartementRepository.addAppartementToFavorite(with: dto)
             }, remoteAppartementFromFavourite: { dto in
-                try await appartementRepository.remoteAppartementFromFavourite(with: dto)
+                try await appartementRepository.removeAppartementFromFavourite(with: dto)
             }, updateAppartementAvailability: { dto in
                 try await appartementRepository.updateAppartementAvailability(with: dto)
             }, loadHostAppartements: { userId in

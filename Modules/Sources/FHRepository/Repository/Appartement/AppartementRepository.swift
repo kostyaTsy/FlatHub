@@ -16,7 +16,7 @@ public protocol AppartementRepositoryProtocol {
     func deleteAppartement(with id: String) async throws
 
     func addAppartementToFavorite(with dto: FavouriteAppartementRequestDTO) async throws
-    func remoteAppartementFromFavourite(with dto: FavouriteAppartementRequestDTO) async throws
+    func removeAppartementFromFavourite(with dto: FavouriteAppartementRequestDTO) async throws
 
     func updateAppartementAvailability(
         with dto: AppartementAvailabilityDTO
@@ -63,17 +63,12 @@ public actor AppartementRepository: AppartementRepositoryProtocol {
     }
 
     public func addAppartementToFavorite(with dto: FavouriteAppartementRequestDTO) async throws {
-        let appartement = try await getAppartement(by: dto.appartementId)
-        let favouriteAppartement = AppartementMapper.mapToFavouriteAppartementDTO(
-            with: dto.userId,
-            appartement: appartement
-        )
         try store.collection(DBTableName.favouriteAppartementTable)
             .document(dto.documentId)
-            .setData(from: favouriteAppartement)
+            .setData(from: dto)
     }
 
-    public func remoteAppartementFromFavourite(with dto: FavouriteAppartementRequestDTO) async throws {
+    public func removeAppartementFromFavourite(with dto: FavouriteAppartementRequestDTO) async throws {
         try await store.collection(DBTableName.favouriteAppartementTable)
             .document(dto.documentId)
             .delete()
@@ -123,7 +118,7 @@ public actor AppartementRepository: AppartementRepositoryProtocol {
         let favouriteAppartements = result.1
 
         return appartements.map { appartement in
-            let favouriteAppartement = favouriteAppartements.first(where: { $0.appartement.id == appartement.id })
+            let favouriteAppartement = favouriteAppartements.first(where: { $0.appartementId == appartement.id })
             return AppartementMapper.mapToExploreAppartementDTO(
                 from: appartement,
                 isFavourite: favouriteAppartement != nil
@@ -154,7 +149,7 @@ public actor AppartementRepository: AppartementRepositoryProtocol {
                 return bookedAppartement == nil
             }
             .map { appartement in
-                let favouriteAppartement = favouriteAppartements.first(where: { $0.appartement.id == appartement.id })
+                let favouriteAppartement = favouriteAppartements.first(where: { $0.appartementId == appartement.id })
                 return AppartementMapper.mapToExploreAppartementDTO(
                     from: appartement,
                     isFavourite: favouriteAppartement != nil
@@ -163,7 +158,7 @@ public actor AppartementRepository: AppartementRepositoryProtocol {
     }
 
     public func loadFavouriteAppartements(for userId: String) async throws -> [ExploreAppartementDTO] {
-        let favoriteAppartements = try await loadFavouriteAppartementsData(for: userId)
+        let favoriteAppartements = try await loadFavouriteAppartementsWithAppartement(for: userId)
         return favoriteAppartements.map {
             AppartementMapper.mapToExploreAppartementDTO(
                 from: $0.appartement, isFavourite: true
@@ -268,14 +263,36 @@ private extension AppartementRepository {
             }
     }
 
-    func loadFavouriteAppartementsData(for userId: String) async throws -> [FavouriteAppartementDTO] {
+    func loadFavouriteAppartementsData(for userId: String) async throws -> [FavouriteAppartementResponseDTO] {
         return try await store.collection(DBTableName.favouriteAppartementTable)
             .whereField("userId", isEqualTo: userId)
             .getDocuments()
             .documents
             .compactMap { snapshot in
-                try? snapshot.data(as: FavouriteAppartementDTO.self)
+                try? snapshot.data(as: FavouriteAppartementResponseDTO.self)
             }
+    }
+
+    func loadFavouriteAppartementsWithAppartement(for userId: String) async throws -> [FavouriteAppartementDTO] {
+        let favoriteAppartementsResponse = try await loadFavouriteAppartementsData(for: userId)
+        return try await withThrowingTaskGroup(
+            of: AppartementDTO.self,
+            returning: [FavouriteAppartementDTO].self
+        ) { taskGroup in
+            for appartement in favoriteAppartementsResponse {
+                taskGroup.addTask { try await self.getAppartement(by: appartement.appartementId) }
+            }
+
+            var favouritesDTO: [FavouriteAppartementDTO] = []
+            for try await result in taskGroup {
+                let favouriteDTO = AppartementMapper.mapToFavouriteAppartementDTO(
+                    with: userId, appartement: result
+                )
+                favouritesDTO.append(favouriteDTO)
+            }
+
+            return favouritesDTO
+        }
     }
 
     func loadAppartementInfos(for ids: [String]) async throws -> [String: AppartementInfoDTO] {
