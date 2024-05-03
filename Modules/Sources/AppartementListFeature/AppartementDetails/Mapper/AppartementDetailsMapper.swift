@@ -11,11 +11,13 @@ import FHRepository
 enum AppartementDetailsMapper {
     static func mapToDataModel(
         searchDates: SearchDates? = nil,
-        bookDates: BookDates? = nil
+        bookDates: BookDates? = nil,
+        bookingId: String? = nil
     ) -> AppartementDetailsDataModel {
         AppartementDetailsDataModel(
             searchDates: searchDates,
-            bookDates: bookDates
+            bookDates: bookDates,
+            bookingId: bookingId
         )
     }
 
@@ -31,6 +33,16 @@ enum AppartementDetailsMapper {
             appartementId: appartement.id,
             startDate: startDate,
             endDate: endDate
+        )
+    }
+
+    static func mapToCancelBookingDTO(
+        with bookingId: String,
+        with params: CancelBookingParams
+    ) -> CancelBookingDTO {
+        CancelBookingDTO(
+            bookingId: bookingId,
+            refundPercentage: params.refundPercentage
         )
     }
 }

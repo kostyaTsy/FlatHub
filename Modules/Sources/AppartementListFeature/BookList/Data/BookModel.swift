@@ -10,6 +10,7 @@ import FHRepository
 
 public struct BookModel: Identifiable {
     public let id: UUID = UUID()
+    let bookingId: String
     let appartement: AppartementModel
     let status: BookStatus
     let startDate: Date
@@ -37,11 +38,13 @@ public struct BookModel: Identifiable {
     }
 
     public init(
+        bookingId: String,
         appartement: AppartementModel,
         status: BookStatus,
         startDate: Date,
         endDate: Date
     ) {
+        self.bookingId = bookingId
         self.appartement = appartement
         self.status = status
         self.startDate = startDate

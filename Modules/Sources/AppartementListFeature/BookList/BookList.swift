@@ -119,6 +119,7 @@ private extension BookList {
                 photos: []
             )
             return BookModel(
+                bookingId: UUID().uuidString,
                 appartement: appt,
                 status: .cancelled,
                 startDate: Date.now,

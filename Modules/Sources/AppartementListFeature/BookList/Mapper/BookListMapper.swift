@@ -14,7 +14,7 @@ public enum BookListMapper {
     ) -> BookModel {
         var bookStatus: BookStatus
         
-        if let status = BookStatus(rawValue: book.status), status == .done {
+        if let status = BookStatus(rawValue: book.status), status == .cancelled {
             bookStatus = .cancelled
         } else if Date.now > book.endDate {
             bookStatus = .done
@@ -23,6 +23,7 @@ public enum BookListMapper {
         }
 
         return BookModel(
+            bookingId: book.id,
             appartement: AppartementMapper.mapToAppartementModel(from: book.appartement),
             status: bookStatus,
             startDate: book.startDate,

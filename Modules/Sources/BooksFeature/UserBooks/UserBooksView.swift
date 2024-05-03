@@ -44,6 +44,7 @@ public struct UserBooksView: View {
                 )
                 Spacer()
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }

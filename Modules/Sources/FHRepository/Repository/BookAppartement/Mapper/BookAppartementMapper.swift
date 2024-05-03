@@ -13,6 +13,7 @@ enum BookAppartementMapper {
         with appartement: AppartementDTO
     ) -> BookAppartementDTO {
         BookAppartementDTO(
+            id: dto.id,
             userId: dto.userId,
             hostUserId: dto.hostUserId,
             startDate: dto.startDate,
@@ -29,6 +30,7 @@ enum BookAppartementMapper {
     ) -> PaymentDTO {
         let bookDaysCount = dto.startDate.daysBetween(dto.endDate) ?? 1
         return PaymentDTO(
+            bookingId: dto.id,
             userId: dto.userId,
             hostUserId: dto.hostUserId,
             appartementId: dto.appartementId,
@@ -36,6 +38,15 @@ enum BookAppartementMapper {
             bookStartDate: dto.startDate,
             bookEndDate: dto.endDate,
             createDate: Date.now
+        )
+    }
+
+    static func mapToUpdatePaymentDTO(
+        from dto: CancelBookingDTO
+    ) -> UpdatePaymentDTO {
+        UpdatePaymentDTO(
+            bookingId: dto.bookingId,
+            refundPercentage: dto.refundPercentage
         )
     }
 }

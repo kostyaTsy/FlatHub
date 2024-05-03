@@ -8,7 +8,7 @@
 import Foundation
 
 public struct PaymentDTO: Codable {
-    public let id: String
+    public let bookingId: String
     public let userId: String
     public let hostUserId: String
     public let appartementId: String
@@ -19,7 +19,7 @@ public struct PaymentDTO: Codable {
     public let createDate: Date
 
     public init(
-        id: String = UUID().uuidString,
+        bookingId: String,
         userId: String,
         hostUserId: String,
         appartementId: String,
@@ -29,7 +29,7 @@ public struct PaymentDTO: Codable {
         bookEndDate: Date,
         createDate: Date = Date.now
     ) {
-        self.id = id
+        self.bookingId = bookingId
         self.userId = userId
         self.hostUserId = hostUserId
         self.appartementId = appartementId

@@ -16,6 +16,7 @@ public enum BookStatus: String, Codable {
 }
 
 public struct BookAppartementDTO: Codable {
+    public let id: String
     public let userId: String
     public let hostUserId: String
     public let startDate: Date
@@ -25,6 +26,7 @@ public struct BookAppartementDTO: Codable {
     public let appartement: AppartementDTO
 
     init(
+        id: String = UUID().uuidString,
         userId: String,
         hostUserId: String,
         startDate: Date,
@@ -33,6 +35,7 @@ public struct BookAppartementDTO: Codable {
         status: BookStatus,
         appartement: AppartementDTO
     ) {
+        self.id = id
         self.userId = userId
         self.hostUserId = hostUserId
         self.startDate = startDate

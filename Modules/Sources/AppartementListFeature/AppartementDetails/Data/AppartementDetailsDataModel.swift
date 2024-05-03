@@ -10,13 +10,16 @@ import Foundation
 public final class AppartementDetailsDataModel {
     var searchDates: SearchDates?
     var bookDates: BookDates?
+    var bookingId: String?
 
     public init(
         searchDates: SearchDates? = nil,
-        bookDates: BookDates? = nil
+        bookDates: BookDates? = nil,
+        bookingId: String? = nil
     ) {
         self.searchDates = searchDates
         self.bookDates = bookDates
+        self.bookingId = bookingId
     }
 }
 

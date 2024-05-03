@@ -17,6 +17,7 @@ public enum AppartementDetailsPresentationType {
     case travelBooked
     /// Indicates that host opens book details screen
     case hostBooked
+    case travelCancelled
 
     var shouldShowBookButton: Bool {
         [.travelWithBooksDate, .travelWithoutBooksDate].contains(self)
@@ -25,13 +26,24 @@ public enum AppartementDetailsPresentationType {
     var shouldShowCancelBookButton: Bool {
         [.travelBooked].contains(self)
     }
+
+    init(user: User, bookStatus: BookStatus) {
+        if bookStatus == .cancelled {
+            self = .travelCancelled
+            return
+        }
+
+        self = user.role == .host ? .hostBooked : .travelBooked
+    }
 }
 
 @Reducer
 public struct AppartementDetailsFeature {
     enum Error: Swift.Error {
         case invalidDates
+        case invalidCancelParams
     }
+
     @Reducer
     public enum Destination {
         case errorAlert(AlertState<ErrorAlertAction>)
@@ -47,6 +59,7 @@ public struct AppartementDetailsFeature {
 
         var presentationType: AppartementDetailsPresentationType
         var dataModel: AppartementDetailsDataModel
+        var cancelBookingParams: CancelBookingParams?
 
         public init(
             appartement: AppartementModel,
@@ -67,6 +80,8 @@ public struct AppartementDetailsFeature {
         case onBookedSuccess
         case onBookedFailure(Swift.Error)
         case onCancelBookTapped
+        case onCancelSuccess
+        case onCancelFailure(Swift.Error)
         case shouldChooseDates
         case destination(PresentationAction<Destination.Action>)
     }
@@ -147,6 +162,8 @@ public struct AppartementDetailsFeature {
                     return .none
                 }
 
+                state.cancelBookingParams = params
+
                 let cancelMessage = String(
                     format: Strings.cancelBookingAlertMessage,
                     params.refundPercentage
@@ -156,13 +173,33 @@ public struct AppartementDetailsFeature {
                 )
 
                 return .none
+            case .onCancelSuccess:
+                state.presentationType = .travelCancelled
+                return .none
+            case .onCancelFailure(let error):
+                state.destination = .errorAlert(makeErrorAlert(error: error))
+                return .none
             case .shouldChooseDates:
                 let datesState = SelectBookDatesFeature.State(appartementId: state.appartement.id)
                 state.destination = .selectDates(datesState)
                 return .none
             case .destination(.presented(.cancelBookingAlert(.confirmed))):
-                print(">>> Should cancel booking")
-                return .none
+                return .run { [id = state.dataModel.bookingId, params = state.cancelBookingParams] send in
+                    guard let id, let params else {
+                        await send(.onCancelFailure(Error.invalidCancelParams))
+                        return
+                    }
+                    let cancelDTO = AppartementDetailsMapper.mapToCancelBookingDTO(
+                        with: id,
+                        with: params
+                    )
+                    do {
+                        try await bookAppartementRepository.cancelBooking(cancelDTO)
+                        await send(.onCancelSuccess)
+                    } catch {
+                        await send(.onCancelFailure(error))
+                    }
+                }
             case .destination(.presented(.selectDates(.onDatesApplied(let startDate, let endDate)))):
                 state.dataModel.searchDates = SearchDates(
                     startDate: startDate,

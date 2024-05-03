@@ -45,6 +45,7 @@ public struct FavouritesView: View {
                 )
                 Spacer()
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }

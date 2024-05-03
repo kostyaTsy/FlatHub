@@ -44,6 +44,7 @@ public struct HostBooksView: View {
                 )
                 Spacer()
             }
+            .frame(maxWidth: .infinity)
         }
     }
 }

@@ -42,11 +42,15 @@ public struct BookListFeature {
             case .onAppartementTapped(let bookModel):
                 let user = accountRepository.user()
                 let dataModel = AppartementDetailsMapper.mapToDataModel(
-                    bookDates: BookDates(startDate: bookModel.startDate, endDate: bookModel.endDate)
+                    bookDates: BookDates(startDate: bookModel.startDate, endDate: bookModel.endDate),
+                    bookingId: bookModel.bookingId
                 )
                 state.appartementDetails = .init(
                     appartement: bookModel.appartement,
-                    presentationType: user.role == .traveller ? .travelBooked : .hostBooked,
+                    presentationType: AppartementDetailsPresentationType(
+                        user: user,
+                        bookStatus: bookModel.status
+                    ),
                     dataModel: dataModel
                 )
                 return .none

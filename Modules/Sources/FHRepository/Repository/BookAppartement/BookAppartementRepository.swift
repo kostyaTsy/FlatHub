@@ -10,6 +10,8 @@ import FirebaseFirestore
 
 public protocol BookAppartementRepositoryProtocol {
     func bookAppartement(_ dto: BookAppartementRequestDTO) async throws
+    func cancelBooking(_ dto: CancelBookingDTO) async throws
+
     func loadUserBooks(for userId: String) async throws -> [BookAppartementDTO]
     func loadHostUserBooks(for hostUserId: String) async throws -> [BookAppartementDTO]
     func getBookedDates(for appartementId: String) async throws -> [BookedDates]
@@ -49,13 +51,21 @@ public actor BookAppartementRepository: BookAppartementRepositoryProtocol {
         )
 
         try store.collection(DBTableName.bookAppartementTable)
-            .document(dto.documentPath)
+            .document(dto.id)
             .setData(from: bookAppartementDTO)
 
         let paymentDTO = BookAppartementMapper.mapToPaymentDTO(
             from: dto, with: appartement
         )
         try await paymentRepository.createPayment(paymentDTO)
+    }
+
+    public func cancelBooking(_ dto: CancelBookingDTO) async throws {
+        let updatePaymentDTO = BookAppartementMapper.mapToUpdatePaymentDTO(from: dto)
+        async let cancelRequest: () = changeBookingStatusTo(.cancelled, for: dto.bookingId)
+        async let updatePaymentRequest: () = paymentRepository.updatePayment(updatePaymentDTO)
+
+        _ = try await [cancelRequest, updatePaymentRequest]
     }
 
     public func loadUserBooks(for userId: String) async throws -> [BookAppartementDTO] {
@@ -125,5 +135,11 @@ private extension BookAppartementRepository {
             }
 
         return appartements.isEmpty
+    }
+
+    func changeBookingStatusTo(_ status: BookStatus, for bookingId: String) async throws {
+        try await store.collection(DBTableName.bookAppartementTable)
+            .document(bookingId)
+            .updateData(["status": status.rawValue])
     }
 }
