@@ -45,4 +45,13 @@ enum AppartementDetailsMapper {
             refundPercentage: params.refundPercentage
         )
     }
+
+    static func mapToAddRatingModel(
+        from appartement: AppartementModel
+    ) -> AddRatingModel {
+        AddRatingModel(
+            appartementId: appartement.id,
+            hostUserId: appartement.hostUserId
+        )
+    }
 }

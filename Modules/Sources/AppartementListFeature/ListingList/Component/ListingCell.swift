@@ -28,9 +28,11 @@ struct ListingCell: View {
     @ViewBuilder private func content() -> some View {
         VStack(alignment: .leading, spacing: Layout.Spacing.small) {
             GeometryReader { geometry in
+                let processor = DownsamplingImageProcessor(size: geometry.size)
                 KFImage(appartement.firstPhotoURL)
                     .loadDiskFileSynchronously(false)
                     .cacheMemoryOnly(false)
+                    .setProcessor(processor)
                     .placeholder({
                         AppartementIcons.placeholder
                     })
