@@ -33,18 +33,18 @@ public struct FHContentView<Content: View>: View {
     private var title: String
     private var subtitle: String?
     private var configuration: Configuration
-    @ViewBuilder private var content: () -> Content
+    @ViewBuilder private var content: Content
 
     public init(
         title: String,
         subtitle: String? = nil,
         configuration: Configuration = Configuration(),
-        content: @escaping () -> Content
+        @ViewBuilder content: () -> Content
     ) {
         self.title = title
         self.subtitle = subtitle
         self.configuration = configuration
-        self.content = content
+        self.content = content()
     }
 
 
@@ -61,7 +61,7 @@ public struct FHContentView<Content: View>: View {
                     .padding(.horizontal, configuration.horizontalPadding)
             }
             
-            content()
+            content
                 .padding(.top, Layout.Spacing.small)
         }
     }

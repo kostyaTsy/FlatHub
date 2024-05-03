@@ -70,7 +70,7 @@ public struct HostAppTabBarFeature {
                 return .send(.userLoggedOut)
             case .profile(.switchToNewRole):
                 return .send(.userSwitchedToTravel)
-            case .listings, .books, .profile:
+            case .listings, .books, .profile, .earnings:
                 return .none
             case .userLoggedOut, .userSwitchedToTravel:
                 return .none

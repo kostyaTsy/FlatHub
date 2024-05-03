@@ -11,6 +11,7 @@ import FirebaseFirestore
 public protocol PaymentRepositoryProtocol {
     func createPayment(_ dto: PaymentDTO) async throws
     func updatePayment(_ dto: UpdatePaymentDTO) async throws
+    func loadPayments(_ dto: LoadPaymentDTO) async throws -> [PaymentDTO]
 }
 
 public actor PaymentRepository: PaymentRepositoryProtocol {
@@ -36,6 +37,21 @@ public actor PaymentRepository: PaymentRepositoryProtocol {
         try store.collection(DBTableName.paymentTable)
             .document(updatedPayment.bookingId)
             .setData(from: updatedPayment)
+    }
+
+    public func loadPayments(_ dto: LoadPaymentDTO) async throws -> [PaymentDTO] {
+        let startTimestamp = Timestamp(date: dto.startDate)
+        let endTimestamp = Timestamp(date: dto.endDate)
+
+        return try await store.collection(DBTableName.paymentTable)
+            .whereField("hostUserId", isEqualTo: dto.hostUserId)
+            .whereField("createDate", isGreaterThan: startTimestamp)
+            .whereField("createDate", isLessThan: endTimestamp)
+            .getDocuments()
+            .documents
+            .compactMap { snapshot in
+                try? snapshot.data(as: PaymentDTO.self)
+            }
     }
 }
 
