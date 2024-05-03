@@ -30,9 +30,10 @@ public protocol AppartementRepositoryProtocol {
     ) async throws -> [ExploreAppartementDTO]
 
     func loadFavouriteAppartements(for userId: String) async throws -> [ExploreAppartementDTO]
+    func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO
 }
 
-actor AppartementRepository: AppartementRepositoryProtocol {
+public actor AppartementRepository: AppartementRepositoryProtocol {
     private let store: Firestore
 
     public init(store: Firestore = Firestore.firestore()) {
@@ -134,7 +135,7 @@ actor AppartementRepository: AppartementRepositoryProtocol {
 
         let appartements = result.0
         let favouriteAppartements = result.1
-        let bookedAppartements = [BookAppartementDTO]() // result.2
+        let bookedAppartements = result.2
 
         return appartements
             .filter { appartement in
@@ -157,6 +158,13 @@ actor AppartementRepository: AppartementRepositoryProtocol {
                 from: $0.appartement, isFavourite: true
             )
         }
+    }
+
+    public func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO {
+        try await store.collection(DBTableName.appartementInfoTable)
+            .document(appartementId)
+            .getDocument()
+            .data(as: AppartementInfoDTO.self)
     }
 }
 
@@ -238,8 +246,8 @@ private extension AppartementRepository {
         let startDateTimestamp = Timestamp(date: startDate)
         let endDateTimestamp = Timestamp(date: endDate)
 
-        // TODO: check
         return try await store.collection(DBTableName.bookAppartementTable)
+            .whereField("status", isEqualTo: BookStatus.booked.rawValue)
             .whereField("startDate", isLessThan: endDateTimestamp)
             .whereField("endDate", isGreaterThan: startDateTimestamp)
             .getDocuments()
@@ -274,12 +282,5 @@ private extension AppartementRepository {
 
             return appartementInfos
         }
-    }
-
-    func loadAppartementInfo(for appartementId: String) async throws -> AppartementInfoDTO {
-        try await store.collection(DBTableName.appartementInfoTable)
-            .document(appartementId)
-            .getDocument()
-            .data(as: AppartementInfoDTO.self)
     }
 }

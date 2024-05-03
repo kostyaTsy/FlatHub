@@ -29,6 +29,15 @@ public struct AppartementList: View {
                 }
             }
             .padding(.horizontal, Layout.Spacing.medium)
+            // TODO: maybe change to fullScreenCover
+            .navigationDestination(
+                store: store.scope(
+                    state: \.$appartementDetails,
+                    action: \.appartementDetails
+                )
+            ) { store in
+                AppartementDetailsView(store: store)
+            }
         }
     }
 
@@ -41,6 +50,7 @@ public struct AppartementList: View {
                     }
                     .padding(.bottom, Layout.Spacing.big50)
                     .onTapGesture {
+                        print("Tapped")
                         store.send(.onAppartementTapped(item))
                     }
                 }

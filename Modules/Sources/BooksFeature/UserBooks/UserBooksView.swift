@@ -8,6 +8,7 @@
 import SwiftUI
 import ComposableArchitecture
 import AppartementListFeature
+import FHCommon
 
 public struct UserBooksView: View {
     private let store: StoreOf<UserBooksFeature>
@@ -19,20 +20,31 @@ public struct UserBooksView: View {
     public var body: some View {
         WithPerceptionTracking {
             contentView()
+                .toolbar(.hidden, for: .navigationBar)
         }
-        .task {
+        .onAppear {
             store.send(.task)
         }
     }
 
     @ViewBuilder private func contentView() -> some View {
-        VStack {
-            AppartementList(
-                store: store.scope(
-                    state: \.appartementList,
-                    action: \.appartementList
-                )
+        FHContentView(
+            title: Strings.booksTabTitle,
+            configuration: .init(
+                horizontalPadding: Layout.Spacing.smallMedium
             )
+        ) {
+            VStack {
+                Spacer()
+                BookList(
+                    store: store.scope(
+                        state: \.bookList,
+                        action: \.bookList
+                    )
+                )
+                Spacer()
+            }
+            .frame(maxWidth: .infinity)
         }
     }
 }

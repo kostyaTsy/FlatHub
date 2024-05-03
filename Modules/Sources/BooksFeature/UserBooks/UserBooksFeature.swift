@@ -13,15 +13,17 @@ import FHRepository
 public struct UserBooksFeature {
     @ObservableState
     public struct State {
-        var appartementList = AppartementListFeature.State(appartements: [])
+        var bookList = BookListFeature.State(books: [])
         public init() {}
     }
 
     public enum Action {
         case task
-
-        case appartementList(AppartementListFeature.Action)
+        case bookList(BookListFeature.Action)
     }
+
+    @Dependency(\.bookAppartementRepository) var bookAppartementRepository
+    @Dependency(\.accountRepository) var accountRepository
 
     public init() {}
 
@@ -30,17 +32,18 @@ public struct UserBooksFeature {
             switch action {
             case .task:
                 return .run { send in
-                    // TODO: load favourites appartements
-                    let mockApp = AppartementModel(id: "123", hostUserId: "", title: "Booked", city: "M", countryCode: "B", pricePerNight: 125, guestCount: 4)
-                    await send(.appartementList(.appartementsChanged([mockApp])))
+                    let user = accountRepository.user()
+                    let bookedAppartements = (try? await bookAppartementRepository.loadUserBooks(user.id)) ?? []
+                    let books = bookedAppartements.map { BookListMapper.mapToBookModel(from: $0) }
+                    await send(.bookList(.setBooksData(books)))
                 }
-            case .appartementList:
+            case .bookList:
                 return .none
             }
         }
 
-        Scope(state: \.appartementList, action: \.appartementList) {
-            AppartementListFeature()
+        Scope(state: \.bookList, action: \.bookList) {
+            BookListFeature()
         }
     }
 }

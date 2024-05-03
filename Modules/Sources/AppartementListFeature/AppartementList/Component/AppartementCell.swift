@@ -11,10 +11,16 @@ import FHRepository
 
 struct AppartementCell: View {
     private let appartement: AppartementModel
+    private let shouldShowFavouriteIcon: Bool
     private let favouriteButtonTapped: (() -> Void)?
 
-    init(appartement: AppartementModel, favouriteButtonTapped: (() -> Void)? = nil) {
+    init(
+        appartement: AppartementModel,
+        shouldShowFavouriteIcon: Bool = true,
+        favouriteButtonTapped: (() -> Void)? = nil
+    ) {
         self.appartement = appartement
+        self.shouldShowFavouriteIcon = shouldShowFavouriteIcon
         self.favouriteButtonTapped = favouriteButtonTapped
     }
 
@@ -24,7 +30,9 @@ struct AppartementCell: View {
                 AppartementPhotoSlider(photos: appartement.photos)
                     .padding(.bottom, Layout.Spacing.small)
 
-                favouriteIcon()
+                if shouldShowFavouriteIcon {
+                    favouriteIcon()
+                }
             }
 
             descriptionView()

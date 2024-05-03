@@ -18,4 +18,5 @@ enum DBTableName {
     static let appartementLivingTypeTable = "AppartementLivingType"
     static let appartementDescriptionTypeTable = "AppartementDescriptionType"
     static let appartementCancellationPolicyTypeTable = "AppartementCancellationPolicyType"
+    static let paymentTable = "Payment"
 }

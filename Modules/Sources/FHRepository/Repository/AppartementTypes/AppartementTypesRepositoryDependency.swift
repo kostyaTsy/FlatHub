@@ -1,6 +1,6 @@
 //
-//  File.swift
-//  
+//  AppartementTypesRepositoryDependency.swift
+//
 //
 //  Created by Kostya Tsyvilko on 16.04.24.
 //

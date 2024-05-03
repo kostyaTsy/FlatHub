@@ -1,30 +1,33 @@
 //
-//  BookAppartementDTO.swift
+//  BookAppartementRequestDTO.swift
 //
 //
-//  Created by Kostya Tsyvilko on 29.04.24.
+//  Created by Kostya Tsyvilko on 2.05.24.
 //
 
 import Foundation
 
-public struct BookAppartementDTO: Codable {
+public struct BookAppartementRequestDTO: Codable {
+    public let id: String
     public let userId: String
     public let hostUserId: String
+    public let appartementId: String
     public let startDate: Date
     public let endDate: Date
-    public let appartement: AppartementDTO
 
-    init(
+    public init(
+        id: String = UUID().uuidString,
         userId: String,
         hostUserId: String,
+        appartementId: String,
         startDate: Date,
-        endDate: Date,
-        appartement: AppartementDTO
+        endDate: Date
     ) {
+        self.id = id
         self.userId = userId
         self.hostUserId = hostUserId
+        self.appartementId = appartementId
         self.startDate = startDate
         self.endDate = endDate
-        self.appartement = appartement
     }
 }
