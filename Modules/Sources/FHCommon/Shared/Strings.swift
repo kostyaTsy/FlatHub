@@ -115,4 +115,8 @@ public enum Strings {
     public static let deleteAppartementButtonTitle = "Remove"
     public static let changeAvailabilityToOnlineButtonTitle = "Continue booking"
     public static let changeAvailabilityToOfflineButtonTitle = "Stop booking"
+
+    // MARK: - Earnings
+    public static let earnedText = "Earned: %d"
+    public static let pendingText = "Pending: %d"
 }
