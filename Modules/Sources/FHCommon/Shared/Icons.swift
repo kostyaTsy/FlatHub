@@ -29,4 +29,6 @@ public enum Icons {
     public static let closeIcon = Image(systemName: "xmark.circle.fill")
     public static let timerIcon = Image(systemName: "timer")
     public static let checkmarkSeal = Image(systemName: "checkmark.seal")
+    public static let startIconName = "star"
+    public static let startFillIconName = "star.fill"
 }

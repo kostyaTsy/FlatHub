@@ -40,6 +40,14 @@ struct AppartementDetailsView: View {
                     SelectBookDatesView(store: store)
                         .presentationDetents([.fraction(Constants.selectDatesSheetFraction)])
                 }
+                .sheet(
+                    item: $store.scope(
+                        state: \.destination?.addReview,
+                        action: \.destination.addReview
+                    )
+                ) { store in
+                    AddRatingView(store: store)
+                }
         }
         .onAppear {
             store.send(.onAppear)
@@ -68,6 +76,12 @@ struct AppartementDetailsView: View {
                 title: Strings.cancelBookButtonTitle
             ) {
                 store.send(.onCancelBookTapped)
+            }
+        } else if store.presentationType.shouldShowReviewButton {
+            FHOvalButton(
+                title: Strings.addReviewButtonTitle
+            ) {
+                store.send(.onAddReviewTapped)
             }
         }
     }

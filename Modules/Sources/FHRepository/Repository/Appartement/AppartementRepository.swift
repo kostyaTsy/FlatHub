@@ -22,6 +22,8 @@ public protocol AppartementRepositoryProtocol {
         with dto: AppartementAvailabilityDTO
     ) async throws
 
+    func updateAppartementRatings(_ dto: UpdateAppartementRatingDTO) async throws
+
     func loadHostAppartements(for userId: String) async throws -> [AppartementDetailsDTO]
     func loadAppartements(for userId: String) async throws -> [ExploreAppartementDTO]
     func searchAppartements(
@@ -83,6 +85,15 @@ public actor AppartementRepository: AppartementRepositoryProtocol {
         try await store.collection(DBTableName.appartementTable)
             .document(dto.id)
             .updateData(["isAvailableForBook": dto.isAvailable])
+    }
+
+    public func updateAppartementRatings(_ dto: UpdateAppartementRatingDTO) async throws {
+        try await store.collection(DBTableName.appartementTable)
+            .document(dto.appartementId)
+            .updateData([
+                "reviewCount": dto.reviewCount,
+                "rating": dto.rating
+            ])
     }
 
     public func loadHostAppartements(for userId: String) async throws -> [AppartementDetailsDTO] {

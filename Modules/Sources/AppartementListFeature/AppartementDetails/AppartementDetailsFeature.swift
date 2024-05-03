@@ -10,33 +10,6 @@ import ComposableArchitecture
 import FHRepository
 import FHCommon
 
-public enum AppartementDetailsPresentationType {
-    case travelWithBooksDate
-    case travelWithoutBooksDate
-    /// Indicates that traveller opens book details screen
-    case travelBooked
-    /// Indicates that host opens book details screen
-    case hostBooked
-    case travelCancelled
-
-    var shouldShowBookButton: Bool {
-        [.travelWithBooksDate, .travelWithoutBooksDate].contains(self)
-    }
-
-    var shouldShowCancelBookButton: Bool {
-        [.travelBooked].contains(self)
-    }
-
-    init(user: User, bookStatus: BookStatus) {
-        if bookStatus == .cancelled {
-            self = .travelCancelled
-            return
-        }
-
-        self = user.role == .host ? .hostBooked : .travelBooked
-    }
-}
-
 @Reducer
 public struct AppartementDetailsFeature {
     enum Error: Swift.Error {
@@ -49,6 +22,7 @@ public struct AppartementDetailsFeature {
         case errorAlert(AlertState<ErrorAlertAction>)
         case cancelBookingAlert(AlertState<CancelBookingAlertAction>)
         case selectDates(SelectBookDatesFeature)
+        case addReview(AddRatingFeature)
     }
 
     @ObservableState
@@ -79,9 +53,13 @@ public struct AppartementDetailsFeature {
         case onBookRequest
         case onBookedSuccess
         case onBookedFailure(Swift.Error)
+
         case onCancelBookTapped
         case onCancelSuccess
         case onCancelFailure(Swift.Error)
+
+        case onAddReviewTapped
+
         case shouldChooseDates
         case destination(PresentationAction<Destination.Action>)
     }
@@ -97,6 +75,7 @@ public struct AppartementDetailsFeature {
     @Dependency(\.accountRepository) var accountRepository
     @Dependency(\.appartementRepository) var appartementRepository
     @Dependency(\.bookAppartementRepository) var bookAppartementRepository
+    @Dependency(\.reviewRepository) var reviewRepository
 
     public init() {}
 
@@ -104,9 +83,11 @@ public struct AppartementDetailsFeature {
         Reduce { state, action in
             switch action {
             case .onAppear:
-                return .run { [id = state.appartement.id] send in
-                    let details = try? await appartementRepository.loadAppartementInfo(id)
+                return .run { [appartement = state.appartement] send in
+                    let details = try? await appartementRepository.loadAppartementInfo(appartement.id)
                     await send(.onDetailsLoaded(details))
+                    let reviews = try? await reviewRepository.getUserReviews(appartement.hostUserId)
+                    print(reviews)
                 }
             case .onDetailsLoaded(let details):
                 state.details = details
@@ -178,6 +159,11 @@ public struct AppartementDetailsFeature {
                 return .none
             case .onCancelFailure(let error):
                 state.destination = .errorAlert(makeErrorAlert(error: error))
+                return .none
+            case .onAddReviewTapped:
+                let ratingModel = AppartementDetailsMapper.mapToAddRatingModel(from: state.appartement)
+                let reviewState = AddRatingFeature.State(dataModel: ratingModel)
+                state.destination = .addReview(reviewState)
                 return .none
             case .shouldChooseDates:
                 let datesState = SelectBookDatesFeature.State(appartementId: state.appartement.id)

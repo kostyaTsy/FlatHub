@@ -31,9 +31,11 @@ struct AppartementPhotoSlider: View {
         image: String,
         geometry: GeometryProxy
     ) -> some View {
+        let processor = DownsamplingImageProcessor(size: geometry.size)
         KFImage(URL(string: image))
             .loadDiskFileSynchronously(false)
             .cacheMemoryOnly(false)
+            .setProcessor(processor)
             .placeholder({
                 AppartementIcons.placeholder
             })
