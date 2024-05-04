@@ -50,6 +50,9 @@ public struct ChooseTripDateFeature {
                 return .none
             case .onChangeStartDate(let date):
                 state.startDate = date
+                if date > state.endDate {
+                    state.endDate = date
+                }
                 return .none
             case .onChangeEndDate(let date):
                 state.endDate = date

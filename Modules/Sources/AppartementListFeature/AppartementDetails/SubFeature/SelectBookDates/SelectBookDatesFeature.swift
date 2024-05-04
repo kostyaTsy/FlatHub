@@ -39,6 +39,9 @@ public struct SelectBookDatesFeature {
             switch action {
             case .onStartDateChange(let date):
                 state.startDate = date
+                if date > state.endDate {
+                    state.endDate = date
+                }
                 return .none
             case .onEndDateChange(let date):
                 state.endDate = date
