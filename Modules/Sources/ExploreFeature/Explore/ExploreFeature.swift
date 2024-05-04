@@ -22,6 +22,7 @@ public struct ExploreFeature {
     public enum Action {
         case task
         case onSearchContainerTaped
+        case onSearchStart(SearchModel)
         case search(PresentationAction<SearchFeature.Action>)
         case appartementList(AppartementListFeature.Action)
     }
@@ -35,12 +36,18 @@ public struct ExploreFeature {
         Reduce { state, action in
             switch action {
             case .task:
-                return .run { send in
+                return .run { [searchModel = state.searchModel] send in
+                    if let searchModel {
+                        await send(.onSearchStart(searchModel))
+                        return
+                    }
                     let data = await loadAppartements()
                     await send(.appartementList(.setAppartementsData(data)))
                 }
             case .search(.presented(.searchData(let searchModel))):
                 state.searchModel = searchModel
+                return .send(.onSearchStart(searchModel))
+            case .onSearchStart(let searchModel):
                 return .run { send in
                     let userId = accountRepository.user().id
                     let searchDTO = ExploreMapper.mapToSearchDTO(from: searchModel)
