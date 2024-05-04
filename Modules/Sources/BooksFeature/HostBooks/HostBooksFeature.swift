@@ -33,7 +33,7 @@ public struct HostBooksFeature {
             case .onAppear:
                 return .run { send in
                     let user = accountRepository.user()
-                    let bookedAppartements = (try? await bookAppartementRepository.loadUserBooks(user.id)) ?? []
+                    let bookedAppartements = (try? await bookAppartementRepository.loadHostUserBooks(user.id)) ?? []
                     let books = bookedAppartements.map { BookListMapper.mapToBookModel(from: $0) }
                     await send(.bookList(.setBooksData(books)))
                 }
