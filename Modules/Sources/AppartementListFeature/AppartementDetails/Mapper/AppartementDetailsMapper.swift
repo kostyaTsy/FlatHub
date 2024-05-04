@@ -54,4 +54,22 @@ enum AppartementDetailsMapper {
             hostUserId: appartement.hostUserId
         )
     }
+
+    static func mapToAppartementInfoModel(
+        from info: AppartementInfoDTO
+    ) -> AppartementInfoModel {
+        AppartementInfoModel(
+            latitude: info.latitude,
+            longitude: info.longitude,
+            description: info.description,
+            bedrooms: info.bedrooms,
+            beds: info.beds,
+            bathrooms: info.bathrooms,
+            type: info.type,
+            livingType: info.livingType,
+            offers: info.offers,
+            descriptionTypes: info.descriptionTypes,
+            cancellationPolicy: info.cancellationPolicy
+        )
+    }
 }

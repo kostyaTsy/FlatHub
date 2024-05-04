@@ -29,11 +29,26 @@ public struct AppartementDetailsFeature {
     public struct State {
         @Presents var destination: Destination.State?
         var appartement: AppartementModel
-        var details: AppartementInfoDTO?
+        var details: AppartementInfoModel?
 
         var presentationType: AppartementDetailsPresentationType
         var dataModel: AppartementDetailsDataModel
         var cancelBookingParams: CancelBookingParams?
+
+        var searchBookingDates: String? {
+            dataModel.searchBookingDates
+        }
+
+        var searchBookingDatesPrice: Int {
+            guard let startDate = dataModel.searchDates?.startDate,
+                  let endDate = dataModel.searchDates?.endDate
+            else {
+                return 0
+            }
+
+            let dates = abs(endDate.daysBetween(startDate) ?? 0)
+            return dates * appartement.pricePerNight
+        }
 
         public init(
             appartement: AppartementModel,
@@ -48,7 +63,11 @@ public struct AppartementDetailsFeature {
 
     public enum Action {
         case onAppear
-        case onDetailsLoaded(AppartementInfoDTO?)
+        case onDetailsLoaded(AppartementInfoModel?)
+        case onBackButtonTapped
+        case onFavouriteButtonTapped
+        case onFavouriteSuccess
+
         case onBookTapped
         case onBookRequest
         case onBookedSuccess
@@ -72,6 +91,7 @@ public struct AppartementDetailsFeature {
         case confirmed
     }
 
+    @Dependency(\.dismiss) var dismiss
     @Dependency(\.accountRepository) var accountRepository
     @Dependency(\.appartementRepository) var appartementRepository
     @Dependency(\.bookAppartementRepository) var bookAppartementRepository
@@ -85,12 +105,35 @@ public struct AppartementDetailsFeature {
             case .onAppear:
                 return .run { [appartement = state.appartement] send in
                     let details = try? await appartementRepository.loadAppartementInfo(appartement.id)
-                    await send(.onDetailsLoaded(details))
-                    let reviews = try? await reviewRepository.getUserReviews(appartement.hostUserId)
-                    print(reviews)
+                    guard let details else { return }
+                    let infoModel = AppartementDetailsMapper.mapToAppartementInfoModel(from: details)
+                    await send(.onDetailsLoaded(infoModel))
+                    // TODO: add reviews in future
                 }
-            case .onDetailsLoaded(let details):
-                state.details = details
+            case .onDetailsLoaded(let infoModel):
+                state.details = infoModel
+                return .none
+            case .onBackButtonTapped:
+                return .run { send in
+                    await dismiss()
+                }
+            case .onFavouriteButtonTapped:
+                return .run { [appartement = state.appartement] send in
+                    let user = accountRepository.user()
+                    let requestDTO = AppartementMapper.mapToFavouriteAppartementDTO(
+                        for: user.id, from: appartement.id
+                    )
+                    do {
+                        if appartement.isFavourite {
+                            try await appartementRepository.remoteAppartementFromFavourite(requestDTO)
+                        } else {
+                            try await appartementRepository.addAppartementToFavorite(requestDTO)
+                        }
+                        await send(.onFavouriteSuccess)
+                    } catch {}
+                }
+            case .onFavouriteSuccess:
+                state.appartement.isFavourite.toggle()
                 return .none
             case .onBookTapped:
                 if state.presentationType == .travelWithBooksDate {

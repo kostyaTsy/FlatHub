@@ -71,6 +71,14 @@ public enum Strings {
     public static let reviewHostPlaceholder = "Review host"
     public static let reviewButtonTitle = "Review"
 
+    // MARK: - AppartementDetails
+    public static let roomsCountString = "%d guests • %d bedrooms • %d beds • %d bathrooms"
+    public static let offerSectionTitle = "What this place offers"
+    public static let locationSectionTitle = "Where you'll be"
+    public static let cancellationPolicySectionTitle = "Cancellation policy"
+    public static let livingsSectionTitle = "Your housing"
+    public static let housingDescriptionsSection = "Your housing descriptions"
+
     // MARK: - Profile
     public static let settingsSectionText = "Settings"
     public static let personalInfoText = "Personal information"

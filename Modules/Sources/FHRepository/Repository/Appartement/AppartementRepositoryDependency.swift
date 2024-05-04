@@ -109,7 +109,20 @@ extension AppartementRepositoryDependency {
             }, loadFavouriteAppartements: { _ in
                 []
             }, loadAppartementInfo: { _ in
-                throw FHRepositoryError.noData
+                AppartementInfoDTO(
+                    appartementId: "id",
+                    latitude: 12,
+                    longitude: 12,
+                    description: "description",
+                    bedrooms: 1,
+                    beds: 1,
+                    bathrooms: 1,
+                    type: .init(id: 1, name: "name", iconName: "person"),
+                    livingType: .init(id: 1, title: "title", description: "description", iconName: "person"),
+                    offers: [],
+                    descriptionTypes: [],
+                    cancellationPolicy: .init(id: 1, title: "", hostDescription: "", travelDescription: "")
+                )
             }
         )
 
