@@ -19,7 +19,7 @@ public extension Date {
     func startOfMonth() -> Date? {
         Calendar.current.date(
             from: Calendar.current.dateComponents(
-                [.year, .month, .day],
+                [.year, .month],
                 from: Calendar.current.startOfDay(for: self)
             )
         )
