@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  UIScreen+Size.swift
 //  
 //
 //  Created by Kostya Tsyvilko on 28.04.24.

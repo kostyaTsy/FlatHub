@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  Configuration.swift
 //  
 //
 //  Created by Kostya Tsyvilko on 20.04.24.

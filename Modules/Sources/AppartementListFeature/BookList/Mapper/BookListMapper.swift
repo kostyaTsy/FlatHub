@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  BookListMapper.swift
 //  
 //
 //  Created by Kostya Tsyvilko on 2.05.24.

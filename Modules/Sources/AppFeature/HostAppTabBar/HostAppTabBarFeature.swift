@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  HostAppTabBarFeature.swift
 //  
 //
 //  Created by Kostya Tsyvilko on 14.04.24.

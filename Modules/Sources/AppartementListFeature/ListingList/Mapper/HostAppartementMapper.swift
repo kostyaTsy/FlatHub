@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  HostAppartementMapper.swift
 //  
 //
 //  Created by Kostya Tsyvilko on 23.04.24.
