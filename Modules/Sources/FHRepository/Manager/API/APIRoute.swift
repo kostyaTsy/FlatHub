@@ -1,5 +1,5 @@
 //
-//  File.swift
+//  APIRoute.swift
 //  
 //
 //  Created by Kostya Tsyvilko on 21.04.24.

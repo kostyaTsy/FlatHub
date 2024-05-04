@@ -6,11 +6,21 @@
 //
 
 import Foundation
+import FHCommon
 
 public final class AppartementDetailsDataModel {
     var searchDates: SearchDates?
     var bookDates: BookDates?
     var bookingId: String?
+
+    var searchBookingDates: String? {
+        guard let startDate = searchDates?.startDate,
+              let endDate = searchDates?.endDate
+        else {
+            return nil
+        }
+        return DateUtils.makeDatesRangeString(startDate: startDate, endDate: endDate)
+    }
 
     public init(
         searchDates: SearchDates? = nil,

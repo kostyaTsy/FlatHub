@@ -30,6 +30,10 @@ public enum AppartementDetailsPresentationType {
         [.bookedDone].contains(self)
     }
 
+    var shouldShowFavouriteButton: Bool {
+        [.travelWithBooksDate, .travelWithoutBooksDate].contains(self)
+    }
+
     init(user: User, bookStatus: BookStatus) {
         if bookStatus == .cancelled {
             self = .travelCancelled

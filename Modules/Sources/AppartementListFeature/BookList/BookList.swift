@@ -98,7 +98,7 @@ private extension BookList {
 
 #if DEBUG
     #Preview {
-        let mockAppartement = AppartementModel(
+        let _ = AppartementModel(
             id: "",
             hostUserId: "",
             title: "Tiny house",
