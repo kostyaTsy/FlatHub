@@ -11,7 +11,6 @@ public struct AccountRepositoryDependency: Sendable {
     public var isUserLoggedIn: @Sendable () -> Bool
     public var user: @Sendable () -> User
 
-    @discardableResult
     public var loadAndUpdate: @Sendable () async throws -> User
     public var save: @Sendable (_ userDTO: UserDTO) async throws -> Void
     public var becomeHost: @Sendable (_ user: User) async throws -> Void

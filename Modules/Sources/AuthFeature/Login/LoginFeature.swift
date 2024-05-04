@@ -56,7 +56,7 @@ public struct LoginFeature {
                     do {
                         await send(.loginStarted)
                         try await authService.signIn(email, password)
-                        try await accountRepository.loadAndUpdate()
+                        _ = try await accountRepository.loadAndUpdate()
                         await send(.loginSuccess)
                     } catch {
                         await send(.loginFailure(error))
