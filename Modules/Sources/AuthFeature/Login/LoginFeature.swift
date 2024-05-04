@@ -42,6 +42,7 @@ public struct LoginFeature {
     }
 
     @Dependency(\.authService) var authService
+    @Dependency(\.accountRepository) var accountRepository
 
     public init() {}
 
@@ -55,6 +56,7 @@ public struct LoginFeature {
                     do {
                         await send(.loginStarted)
                         try await authService.signIn(email, password)
+                        try await accountRepository.loadAndUpdate()
                         await send(.loginSuccess)
                     } catch {
                         await send(.loginFailure(error))
