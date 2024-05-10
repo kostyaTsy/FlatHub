@@ -60,6 +60,7 @@ public struct EarningsView: View {
                 earnings: store.earnings
             )
             .frame(height: 300)
+            .padding(.horizontal, Layout.Spacing.small)
         }
 
         listContent()
@@ -103,6 +104,7 @@ public struct EarningsView: View {
                     store.earnedProfit, store.pendingProfit
                 )
             )
+            .padding(.horizontal, Layout.Spacing.small)
             List {
                 ForEach(store.earnings) { item in
                     EarningCell(earningModel: item)
